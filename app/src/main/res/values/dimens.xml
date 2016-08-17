@@ -2,4 +2,45 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="toolbar_height">48dp</dimen>
+    <dimen name="toolbar_textsize">16sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+
+    <dimen name="letter_icon_size">36dp</dimen>
+
+    <dimen name="textButton">16dp</dimen>
+    <dimen name="edittext_height">46dp</dimen>
+
+    <dimen name="BUTTON_HEIGHT">40dp</dimen>
+
+    <dimen name="VVS_TEXT">8sp</dimen>
+    <dimen name="VS_TEXT">10sp</dimen>
+    <dimen name="S_TEXT">12sp</dimen>
+    <dimen name="N_TEXT">14sp</dimen>
+    <dimen name="M_TEXT">16sp</dimen>
+    <dimen name="L_TEXT">18sp</dimen>
+    <dimen name="XL_TEXT">20sp</dimen>
+    <dimen name="XXL_TEXT">22sp</dimen>
+    <dimen name="SPLASH_TEXT">24sp</dimen>
+
+    <dimen name="dimen_1dp">1dp</dimen>
+    <dimen name="dimen_.5dp">0.5dp</dimen>
+    <dimen name="dimen_2dp">2dp</dimen>
+    <dimen name="dimen_4dp">4dp</dimen>
+    <dimen name="dimen_5dp">5dp</dimen>
+    <dimen name="dimen_6dp">6dp</dimen>
+    <dimen name="dimen_8dp">8dp</dimen>
+    <dimen name="dimen_12dp">12dp</dimen>
+    <dimen name="dimen_16dp">16dp</dimen>
+    <dimen name="dimen_18dp">18dp</dimen>
+    <dimen name="dimen_24dp">24dp</dimen>
+    <dimen name="dimen_36dp">36dp</dimen>
+    <dimen name="dimen_42dp">42dp</dimen>
+    <dimen name="dimen_48dp">48dp</dimen>
+    <dimen name="dimen_56dp">56dp</dimen>
+    <dimen name="dimen_64dp">64dp</dimen>
+    <dimen name="dimen_72dp">72dp</dimen>
+
 </resources>

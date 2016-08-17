@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.webmne.salestracker.ui.profile.UserProfileActivity">
+
+    <include layout="@layout/app_bar" />
+
+    <com.webmne.salestracker.widget.TfTextView
+        android:id="@+id/txtCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="?actionBarSize"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dimen_12dp"
+        android:gravity="center"
+        android:text="@string/btn_cancel"
+        android:textColor="@color/white"
+        android:textSize="@dimen/toolbar_textsize"
+        android:visibility="gone"
+        app:isBold="true" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_24dp">
+
+            <com.webmne.salestracker.widget.TfEditText
+                android:id="@+id/edtEmpId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_4dp"
+                android:enabled="false"
+                android:hint="@string/edit_emp_id"
+                android:inputType="none"
+                android:text="MKT_guj_001" />
+
+            <com.webmne.salestracker.widget.TfEditText
+                android:id="@+id/edtEmpPosition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_8dp"
+                android:enabled="false"
+                android:hint="@string/edit_emp_position"
+                android:inputType="text"
+                android:text="Marketer" />
+
+            <com.webmne.salestracker.widget.TfEditText
+                android:id="@+id/edtEmpName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_8dp"
+                android:enabled="false"
+                android:hint="@string/edit_emp_name"
+                android:inputType="text"
+                android:text="MKT_guj_001" />
+
+            <com.webmne.salestracker.widget.TfEditText
+                android:id="@+id/edtEmpPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_8dp"
+                android:enabled="false"
+                android:hint="@string/edit_emp_phone"
+                android:inputType="number"
+                android:maxLength="@integer/mobile_no"
+                android:text="9876543210" />
+
+            <com.webmne.salestracker.widget.TfEditText
+                android:id="@+id/edtEmpEmailId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_8dp"
+                android:enabled="false"
+                android:hint="@string/edit_emp_email"
+                android:inputType="textEmailAddress"
+                android:text="mkt2@amg.com" />
+
+            <com.webmne.salestracker.widget.TfEditText
+                android:id="@+id/edtEmpBranch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_8dp"
+                android:enabled="false"
+                android:hint="@string/edit_emp_branch"
+                android:inputType="text"
+                android:text="Ankleshwar" />
+
+            <com.webmne.salestracker.widget.TfButton
+                android:id="@+id/btnEdit"
+                style="@style/MyButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_16dp"
+                android:text="@string/btn_edit" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

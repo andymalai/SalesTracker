@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.webmne.salestracker.widget.TfTextView
+        android:id="@+id/emptyTextView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Empty"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible"
+        tools:context="com.webmne.salestracker.agent.AgentsListActivity">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/app_bar" />
+
+            <com.miguelcatalan.materialsearchview.MaterialSearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="?actionBarSize"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/dimen_12dp"
+                android:gravity="center"
+                android:text="@string/btn_delete"
+                android:textColor="@color/white"
+                android:textSize="@dimen/toolbar_textsize"
+                android:visibility="gone"
+                app:isBold="true" />
+        </FrameLayout>
+
+        <com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView
+            android:id="@+id/agentRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:frv_emptyView="@id/emptyTextView"
+            app:frv_isEmptyViewKeepShowHeadOrFooter="false" />
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_agent"
+        android:tint="@color/white"
+        app:backgroundTint="@color/button_color"
+        app:elevation="@dimen/dimen_8dp"
+        app:fabSize="normal"
+        app:layout_anchor="@id/agentRecyclerView"
+        app:layout_anchorGravity="bottom|right|end"
+        app:layout_behavior="com.webmne.salestracker.helper.ScrollingFABBehavior"
+        app:rippleColor="@color/button_selected_color" />
+
+</android.support.design.widget.CoordinatorLayout>

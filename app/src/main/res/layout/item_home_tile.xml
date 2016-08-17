@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dimen_48dp"
+    android:paddingTop="@dimen/dimen_48dp">
+
+    <ImageView
+        android:id="@+id/imgHomeTileIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_8dp"
+        android:gravity="center"
+        android:scaleType="centerInside"
+        android:tint="@color/white" />
+
+    <com.webmne.salestracker.widget.TfTextView
+        android:id="@+id/txtHomeTileName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_4dp"
+        android:gravity="center"
+        android:text="Tile"
+        android:textColor="@color/white"
+        android:textSize="@dimen/XL_TEXT" />
+
+</LinearLayout>

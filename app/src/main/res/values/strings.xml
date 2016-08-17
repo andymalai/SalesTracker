@@ -1,3 +1,74 @@
 <resources>
-    <string name="app_name">SalesTracker</string>
+    <string name="app_name">Sales Tracker</string>
+
+    <!--commons-->
+    <string name="logout_text">Are you sure want to logout?</string>
+
+    <!--font_awesome icons string-->
+    <string name="fa_error">{fa-exclamation-triangle}</string>
+
+    <!--activity_login.xml-->
+    <string name="title_login">Login to your account</string>
+    <string name="edit_emp_id">Your Employee Id</string>
+    <string name="edit_pwd">Your Password</string>
+    <string name="btn_login">Login</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="emp_error">Enter Employee Id</string>
+    <string name="pwd_error">Enter Password</string>
+    <string name="pwd_len_error">Enter 6 digit password</string>
+    <string name="login_success">Login Success</string>
+
+    <!--<activity_user_profile.xml-->
+    <string name="profile_title">Profile</string>
+    <string name="edit_emp_position">Your Position</string>
+    <string name="edit_emp_name">Your Name</string>
+    <string name="edit_emp_phone">Your Phone Number</string>
+    <string name="edit_emp_email">Your Email-Id</string>
+    <string name="edit_emp_branch">Branch</string>
+    <string name="btn_edit">Edit</string>
+    <string name="btn_save">Save</string>
+    <string name="profile_success">Profile updated successfully</string>
+    <string name="btn_cancel">Cancel</string>
+
+    <!--activity_agents_list.xml-->
+    <string name="agent_title">Agents</string>
+    <string name="search">Search Agents by Name</string>
+    <string name="btn_delete">Delete</string>
+
+    <!--activity_add_agent.xml-->
+    <string name="add_agent">Add Agent</string>
+    <string name="add_name">Add Agent Name</string>
+    <string name="select_tier">Select Tier</string>
+    <string name="select_branch">Select Branch</string>
+    <string name="enter_number">Enter Phone Number</string>
+    <string name="enter_email">Enter Email Address</string>
+    <string name="enter_krunia">Enter Code for Krunia</string>
+    <string name="enter_amg">Enter Code for AMG General</string>
+    <string name="enter_desc">Enter Description</string>
+    <string name="add">Add</string>
+
+    <array name="tier_array">
+        <item>STAR</item>
+        <item>SILVER</item>
+        <item>OTHER</item>
+        <item>GOLD</item>
+    </array>
+
+    <array name="branch_array">
+        <item>Vadodara</item>
+        <item>Ahmedabad</item>
+        <item>Mehsana</item>
+        <item>Rajkot</item>
+        <item>Surat</item>
+    </array>
+
+    <!--activity_contact_us.xml-->
+    <string name="contact_title">Contact Us</string>
+    <string name="edt_name">Your Name</string>
+    <string name="edt_email">Your Email</string>
+    <string name="edt_msg">Your Message</string>
+    <string name="btn_submit">Submit</string>
+
+    <!--activity_agent_profile.xml-->
+    <string name="agent_profile_title">Agent Profile</string>
 </resources>

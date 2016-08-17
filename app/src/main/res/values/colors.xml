@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#2C2C2C</color>
+    <color name="colorPrimaryDark">#232323</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="white">#ffffff</color>
+
+    <color name="silver">#c0c0c0</color>
+    <color name="off_white">#e4e4e4</color>
+    <color name="odometer_background">#2C2C2C</color>
+    <color name="black">#000000</color>
+    <color name="half_black">#4c4c4c</color>
+    <color name="red">#FF0000</color>
+
+    <color name="editTextColor">@color/white</color>
+    <color name="editTextHintColor">@color/off_white</color>
+
+    <!--<color name="purple">#512DA8</color>-->
+    <color name="purple">#8E24AA</color>
+    <color name="dark_purple">#4A148C</color>
+    <color name="gplus">#DD4B39</color>
+    <color name="fb">#3B5998</color>
+    <color name="brown">#d2691e</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="trans_blue">#A69C27B0</color>
+    <color name="orange">#e59400</color>
+    <color name="shadow">#33000000</color>
+
+    <color name="button_color">#357AE8</color>
+    <color name="button_selected_color">#286090</color>
+
+    <color name="material_drawer_primary_text">#DE000000</color>
+    <color name="material_drawer_selected_text">#2196F3</color>
+
+    <color name="TextTitle">#494949</color>
+    <color name="TextBody">#7F7F7F</color>
+    <color name="addColor">#404040</color>
+    <color name="theme_purple_accent">#ff9419</color>
+    <color name="theme_purple_accent_opacity">#43ff9419</color>
+
+    <color name="color1">#D066FA</color>
+    <color name="color2">#FF605F</color>
+    <color name="color3">#96D100</color>
+    <color name="color4">#00A8FF</color>
+
+    <color name="tile1">#bb6666</color>
+    <color name="tile2">#af4c4c</color>
 </resources>

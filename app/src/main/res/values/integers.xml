@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="pwd_length">6</integer>
+    <integer name="mobile_no">10</integer>
+
+    <integer name="market_start">0</integer>
+    <integer name="market_end">6</integer>
+
+    <integer name="duration_animation">350</integer>
+
+</resources>

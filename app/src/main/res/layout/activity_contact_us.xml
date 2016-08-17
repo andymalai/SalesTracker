@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.webmne.salestracker.contactus.ContactUsActivity">
+
+    <include layout="@layout/app_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dimen_24dp">
+
+        <com.webmne.salestracker.widget.TfEditText
+            android:id="@+id/edtName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_8dp"
+            android:hint="@string/edt_name"
+            android:inputType="text" />
+
+        <com.webmne.salestracker.widget.TfEditText
+            android:id="@+id/edtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_8dp"
+            android:hint="@string/edt_email"
+            android:inputType="text" />
+
+        <com.webmne.salestracker.widget.TfEditText
+            android:id="@+id/edtMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_8dp"
+            android:gravity="start|top"
+            android:hint="@string/edt_msg"
+            android:inputType="textMultiLine"
+            android:minLines="4" />
+
+        <com.webmne.salestracker.widget.TfButton
+            android:id="@+id/btnLogin"
+            style="@style/MyButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_8dp"
+            android:text="@string/btn_submit" />
+    </LinearLayout>
+
+</LinearLayout>

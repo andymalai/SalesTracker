@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.webmne.salestracker.ui.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dimen_24dp">
+
+        <com.webmne.salestracker.widget.TfTextView
+            android:id="@+id/txtLoginTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/dimen_24dp"
+            android:text="@string/title_login"
+            android:textSize="@dimen/XXL_TEXT"
+            app:isBold="true" />
+
+        <com.webmne.salestracker.widget.TfEditText
+            android:id="@+id/edtEmpId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_4dp"
+            android:hint="@string/edit_emp_id"
+            android:inputType="text"
+            android:text="employee"
+            app:met_iconLeft="@drawable/ic_account"
+            app:met_iconPadding="0dp" />
+
+        <com.webmne.salestracker.widget.TfEditText
+            android:id="@+id/edtPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_4dp"
+            android:hint="@string/edit_pwd"
+            android:inputType="textPassword"
+            android:text="employee"
+            app:met_iconLeft="@drawable/ic_password"
+            app:met_iconPadding="0dp" />
+
+        <com.webmne.salestracker.widget.TfButton
+            android:id="@+id/btnLogin"
+            style="@style/MyButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_16dp"
+            android:text="@string/btn_login" />
+    </LinearLayout>
+
+    <com.webmne.salestracker.widget.TfTextView
+        android:id="@+id/txtContactUs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/dimen_16dp"
+        android:text="@string/contact_us"
+        android:textSize="@dimen/L_TEXT" />
+
+</RelativeLayout>
