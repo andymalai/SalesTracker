@@ -6,6 +6,7 @@
 
     <!--font_awesome icons string-->
     <string name="fa_error">{fa-exclamation-triangle}</string>
+    <string name="fa_home">{fa-home}</string>
 
     <!--activity_login.xml-->
     <string name="title_login">Login to your account</string>
@@ -63,7 +64,7 @@
     </array>
 
     <!--activity_contact_us.xml-->
-    <string name="contact_title">Contact Us</string>
+    <string name="contact_us_title">Contact Us</string>
     <string name="edt_name">Your Name</string>
     <string name="edt_email">Your Email</string>
     <string name="edt_msg">Your Message</string>
@@ -71,4 +72,18 @@
 
     <!--activity_agent_profile.xml-->
     <string name="agent_profile_title">Agent Profile</string>
+
+    <!--activity_contact.xml-->
+    <string name="contact_title">Contacts</string>
+
+    <!--ContactActivity.xml-->
+    <string name="branch_contact">Branch Contact</string>
+    <string name="department_contact">Department Contact</string>
+    <string name="search_branch_contact">Search Branch Contact</string>
+    <string name="search_department_contact">Search Department Contact</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/parentView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_16dp">
+
+        <com.github.ivbaranov.mli.MaterialLetterIcon
+            android:id="@+id/letterIcon"
+            android:layout_width="@dimen/letter_icon_size"
+            android:layout_height="@dimen/letter_icon_size"
+            android:padding="@dimen/dimen_16dp"
+            app:mli_letter="S"
+            app:mli_letter_color="@color/white"
+            app:mli_shape_color="@color/button_color"
+            app:mli_shape_type="rect" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.webmne.salestracker.widget.TfTextView
+                    android:id="@+id/txtMarketerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4"
+                    android:text="vatsal"
+                    android:textSize="@dimen/XL_TEXT" />
+
+                <com.webmne.salestracker.widget.TfTextView
+                    android:id="@+id/txtPosition"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:gravity="center"
+                    android:text="RM" />
+
+            </LinearLayout>
+
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtBranchRegion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ahemdabad, Gujarat" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_info" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout><!--
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <com.webmne.salestracker.widget.TfTextView
+        android:id="@+id/txtPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:drawableLeft="@drawable/ic_password"
+        android:drawablePadding="@dimen/dimen_5dp"
+        android:gravity="center_vertical"
+        android:text="8564253856" />
+
+    <com.webmne.salestracker.widget.TfTextView
+        android:id="@+id/txtEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:drawableLeft="@drawable/ic_password"
+        android:drawablePadding="@dimen/dimen_5dp"
+        android:gravity="center_vertical"
+        android:text="abc@amg.com" />
+
+    </LinearLayout>
+    -->

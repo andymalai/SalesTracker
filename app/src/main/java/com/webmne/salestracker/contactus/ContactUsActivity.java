@@ -52,7 +52,7 @@ public class ContactUsActivity extends AppCompatActivity {
             }
         });
 
-        txtCustomTitle.setText(getString(R.string.contact_title));
+        txtCustomTitle.setText(getString(R.string.contact_us_title));
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.agent.AgentsListActivity;
+import com.webmne.salestracker.contacts.ContactActivity;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.TileId;
 import com.webmne.salestracker.ui.dashboard.model.HomeTileBean;
@@ -86,6 +87,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Home
                 Functions.fireIntent(context, AgentsListActivity.class);
 
             } else if (selectedId == TileId.CONTACTS.getId()) {
+                Functions.fireIntent(context, ContactActivity.class);
 
             } else if (selectedId == TileId.ACTION_LOG.getId()) {
 

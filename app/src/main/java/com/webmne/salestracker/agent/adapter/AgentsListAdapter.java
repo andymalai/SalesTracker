@@ -126,37 +126,6 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
 
             });
 
-            letterIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    flip();
-                }
-
-                private void flip() {
-                    PrefUtils.setAgent(context, agentModel);
-                    onSelectionListener.onSelect(true);
-                    agentModel.setChecked(true);
-                    parentView.setBackgroundColor(ContextCompat.getColor(context, R.color.off_white));
-                    letterIcon.startAnimation(flipAnim);
-                    flipAnim.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            letterIcon.setVisibility(View.GONE);
-                            imgCheck.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-
-                        }
-                    });
-                }
-            });
         }
     }
 

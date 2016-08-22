@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if (TextUtils.isEmpty(Functions.toStr(edtPassword))) {
-                    SimpleToast.error(this, getString(R.string.pwd_error), getString(R.string.fa_error));
+                    SimpleToast.error(this, getString(R.string.pwd_error), getString(R.string.fa_home));
                     return;
                 }
 
