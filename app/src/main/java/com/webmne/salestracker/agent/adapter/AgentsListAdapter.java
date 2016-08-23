@@ -11,7 +11,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.github.ivbaranov.mli.MaterialLetterIcon;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.agent.model.AgentModel;
 import com.webmne.salestracker.helper.PrefUtils;
@@ -62,15 +61,14 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
 
     class AgentViewHolder extends RecyclerView.ViewHolder {
 
-        TfTextView txtAgentName;
-        MaterialLetterIcon letterIcon;
+        TfTextView txtAgentName, letterIcon;
         ImageView imgCheck;
         LinearLayout parentView;
 
         public AgentViewHolder(View itemView) {
             super(itemView);
             txtAgentName = (TfTextView) itemView.findViewById(R.id.txtAgentName);
-            letterIcon = (MaterialLetterIcon) itemView.findViewById(R.id.letterIcon);
+            letterIcon = (TfTextView) itemView.findViewById(R.id.letterIcon);
             imgCheck = (ImageView) itemView.findViewById(R.id.imgCheck);
             parentView = (LinearLayout) itemView.findViewById(R.id.parentView);
 
@@ -79,9 +77,7 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
         public void setAgentDetails(final AgentModel agentModel) {
 
             txtAgentName.setText(agentModel.getAgentName());
-            letterIcon.setLetter(agentModel.getAgentName().substring(0, 1));
-            letterIcon.setShapeColor(agentModel.getColor());
-            imgCheck.setBackgroundColor(agentModel.getColor());
+            letterIcon.setText(agentModel.getAgentName().substring(0, 1));
 
             if (agentModel.isChecked()) {
                 imgCheck.setVisibility(View.VISIBLE);
@@ -126,6 +122,37 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
 
             });
 
+            letterIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    flip();
+                }
+
+                private void flip() {
+                    PrefUtils.setAgent(context, agentModel);
+                    onSelectionListener.onSelect(true);
+                    agentModel.setChecked(true);
+                    parentView.setBackgroundColor(ContextCompat.getColor(context, R.color.off_white));
+                    letterIcon.startAnimation(flipAnim);
+                    flipAnim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            letterIcon.setVisibility(View.GONE);
+                            imgCheck.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                }
+            });
         }
     }
 

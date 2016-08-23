@@ -8,21 +8,21 @@
     android:orientation="horizontal"
     android:padding="@dimen/dimen_16dp">
 
-    <com.github.ivbaranov.mli.MaterialLetterIcon
+    <com.webmne.salestracker.widget.TfTextView
         android:id="@+id/letterIcon"
-        android:layout_width="@dimen/letter_icon_size"
-        android:layout_height="@dimen/letter_icon_size"
-        android:padding="@dimen/dimen_16dp"
-        app:mli_letter="S"
-        app:mli_letter_color="@color/white"
-        app:mli_shape_color="@color/button_color"
-        app:mli_shape_type="rect" />
+        android:layout_width="@dimen/dimen_36dp"
+        android:layout_height="@dimen/dimen_36dp"
+        android:background="@color/tile2"
+        android:gravity="center"
+        android:text="A"
+        android:textColor="@color/white"
+        android:textSize="@dimen/XXL_TEXT" />
 
     <ImageView
         android:id="@+id/imgCheck"
         android:layout_width="@dimen/dimen_36dp"
         android:layout_height="@dimen/dimen_36dp"
-        android:background="@color/color1"
+        android:background="@color/tile1"
         android:src="@drawable/ic_check_white_24dp"
         android:visibility="gone" />
 
@@ -37,14 +37,18 @@
             android:id="@+id/txtAgentName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="UPTO ₹ 500 OFF "
-            android:textSize="@dimen/XL_TEXT" />
+            android:text="Agent"
+            android:textSize="@dimen/L_TEXT"
+            app:isBold="true" />
 
         <com.webmne.salestracker.widget.TfTextView
             android:id="@+id/txtOfferTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ankleshwar, Gujarat" />
+            android:layout_marginTop="@dimen/dimen_1dp"
+            android:text="Ankleshwar, Gujarat"
+            android:textColor="@color/tile2"
+            android:textSize="@dimen/N_TEXT" />
 
     </LinearLayout>
 

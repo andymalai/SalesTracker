@@ -10,8 +10,6 @@ import java.io.Serializable;
 public class BranchContactModel extends BaseObservable implements Serializable {
 
     private String empId, region, empPosition, name, phone, email, branch;
-    private int color;
-
 
     public String getEmpPosition() {
         return empPosition;
@@ -19,14 +17,6 @@ public class BranchContactModel extends BaseObservable implements Serializable {
 
     public void setEmpPosition(String empPosition) {
         this.empPosition = empPosition;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 
     public String getEmpId() {

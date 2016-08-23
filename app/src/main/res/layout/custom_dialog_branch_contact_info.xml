@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parentView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_16dp">
+
+    <com.webmne.salestracker.widget.TfTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="Phone" />
+
+    <com.webmne.salestracker.widget.TfTextView
+        android:id="@+id/txtPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_5dp"
+        android:drawableLeft="@drawable/ic_call"
+        android:drawablePadding="@dimen/dimen_5dp"
+        android:gravity="center_vertical"
+        android:text="8564253856" />
+
+    <com.webmne.salestracker.widget.TfTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:gravity="center_vertical"
+        android:text="Email" />
+
+    <com.webmne.salestracker.widget.TfTextView
+        android:id="@+id/txtEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_5dp"
+        android:drawableLeft="@drawable/ic_email"
+        android:drawablePadding="@dimen/dimen_5dp"
+        android:gravity="center_vertical"
+        android:text="abc@amg.com" />
+
+</LinearLayout>

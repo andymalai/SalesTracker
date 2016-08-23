@@ -10,8 +10,8 @@ import android.view.View;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.contacts.adapter.ContactPageAdapter;
-import com.webmne.salestracker.contacts.fragment.BlankFragment;
 import com.webmne.salestracker.contacts.fragment.BranchContactFragment;
+import com.webmne.salestracker.contacts.fragment.DepartmentContactFragment;
 import com.webmne.salestracker.databinding.ActivityContactBinding;
 
 public class ContactActivity extends AppCompatActivity {
@@ -57,7 +57,7 @@ public class ContactActivity extends AppCompatActivity {
         contactPageAdapter = new ContactPageAdapter(getSupportFragmentManager(), this);
 
         contactPageAdapter.addFragment(BranchContactFragment.newInstance(), getString(R.string.branch_contact));
-        contactPageAdapter.addFragment(BlankFragment.newInstance(), getString(R.string.department_contact));
+        contactPageAdapter.addFragment(DepartmentContactFragment.newInstance(), getString(R.string.department_contact));
 
         contactBinding.viewpager.setAdapter(contactPageAdapter);
 

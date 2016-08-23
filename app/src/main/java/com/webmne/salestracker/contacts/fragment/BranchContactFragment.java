@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.agent.AgentProfileActivity;
 import com.webmne.salestracker.contacts.adapter.BranchContactListAdapter;
 import com.webmne.salestracker.contacts.model.BranchContactModel;
 import com.webmne.salestracker.custom.LineDividerItemDecoration;
@@ -70,7 +69,8 @@ public class BranchContactFragment extends Fragment {
         fragmentBranchContactBinding.branchContactRecyclerView.setOnItemClickListener(new FamiliarRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
-                Functions.fireIntent(getActivity(), AgentProfileActivity.class);
+
+
             }
         });
 
@@ -98,7 +98,6 @@ public class BranchContactFragment extends Fragment {
             branchContactModel.setPhone("8523647853");
             branchContactModel.setEmail("vat@amg.com");
             branchContactModel.setEmpPosition("RM");
-            branchContactModel.setColor(Functions.getRandomColor(getActivity()));
             branchContactModelList.add(branchContactModel);
         }
         branchContactListAdapter.setBranchContactList(branchContactModelList);
@@ -111,44 +110,7 @@ public class BranchContactFragment extends Fragment {
         fragmentBranchContactBinding.branchContactRecyclerView.setLayoutManager(layoutManager);
         fragmentBranchContactBinding.branchContactRecyclerView.addItemDecoration(new LineDividerItemDecoration(getActivity()));
 
-        branchContactListAdapter = new BranchContactListAdapter(getActivity(), branchContactModelList, new BranchContactListAdapter.onSelectionListener() {
-            @Override
-            public void onSelect(int pos) {
-
-
-            }
-        });
-
-//        branchContactListAdapter = new BranchContactListAdapter(this, branchContactModelList, new BranchContactListAdapter.onSelectionListener() {
-//            @Override
-//            public void onSelect(boolean isSelect) {
-//                if (isSelect) {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                        getWindow().setStatusBarColor(ContextCompat.getColor(AgentsListActivity.this, R.color.tile2));
-//                    }
-//                } else {
-//                    txtDelete.setVisibility(View.GONE);
-//                    searchItem.setVisible(true);
-//                    searchView.setVisibility(View.VISIBLE);
-//                    toolbar.setBackgroundColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimary));
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                        getWindow().setStatusBarColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimaryDark));
-//                    }
-//                }
-//                /*int selected = PrefUtils.getDeleteAgents(AgentsListActivity.this).size();
-//
-//                Log.e("selected", selected + " ###");
-//
-//                if (selected == 0) {
-//                    isDeleteMode = false;
-//                    toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
-//                } else {
-//                    isDeleteMode = true;
-//                    toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
-//                }*/
-//            }
-//
-//        });
+        branchContactListAdapter = new BranchContactListAdapter(getActivity(), branchContactModelList);
 
         fragmentBranchContactBinding.branchContactRecyclerView.setAdapter(branchContactListAdapter);
         fragmentBranchContactBinding.branchContactRecyclerView.setHasFixedSize(true);
