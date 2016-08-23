@@ -10,7 +10,7 @@
     <color name="off_white">#e4e4e4</color>
     <color name="odometer_background">#2C2C2C</color>
     <color name="black">#000000</color>
-    <color name="half_black">#4c4c4c</color>
+    <color name="half_black">#5d5d5d</color>
     <color name="red">#FF0000</color>
 
     <color name="editTextColor">@color/white</color>
@@ -40,10 +40,12 @@
     <color name="theme_purple_accent_opacity">#43ff9419</color>
 
     <color name="color1">#D066FA</color>
-    <color name="color2">#FF605F</color>
-    <color name="color3">#96D100</color>
-    <color name="color4">#00A8FF</color>
+    <color name="color2">#96D100</color>
+    <color name="color3">#00A8FF</color>
+    <color name="color4">#FF605F</color>
 
     <color name="tile1">#bb6666</color>
     <color name="tile2">#af4c4c</color>
+
+    <color name="green">#43A047</color>
 </resources>

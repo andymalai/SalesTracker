@@ -2,9 +2,11 @@ package com.webmne.salestracker.agent;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -51,6 +53,10 @@ public class AgentsListActivity extends AppCompatActivity {
     MaterialSearchView searchView;
     @BindView(R.id.txtDelete)
     TfTextView txtDelete;
+    @BindView(R.id.emptyTextView)
+    TfTextView emptyTextView;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
 
     private AgentsListAdapter adapter;
     private ArrayList<AgentModel> agentList;
@@ -76,21 +82,16 @@ public class AgentsListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-
-                /*if (isDeleteMode) {
-                    toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
-                    for (AgentModel agentModel : agentList) {
-                        agentModel.setChecked(false);
-                        PrefUtils.deselectAll(AgentsListActivity.this);
-                        adapter.notifyDataSetChanged();
-                    }
-                } else {
-                    finish();
-                }*/
             }
         });
 
         txtCustomTitle.setText(getString(R.string.agent_title));
+
+        swipeRefresh.setColorSchemeResources(
+                R.color.color1,
+                R.color.color2,
+                R.color.color3,
+                R.color.color4);
 
         initRecyclerView();
 
@@ -132,6 +133,24 @@ public class AgentsListActivity extends AppCompatActivity {
                 Toast.makeText(AgentsListActivity.this, "Load more..", Toast.LENGTH_SHORT).show();
             }
         });
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new CountDownTimer(3000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        getAgents();
+                        swipeRefresh.setRefreshing(false);
+                    }
+                }.start();
+            }
+        });
     }
 
     @Override
@@ -144,11 +163,12 @@ public class AgentsListActivity extends AppCompatActivity {
     }
 
     private void getAgents() {
+        agentList = new ArrayList<>();
         for (int i = 1; i <= 20; i++) {
             AgentModel agent = new AgentModel();
             agent.setAgentId(i);
             agent.setAgentName("Agent " + i);
-            agent.setColor(Functions.getRandomColor(AgentsListActivity.this));
+            agent.setColor(ContextCompat.getColor(this, R.color.tile2));
             agentList.add(agent);
         }
         adapter.setAgentList(agentList);

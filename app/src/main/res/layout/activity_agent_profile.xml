@@ -37,6 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_8dp"
+                android:layout_marginLeft="@dimen/dimen_8dp"
                 android:enabled="false"
                 android:hint="@string/add_name"
                 android:inputType="text" />
@@ -118,7 +119,6 @@
                 android:id="@+id/btnEdit"
                 style="@style/MyButtonStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_16dp"
                 android:text="@string/btn_edit" />
         </LinearLayout>

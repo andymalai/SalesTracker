@@ -11,7 +11,7 @@ public class AgentModel implements Serializable {
     private String AgentName;
     private boolean isChecked = false;
     private int color;
-    
+
     public int getAgentId() {
         return agentId;
     }

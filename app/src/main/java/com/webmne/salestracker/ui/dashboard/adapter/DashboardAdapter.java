@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.actionlog.ActionLogListActivity;
 import com.webmne.salestracker.agent.AgentsListActivity;
 import com.webmne.salestracker.contacts.ContactActivity;
 import com.webmne.salestracker.helper.Functions;
@@ -90,6 +91,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Home
                 Functions.fireIntent(context, ContactActivity.class);
 
             } else if (selectedId == TileId.ACTION_LOG.getId()) {
+                Functions.fireIntent(context, ActionLogListActivity.class);
 
             } else if (selectedId == TileId.SALES_VISIT_PLAN.getId()) {
 

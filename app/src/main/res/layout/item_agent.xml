@@ -1,54 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parentView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="@dimen/dimen_16dp">
 
-    <com.webmne.salestracker.widget.TfTextView
-        android:id="@+id/letterIcon"
-        android:layout_width="@dimen/dimen_36dp"
-        android:layout_height="@dimen/dimen_36dp"
-        android:background="@color/tile2"
-        android:gravity="center"
-        android:text="A"
-        android:textColor="@color/white"
-        android:textSize="@dimen/XXL_TEXT" />
-
-    <ImageView
-        android:id="@+id/imgCheck"
-        android:layout_width="@dimen/dimen_36dp"
-        android:layout_height="@dimen/dimen_36dp"
-        android:background="@color/tile1"
-        android:src="@drawable/ic_check_white_24dp"
-        android:visibility="gone" />
-
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dimen_16dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <com.webmne.salestracker.widget.TfTextView
-            android:id="@+id/txtAgentName"
+            android:id="@+id/letterIcon"
+            android:layout_width="@dimen/dimen_36dp"
+            android:layout_height="@dimen/dimen_36dp"
+            android:background="@color/tile2"
+            android:gravity="center"
+            android:text="A"
+            android:textColor="@color/white"
+            android:textSize="@dimen/XXL_TEXT" />
+
+        <ImageView
+            android:id="@+id/imgCheck"
+            android:layout_width="@dimen/dimen_36dp"
+            android:layout_height="@dimen/dimen_36dp"
+            android:background="@color/color1"
+            android:src="@drawable/ic_check_white_24dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtAgentName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/agent_name"
+                android:textSize="@dimen/XL_TEXT" />
+
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtLocaion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_4dp"
+                android:text="Ankleshwar, Gujarat"
+                android:textColor="@color/tile2"
+                android:textSize="@dimen/N_TEXT" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Agent"
-            android:textSize="@dimen/L_TEXT"
-            app:isBold="true" />
+            android:layout_gravity="right"
+            android:orientation="horizontal">
 
-        <com.webmne.salestracker.widget.TfTextView
-            android:id="@+id/txtOfferTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_1dp"
-            android:text="Ankleshwar, Gujarat"
-            android:textColor="@color/tile2"
-            android:textSize="@dimen/N_TEXT" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dimen_8dp"
+                android:src="@drawable/ic_call" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_8dp"
+                android:padding="@dimen/dimen_8dp"
+                android:src="@drawable/ic_email" />
+        </LinearLayout>
 
     </LinearLayout>
 

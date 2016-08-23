@@ -2,6 +2,7 @@
     <string name="app_name">Sales Tracker</string>
 
     <!--commons-->
+    <string name="dummy">The following are top voted examples for showing how to use android.databinding.DataBindingUtil. These examples are extracted from open source projects. You can vote up the examples you like and your votes will be used in our system to product more good examples. </string>
     <string name="logout_text">Are you sure want to logout?</string>
 
     <!--font_awesome icons string-->
@@ -89,5 +90,52 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!--activity_action_log_list.xml-->
+    <string name="action_log_title">Action Log</string>
 
+    <!--activity_add_action_log.xml-->
+    <string name="add_action_log_title">Add Action Log</string>
+    <string name="serial">Serial #</string>
+    <string name="select_agent">Select Agent</string>
+    <string name="select_dept">Select Department</string>
+    <string name="select_pic">Select In-charge</string>
+    <string name="select_priority">Select Priority</string>
+    <string name="select_file">Select File</string>
+    <array name="agent_array">
+        <item>Agent 1</item>
+        <item>Agent 2</item>
+        <item>Agent 3</item>
+        <item>Agent 4</item>
+    </array>
+    <array name="dept_array">
+        <item>Department 1</item>
+        <item>Department 2</item>
+        <item>Department 3</item>
+        <item>Department 4</item>
+    </array>
+    <array name="pic_array">
+        <item>PIC 1</item>
+        <item>PIC 2</item>
+        <item>PIC 3</item>
+        <item>PIC 4</item>
+    </array>
+    <array name="priority_array">
+        <item>High</item>
+        <item>Medium</item>
+        <item>Regular</item>
+    </array>
+
+    <!--activity_action_log_details.xml-->
+    <string name="btn_remark">Add Remark</string>
+    <string name="btn_reopen">Reopen Action</string>
+    <string name="action_log_details_title">Action Log</string>
+
+    <!--layout_action_log.xml-->
+    <string name="agent_name">Agent Name</string>
+    <string name="description">Description</string>
+    <string name="date_raised">Date Raised</string>
+    <string name="status">Status</string>
+    <string name="dept">Department</string>
+    <string name="sla">SLA</string>
+    <string name="last_update">Last Update</string>
 </resources>

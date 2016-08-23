@@ -1,5 +1,6 @@
 package com.webmne.salestracker.ui;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -7,51 +8,66 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.github.pierry.simpletoast.SimpleToast;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.contactus.ContactUsActivity;
+import com.webmne.salestracker.databinding.ActivityLoginBinding;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.ui.dashboard.DashboadActivity;
-import com.webmne.salestracker.widget.TfButton;
-import com.webmne.salestracker.widget.TfTextView;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 public class LoginActivity extends AppCompatActivity {
 
-    @BindView(R.id.txtLoginTitle)
-    TfTextView txtLoginTitle;
-    @BindView(R.id.edtEmpId)
-    MaterialEditText edtEmpId;
-    @BindView(R.id.edtPassword)
-    MaterialEditText edtPassword;
-    @BindView(R.id.btnLogin)
-    TfButton btnLogin;
-    @BindView(R.id.txtContactUs)
-    TfTextView txtContactUs;
-
-    private Unbinder unbinder;
+    private ActivityLoginBinding loginBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        unbinder = ButterKnife.bind(this);
+
+        loginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
 
         init();
     }
 
     private void init() {
-        txtContactUs.setText(Html.fromHtml("<u>" + getString(R.string.contact_us) + "</u>"));
+        loginBinding.txtContactUs.setText(Html.fromHtml("<u>" + getString(R.string.contact_us) + "</u>"));
+
+        actionListener();
+    }
+
+    private void actionListener() {
+        loginBinding.btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (TextUtils.isEmpty(Functions.toStr(loginBinding.edtEmpId))) {
+                    SimpleToast.error(LoginActivity.this, getString(R.string.emp_error), getString(R.string.fa_error));
+                    return;
+                }
+
+                if (TextUtils.isEmpty(Functions.toStr(loginBinding.edtPassword))) {
+                    SimpleToast.error(LoginActivity.this, getString(R.string.pwd_error), getString(R.string.fa_error));
+                    return;
+                }
+
+                if (Functions.toLength(loginBinding.edtPassword) < getResources().getInteger(R.integer.pwd_length)) {
+                    SimpleToast.error(LoginActivity.this, getString(R.string.pwd_len_error), getString(R.string.fa_error));
+                    return;
+                }
+
+                doLogin();
+            }
+        });
+
+        loginBinding.txtContactUs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Functions.fireIntent(LoginActivity.this, ContactUsActivity.class);
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
+        loginBinding.unbind();
     }
 
     private void doLogin() {
@@ -59,32 +75,5 @@ public class LoginActivity extends AppCompatActivity {
         Functions.fireIntent(this, DashboadActivity.class);
     }
 
-    @OnClick({R.id.btnLogin, R.id.txtContactUs})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btnLogin:
-                if (TextUtils.isEmpty(Functions.toStr(edtEmpId))) {
-                    SimpleToast.error(this, getString(R.string.emp_error), getString(R.string.fa_error));
-                    return;
-                }
-
-                if (TextUtils.isEmpty(Functions.toStr(edtPassword))) {
-                    SimpleToast.error(this, getString(R.string.pwd_error), getString(R.string.fa_home));
-                    return;
-                }
-
-                if (Functions.toLength(edtPassword) < getResources().getInteger(R.integer.pwd_length)) {
-                    SimpleToast.error(this, getString(R.string.pwd_len_error), getString(R.string.fa_error));
-                    return;
-                }
-
-                doLogin();
-                break;
-
-            case R.id.txtContactUs:
-                Functions.fireIntent(this, ContactUsActivity.class);
-                break;
-        }
-    }
 }
 
