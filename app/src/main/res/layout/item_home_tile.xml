@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dimen_48dp"
-    android:paddingTop="@dimen/dimen_48dp">
-
+    android:paddingBottom="@dimen/dimen_42dp"
+    android:paddingTop="@dimen/dimen_42dp">
 
     <ImageView
         android:id="@+id/imgHomeTileIcon"
@@ -18,8 +16,8 @@
         android:gravity="center"
         android:padding="@dimen/dimen_16dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_account"
-        android:tint="@color/tile2" />
+        android:src="@drawable/ic_agent"
+        android:tint="@color/half_black" />
 
     <com.webmne.salestracker.widget.TfTextView
         android:id="@+id/txtHomeTileName"
@@ -28,7 +26,7 @@
         android:layout_margin="@dimen/dimen_8dp"
         android:gravity="center"
         android:text="Tile"
-        android:textColor="@color/tile2"
+        android:textColor="@color/half_black"
         android:textSize="@dimen/XL_TEXT" />
 
 </LinearLayout>

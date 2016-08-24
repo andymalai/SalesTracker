@@ -169,6 +169,8 @@ public class AgentsListActivity extends AppCompatActivity {
             AgentModel agent = new AgentModel();
             agent.setAgentId(i);
             agent.setAgentName("Agent " + i);
+            agent.setAgentContactNo("9429841325");
+            agent.setAgentEmail("sagar@webmyne.com");
             agent.setColor(ContextCompat.getColor(this, R.color.tile2));
             agentList.add(agent);
         }
@@ -180,9 +182,11 @@ public class AgentsListActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         agentRecyclerView.setLayoutManager(layoutManager);
         agentRecyclerView.addItemDecoration(new LineDividerItemDecoration(this));
+
         adapter = new AgentsListAdapter(this, agentList, new AgentsListAdapter.onSelectionListener() {
             @Override
             public void onSelect(boolean isSelect) {
+
                 if (isSelect) {
                     searchItem.setVisible(false);
                     txtDelete.setVisibility(View.VISIBLE);
@@ -199,17 +203,6 @@ public class AgentsListActivity extends AppCompatActivity {
                         getWindow().setStatusBarColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimaryDark));
                     }
                 }
-                /*int selected = PrefUtils.getDeleteAgents(AgentsListActivity.this).size();
-
-                Log.e("selected", selected + " ###");
-
-                if (selected == 0) {
-                    isDeleteMode = false;
-                    toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
-                } else {
-                    isDeleteMode = true;
-                    toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
-                }*/
             }
 
         });

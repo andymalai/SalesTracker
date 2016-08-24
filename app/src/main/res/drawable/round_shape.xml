@@ -5,7 +5,7 @@
     <solid android:color="@android:color/transparent" />
 
     <stroke
-        android:width="@dimen/dimen_1dp"
-        android:color="@color/tile1" />
+        android:width="@dimen/dimen_2dp"
+        android:color="@color/half_black" />
 
 </shape>

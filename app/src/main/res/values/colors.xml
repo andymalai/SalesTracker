@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2C2C2C</color>
-    <color name="colorPrimaryDark">#232323</color>
+    <color name="colorPrimary">#357ae8</color>
+    <color name="colorPrimaryDark">#2f6dd0</color>
     <color name="colorAccent">#FF4081</color>
 
     <color name="white">#ffffff</color>
@@ -27,8 +27,8 @@
     <color name="orange">#e59400</color>
     <color name="shadow">#33000000</color>
 
-    <color name="button_color">#357AE8</color>
-    <color name="button_selected_color">#286090</color>
+    <color name="button_color">#414141</color>
+    <color name="button_selected_color">#2c2c2c</color>
 
     <color name="material_drawer_primary_text">#DE000000</color>
     <color name="material_drawer_selected_text">#2196F3</color>

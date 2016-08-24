@@ -25,10 +25,10 @@ public class SquareLayout extends LinearLayout {
         if (width > (int) (scale * height + 0.5)) {
             width = width;
         } else {
-            height = (int) (width/2);
+            height = (int) (width / 2);
         }
 
-        super.onMeasure(MeasureSpec.makeMeasureSpec(width/2, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((int) (height/1.2), MeasureSpec.EXACTLY)
+        super.onMeasure(MeasureSpec.makeMeasureSpec(width / 2, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((int) (height / 1.2), MeasureSpec.EXACTLY)
         );
     }
 }

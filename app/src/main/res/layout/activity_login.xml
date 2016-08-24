@@ -23,30 +23,60 @@
                 android:layout_centerHorizontal="true"
                 android:layout_margin="@dimen/dimen_24dp"
                 android:text="@string/title_login"
-                android:textSize="@dimen/XXL_TEXT"
+                android:textSize="@dimen/SPLASH_TEXT"
                 app:isBold="true" />
 
-            <com.webmne.salestracker.widget.TfEditText
-                android:id="@+id/edtEmpId"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_4dp"
-                android:hint="@string/edit_emp_id"
-                android:inputType="text"
-                android:text="employee"
-                app:met_iconLeft="@drawable/ic_account"
-                app:met_iconPadding="0dp" />
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dimen_4dp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <com.webmne.salestracker.widget.TfEditText
-                android:id="@+id/edtPassword"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_account"
+                    android:tint="@color/half_black" />
+
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtEmpId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_8dp"
+                    android:layout_marginTop="@dimen/dimen_4dp"
+                    android:hint="@string/edit_emp_id"
+                    android:inputType="text"
+                    android:text="employee" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_4dp"
-                android:hint="@string/edit_pwd"
-                android:inputType="textPassword"
-                android:text="employee"
-                app:met_iconLeft="@drawable/ic_password"
-                app:met_iconPadding="0dp" />
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dimen_4dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_password"
+                    android:tint="@color/half_black" />
+
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_8dp"
+                    android:layout_marginTop="@dimen/dimen_4dp"
+                    android:hint="@string/edit_pwd"
+                    android:inputType="textPassword"
+                    android:text="employee" />
+            </LinearLayout>
+
 
             <com.webmne.salestracker.widget.TfButton
                 android:id="@+id/btnLogin"

@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="22"
             android:textColor="@color/white"
-            android:textSize="@dimen/L_TEXT" />
+            android:textSize="@dimen/M_TEXT" />
 
         <com.webmne.salestracker.widget.TfTextView
             android:id="@+id/txtMonth"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="AUG"
             android:textColor="@color/white"
-            android:textSize="@dimen/L_TEXT" />
+            android:textSize="@dimen/M_TEXT" />
 
         <com.webmne.salestracker.widget.TfTextView
             android:id="@+id/txtYear"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:text="2016"
             android:textColor="@color/white"
-            android:textSize="@dimen/XL_TEXT"
+            android:textSize="@dimen/M_TEXT"
             android:visibility="gone"
             app:isBold="true" />
 
@@ -62,8 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Agent Name"
-                android:textSize="@dimen/L_TEXT"
-                app:isBold="true" />
+                android:textSize="@dimen/L_TEXT" />
 
             <com.webmne.salestracker.widget.TfTextView
                 android:id="@+id/txtStatus"

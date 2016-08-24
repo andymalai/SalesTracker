@@ -4,6 +4,8 @@
     <!--commons-->
     <string name="dummy">The following are top voted examples for showing how to use android.databinding.DataBindingUtil. These examples are extracted from open source projects. You can vote up the examples you like and your votes will be used in our system to product more good examples. </string>
     <string name="logout_text">Are you sure want to logout?</string>
+    <string name="subject">Your Subject</string>
+    <string name="msg">Your Message</string>
 
     <!--font_awesome icons string-->
     <string name="fa_error">{fa-exclamation-triangle}</string>

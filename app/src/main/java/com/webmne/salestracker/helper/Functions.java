@@ -19,6 +19,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -110,6 +111,21 @@ public class Functions {
         dialIntent.setAction(Intent.ACTION_DIAL);
         dialIntent.setData(Uri.parse("tel:" + callNo));
         context.startActivity(dialIntent);
+    }
+
+    public static void sendMailTo(Context context, String emailId) {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{emailId});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.subject));
+        emailIntent.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.msg));
+        try {
+            context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(context, "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static Bitmap rotateImage(Bitmap source, float angle) {

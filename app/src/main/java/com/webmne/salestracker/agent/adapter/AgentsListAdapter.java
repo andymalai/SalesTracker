@@ -3,6 +3,7 @@ package com.webmne.salestracker.agent.adapter;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.agent.model.AgentModel;
+import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.widget.TfTextView;
 
@@ -62,7 +64,7 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
     class AgentViewHolder extends RecyclerView.ViewHolder {
 
         TfTextView txtAgentName, letterIcon;
-        ImageView imgCheck;
+        ImageView imgCheck, imgCall, imgEmail;
         LinearLayout parentView;
 
         public AgentViewHolder(View itemView) {
@@ -70,6 +72,8 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
             txtAgentName = (TfTextView) itemView.findViewById(R.id.txtAgentName);
             letterIcon = (TfTextView) itemView.findViewById(R.id.letterIcon);
             imgCheck = (ImageView) itemView.findViewById(R.id.imgCheck);
+            imgCall = (ImageView) itemView.findViewById(R.id.imgCall);
+            imgEmail = (ImageView) itemView.findViewById(R.id.imgEmail);
             parentView = (LinearLayout) itemView.findViewById(R.id.parentView);
 
         }
@@ -78,6 +82,18 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
 
             txtAgentName.setText(agentModel.getAgentName());
             letterIcon.setText(agentModel.getAgentName().substring(0, 1));
+
+            if (TextUtils.isEmpty(agentModel.getAgentContactNo())) {
+                imgCall.setVisibility(View.GONE);
+            } else {
+                imgCall.setVisibility(View.VISIBLE);
+            }
+
+            if (TextUtils.isEmpty(agentModel.getAgentEmail())) {
+                imgEmail.setVisibility(View.GONE);
+            } else {
+                imgEmail.setVisibility(View.VISIBLE);
+            }
 
             if (agentModel.isChecked()) {
                 imgCheck.setVisibility(View.VISIBLE);
@@ -153,11 +169,24 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
                     });
                 }
             });
+
+            imgCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Functions.makePhoneCall(context, agentModel.getAgentContactNo());
+                }
+            });
+
+            imgEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Functions.sendMailTo(context, agentModel.getAgentEmail());
+                }
+            });
         }
     }
 
     public interface onSelectionListener {
         void onSelect(boolean isSelect);
     }
-
 }

@@ -9,6 +9,25 @@ public class AgentModel implements Serializable {
 
     private int agentId;
     private String AgentName;
+
+    public String getAgentContactNo() {
+        return AgentContactNo;
+    }
+
+    public void setAgentContactNo(String agentContactNo) {
+        AgentContactNo = agentContactNo;
+    }
+
+    public String getAgentEmail() {
+        return AgentEmail;
+    }
+
+    public void setAgentEmail(String agentEmail) {
+        AgentEmail = agentEmail;
+    }
+
+    private String AgentContactNo;
+    private String AgentEmail;
     private boolean isChecked = false;
     private int color;
 
