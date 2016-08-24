@@ -3,11 +3,14 @@ package com.webmne.salestracker.contacts;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.contacts.adapter.ContactPageAdapter;
 import com.webmne.salestracker.contacts.fragment.BranchContactFragment;
@@ -28,6 +31,7 @@ public class ContactActivity extends AppCompatActivity {
         // setContentView(R.layout.activity_contact);
 
         init();
+
     }
 
     private void init() {
@@ -50,6 +54,53 @@ public class ContactActivity extends AppCompatActivity {
 
         initPager();
 
+        actionListener();
+
+    }
+
+    private void actionListener() {
+        contactBinding.searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                if (contactBinding.viewpager.getCurrentItem() == 0) {
+                    Toast.makeText(ContactActivity.this, "Do search of branch contact" + query, Toast.LENGTH_SHORT).show();
+                } else if (contactBinding.viewpager.getCurrentItem() == 1) {
+                    Toast.makeText(ContactActivity.this, "Do search of department contact" + query, Toast.LENGTH_SHORT).show();
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //Do some magic
+                return false;
+            }
+        });
+
+        contactBinding.viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                if (position == 0) {
+                    contactBinding.searchView.setHint(getString(R.string.search_branch_contact));
+                } else if (position == 1) {
+                    contactBinding.searchView.setHint(getString(R.string.search_department_contact));
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void initPager() {
@@ -67,7 +118,6 @@ public class ContactActivity extends AppCompatActivity {
             TabLayout.Tab tab = contactBinding.tablayout.getTabAt(i);
             tab.setCustomView(contactPageAdapter.getTabView(i));
         }
-
 
     }
 
@@ -91,8 +141,10 @@ public class ContactActivity extends AppCompatActivity {
         searchItem = menu.findItem(R.id.action_search);
         contactBinding.searchView.setMenuItem(searchItem);
 
-        contactBinding.searchView.setVoiceSearch(true);
         contactBinding.searchView.setHint(getString(R.string.search_branch_contact));
+        contactBinding.searchView.setVoiceSearch(true);
+
         return true;
     }
+
 }

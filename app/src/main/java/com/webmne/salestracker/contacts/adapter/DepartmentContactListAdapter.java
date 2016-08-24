@@ -1,17 +1,22 @@
 package com.webmne.salestracker.contacts.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.contacts.model.DepartmentContactModel;
 import com.webmne.salestracker.contacts.model.DepartmentContactSubModel;
+import com.webmne.salestracker.helper.Functions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +48,6 @@ public class DepartmentContactListAdapter extends RecyclerView.Adapter<RecyclerV
 
         Object o = departmentContactModelList.get(position);
         if (o instanceof DepartmentContactModel) {
-
             return DEPT_TYPE;
         } else {
             return DEPT_SUB_TYPE;
@@ -86,37 +90,14 @@ public class DepartmentContactListAdapter extends RecyclerView.Adapter<RecyclerV
                 if (o instanceof DepartmentContactSubModel) {
                     departmentSubViewHolder.setSubDepartment((DepartmentContactSubModel) o);
                 }
-               // departmentSubViewHolder.setDepartmentSub(departmentSubViewHolder, position);
                 break;
         }
 
     }
 
 
-//    @Override
-//    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int section) {
-//
-//        DepartmentViewHolder departmentViewHolder = (DepartmentViewHolder) holder;
-//        DepartmentContactModel departmentContactModel = departmentContactModelList.get(section);
-//        departmentViewHolder.setDepartment(departmentContactModel);
-//    }
-
-//    @Override
-//    public void onBindViewHolder(RecyclerView.ViewHolder holder, int section, int relativePosition, int absolutePosition) {
-//
-//        DepartmentSubViewHolder departmentSubViewHolder = (DepartmentSubViewHolder) holder;
-//        List<DepartmentContactSubModel> subList = departmentContactModelList.get(section).getDepartmentContactSubModel();
-//
-//        DepartmentContactSubModel departmentContactSubModel = subList.get(relativePosition);
-//        departmentSubViewHolder.setDepartmentSub(departmentContactSubModel);
-//
-//    }
-
-
     @Override
     public int getItemCount() {
-
-        Log.e("tag", "departmentContactModelList.size():-" + departmentContactModelList.size());
 
         return departmentContactModelList.size();
     }
@@ -134,19 +115,6 @@ public class DepartmentContactListAdapter extends RecyclerView.Adapter<RecyclerV
 
         }
 
-        //        public void setDepartment(DepartmentContactModel departmentContactModel) {
-        public void setDepartment(DepartmentViewHolder holder, int position) {
-
-            DepartmentContactModel departmentContactModel = (DepartmentContactModel) departmentContactModelList.get(position);
-
-            if (departmentContactModel != null) {
-                Log.e("tag", "departmentContactModel.getDepartmentName():-" + departmentContactModel.getDepartmentName());
-
-                txtDepartment.setText(departmentContactModel.getDepartmentName());
-            }
-
-        }
-
         public void setDepartment(DepartmentContactModel o) {
             txtDepartment.setText(o.getDepartmentName());
         }
@@ -155,38 +123,73 @@ public class DepartmentContactListAdapter extends RecyclerView.Adapter<RecyclerV
     // ItemViewHolder Class for Items in each Section
     public class DepartmentSubViewHolder extends RecyclerView.ViewHolder {
 
-        final TextView txtName, txtMobile, txtEmail;
+        final TextView txtName;
+        ImageView ivMobile, ivEmail;
         LinearLayout parentView;
 
         public DepartmentSubViewHolder(View itemView) {
             super(itemView);
 
             txtName = (TextView) itemView.findViewById(R.id.txtName);
-            txtMobile = (TextView) itemView.findViewById(R.id.txtMobile);
-            txtEmail = (TextView) itemView.findViewById(R.id.txtEmail);
+            ivMobile = (ImageView) itemView.findViewById(R.id.ivMobile);
+            ivEmail = (ImageView) itemView.findViewById(R.id.ivEmail);
             parentView = (LinearLayout) itemView.findViewById(R.id.parentView);
 
         }
 
-        //        public void setDepartmentSub(DepartmentContactSubModel departmentContactSubModel) {
-        public void setDepartmentSub(DepartmentSubViewHolder holder, int position) {
+        public void setSubDepartment(final DepartmentContactSubModel o)
+        {
+            txtName.setText(o.getName());
 
-            DepartmentContactModel departmentContactModel = (DepartmentContactModel) departmentContactModelList.get(position);
-
-            if (departmentContactModel != null) {
-                Log.e("tag", "departmentContactModel.getName():-" + departmentContactModel.getName());
-                Log.e("tag", "departmentContactModel.getMobile():-" + departmentContactModel.getMobile());
-                Log.e("tag", "departmentContactModel.getEmail():-" + departmentContactModel.getEmail());
-
-                txtName.setText(departmentContactModel.getName());
-                txtMobile.setText(departmentContactModel.getMobile());
-                txtEmail.setText(departmentContactModel.getEmail());
+            if (TextUtils.isEmpty(o.getMobile()))
+            {
+                ivMobile.setVisibility(View.GONE);
+            } else {
+                ivMobile.setVisibility(View.VISIBLE);
             }
 
-        }
+            if (TextUtils.isEmpty(o.getEmail()))
+            {
+                ivEmail.setVisibility(View.GONE);
+            } else {
+                ivEmail.setVisibility(View.VISIBLE);
+            }
 
-        public void setSubDepartment(DepartmentContactSubModel o) {
-            txtName.setText(o.getName());
+            ivMobile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Functions.makePhoneCall(context, o.getMobile());
+
+                }
+            });
+
+            ivEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+//                    Functions.sendMailTo(context, o.getEmail());
+
+                    String[] TO = {o.getEmail()};
+                    String[] CC = {""};
+                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+                    emailIntent.setData(Uri.parse("mailto:"));
+                    emailIntent.setType("text/plain");
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+                    emailIntent.putExtra(Intent.EXTRA_CC, CC);
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your subject");
+                    emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
+
+                    try {
+                        context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                    }
+                    catch (android.content.ActivityNotFoundException ex) {
+                    }
+
+                }
+            });
+
         }
     }
 

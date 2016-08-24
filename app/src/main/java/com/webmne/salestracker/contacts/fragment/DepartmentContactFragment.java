@@ -92,18 +92,19 @@ public class DepartmentContactFragment extends Fragment {
     private void getBranchContact() {
 
         List<Object> list = new ArrayList<>();
-        list.add(new DepartmentContactModel("Department1", null, null, null, DepartmentContactModel.DEPT_TYPE));
-        list.add(new DepartmentContactSubModel("SubModel1", "Name", "8523647853"));
-        list.add(new DepartmentContactSubModel("SubModel2", "Name", "8523647853"));
-        list.add(new DepartmentContactModel("Department2", null, null, null, DepartmentContactModel.DEPT_TYPE));
-        list.add(new DepartmentContactSubModel("SubModel3", "Name", "8523647853"));
-        list.add(new DepartmentContactModel("Department3", null, null, null, DepartmentContactModel.DEPT_TYPE));
-        list.add(new DepartmentContactSubModel("SubModel3", "Name", "8523647853"));
-        list.add(new DepartmentContactSubModel("SubModel4", "Name", "8523647853"));
+        list.add(new DepartmentContactModel("Department1"));
+        list.add(new DepartmentContactSubModel("Name1", "8523647853", "abc@amg.com"));
+        list.add(new DepartmentContactSubModel("Name2", "8523647853", "abc@amg.com"));
+        list.add(new DepartmentContactModel("Department2"));
+        list.add(new DepartmentContactSubModel("Name3", "8523647853", "abc@amg.com"));
+        list.add(new DepartmentContactModel("Department3"));
+        list.add(new DepartmentContactSubModel("Name4", "8523647853", "abc@amg.com"));
+        list.add(new DepartmentContactSubModel("Name5", "8523647853", "abc@amg.com"));
 
         departmentContactModelList.addAll(list);
 
         departmentContactListAdapter.setDepartmentContactList(departmentContactModelList);
+
 
 
 //        for (int i = 0; i < 2; i++)
@@ -129,6 +130,7 @@ public class DepartmentContactFragment extends Fragment {
 //        }
 //
 //        departmentContactListAdapter.setDepartmentContactList(departmentContactModelList);
+
     }
 
 
@@ -136,7 +138,7 @@ public class DepartmentContactFragment extends Fragment {
         departmentContactModelList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         fragmentBranchContactBinding.branchContactRecyclerView.setLayoutManager(layoutManager);
-        fragmentBranchContactBinding.branchContactRecyclerView.addItemDecoration(new LineDividerItemDecoration(getActivity()));
+//        fragmentBranchContactBinding.branchContactRecyclerView.addItemDecoration(new LineDividerItemDecoration(getActivity()));
 
         departmentContactListAdapter = new DepartmentContactListAdapter(getActivity(), departmentContactModelList);
 

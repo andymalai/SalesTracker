@@ -1,15 +1,20 @@
 package com.webmne.salestracker.contacts.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.contacts.model.BranchContactModel;
+import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
@@ -53,6 +58,7 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
     class BranchContactViewHolder extends RecyclerView.ViewHolder {
 
         TfTextView txtMarketerName, txtPosition, txtBranchRegion, letterIcon;
+        ImageView ivCall,ivEmail;
         LinearLayout parentView;
         ImageView iv_info;
 
@@ -64,6 +70,8 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
             letterIcon = (TfTextView) itemView.findViewById(R.id.letterIcon);
             parentView = (LinearLayout) itemView.findViewById(R.id.parentView);
             iv_info = (ImageView) itemView.findViewById(R.id.iv_info);
+            ivCall = (ImageView) itemView.findViewById(R.id.ivCall);
+            ivEmail = (ImageView) itemView.findViewById(R.id.ivEmail);
 
         }
 
@@ -73,6 +81,57 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
             txtPosition.setText(branchContactModel.getEmpPosition());
             txtBranchRegion.setText(String.format("%s , %s", branchContactModel.getBranch(), branchContactModel.getRegion()));
             letterIcon.setText(branchContactModel.getName().substring(0, 1));
+
+            if (TextUtils.isEmpty(branchContactModel.getPhone()))
+            {
+                ivCall.setVisibility(View.GONE);
+            } else {
+                ivCall.setVisibility(View.VISIBLE);
+            }
+
+            if (TextUtils.isEmpty(branchContactModel.getEmail()))
+            {
+                ivEmail.setVisibility(View.GONE);
+            } else {
+                ivEmail.setVisibility(View.VISIBLE);
+            }
+
+            ivCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Functions.makePhoneCall(context, branchContactModel.getPhone());
+
+                }
+            });
+
+            ivEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+//                    Functions.sendMailTo(context, branchContactModel.getEmail());
+
+                    String[] TO = {branchContactModel.getEmail()};
+                    String[] CC = {""};
+                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+                    emailIntent.setData(Uri.parse("mailto:"));
+                    emailIntent.setType("text/plain");
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+                    emailIntent.putExtra(Intent.EXTRA_CC, CC);
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your subject");
+                    emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
+
+                    try {
+                        context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                    }
+                    catch (android.content.ActivityNotFoundException ex) {
+                    }
+
+                }
+            });
+
+
 /*
             iv_info.setOnClickListener(new View.OnClickListener() {
                 @Override

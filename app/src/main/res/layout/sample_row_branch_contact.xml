@@ -1,86 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parentView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="@dimen/dimen_16dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <com.webmne.salestracker.widget.TfTextView
-            android:id="@+id/letterIcon"
-            android:layout_width="@dimen/dimen_36dp"
-            android:layout_height="@dimen/dimen_36dp"
-            android:background="@color/tile2"
-            android:gravity="center"
-            android:text="A"
-            android:textColor="@color/white"
-            android:textSize="@dimen/XXL_TEXT" />
-
-        <com.webmne.salestracker.widget.TfTextView
-            android:id="@+id/txtPosition"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_4dp"
-            android:gravity="center"
-            android:text="RM" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/letterIcon"
+                android:layout_width="@dimen/dimen_36dp"
+                android:layout_height="@dimen/dimen_36dp"
+                android:background="@color/tile2"
+                android:gravity="center"
+                android:text="A"
+                android:textColor="@color/white"
+                android:textSize="@dimen/XXL_TEXT" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dimen_16dp"
-        android:orientation="vertical">
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtPosition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_4dp"
+                android:gravity="center"
+                android:text="RM" />
 
-        <com.webmne.salestracker.widget.TfTextView
-            android:id="@+id/txtMarketerName"
-            android:layout_width="match_parent"
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="vatsal"
-            android:textSize="@dimen/XL_TEXT" />
+            android:layout_marginLeft="@dimen/dimen_16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <com.webmne.salestracker.widget.TfTextView
-            android:id="@+id/txtBranchRegion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_4dp"
-            android:text="Ahemdabad, Gujarat" />
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtMarketerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/agent_name"
+                android:textSize="@dimen/XL_TEXT" />
 
-        <com.webmne.salestracker.widget.TfTextView
-            android:id="@+id/txtPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_4dp"
-            android:drawableLeft="@drawable/ic_call"
-            android:drawablePadding="@dimen/dimen_5dp"
-            android:gravity="center_vertical"
-            android:text="8564253856" />
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtBranchRegion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_4dp"
+                android:text="Ahmedabad, Gujarat"
+                android:textColor="@color/tile2"
+                android:textSize="@dimen/N_TEXT" />
 
-        <com.webmne.salestracker.widget.TfTextView
-            android:id="@+id/txtEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_4dp"
-            android:drawableLeft="@drawable/ic_email"
-            android:drawablePadding="@dimen/dimen_5dp"
-            android:gravity="center_vertical"
-            android:text="abc@amg.com" />
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/iv_info"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_info"
-            android:visibility="gone" />
+            android:layout_gravity="right"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivCall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dimen_8dp"
+                android:src="@drawable/ic_call" />
+
+            <ImageView
+                android:id="@+id/ivEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_8dp"
+                android:padding="@dimen/dimen_8dp"
+                android:src="@drawable/ic_email" />
+
+            <ImageView
+                android:id="@+id/iv_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_info"
+                android:visibility="gone" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

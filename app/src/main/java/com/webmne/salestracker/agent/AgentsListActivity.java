@@ -100,7 +100,8 @@ public class AgentsListActivity extends AppCompatActivity {
         actionListener();
     }
 
-    private void actionListener() {
+    private void actionListener()
+    {
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
