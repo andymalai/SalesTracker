@@ -16,15 +16,16 @@ public class HomeTileConfiguration {
 
     private String[] marketNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee", "Manage Visit Plan", "Target"};
 
-    private String[] colors = {"#bb6666", "#af4c4c", "#af4c4c", "#bb6666", "#bb6666", "#af4c4c", "#af4c4c"};
+    //    private String[] colors = {"#bb6666", "#af4c4c", "#af4c4c", "#bb6666", "#bb6666", "#af4c4c", "#af4c4c"};
+    private String[] colors = {"#ffffff", "#f1f1f1", "#f1f1f1", "#ffffff", "#ffffff", "#f1f1f1", "#f1f1f1"};
 
     private String[] bgColors = {"#ffffff", "#d8d8d8", "#d8d8d8", "#ffffff", "#ffffff", "#d8d8d8", "#ffffff"};
 
     private int[] ids = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId(),
             TileId.MANAGE_VISIT_PLAN.getId(), TileId.TARGET.getId()};
 
-    private int[] icons = {R.drawable.ic_agent, R.drawable.ic_account, R.drawable.ic_account, R.drawable.ic_account, R.drawable.ic_account,
-            R.drawable.ic_account, R.drawable.ic_account};
+    private int[] icons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee,
+            R.drawable.ic_manage, R.drawable.ic_target};
 
     public HomeTileConfiguration(Context context) {
         this.context = context;
