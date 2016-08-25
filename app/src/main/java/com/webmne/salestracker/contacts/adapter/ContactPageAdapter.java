@@ -1,7 +1,6 @@
 package com.webmne.salestracker.contacts.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -30,14 +29,12 @@ public class ContactPageAdapter extends FragmentStatePagerAdapter {
         this.con = con;
     }
 
-    public void addFragment(Fragment fragment, String title)
-    {
+    public void addFragment(Fragment fragment, String title) {
         fragmentList.add(fragment);
         fragmentTitleList.add(title);
     }
 
-    public View getTabView(int position)
-    {
+    public View getTabView(int position) {
         TfTextView tfTextView = new TfTextView(con);
         tfTextView.setText(fragmentTitleList.get(position));
         tfTextView.setTextColor(ContextCompat.getColor(con, R.color.white));

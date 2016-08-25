@@ -14,9 +14,9 @@
 
         <com.webmne.salestracker.widget.TfTextView
             android:id="@+id/letterIcon"
-            android:layout_width="@dimen/dimen_36dp"
-            android:layout_height="@dimen/dimen_36dp"
-            android:background="@color/tile2"
+            android:layout_width="@dimen/dimen_42dp"
+            android:layout_height="@dimen/dimen_42dp"
+            android:background="@drawable/letter_shape"
             android:gravity="center"
             android:text="A"
             android:textColor="@color/white"
@@ -24,9 +24,10 @@
 
         <ImageView
             android:id="@+id/imgCheck"
-            android:layout_width="@dimen/dimen_36dp"
-            android:layout_height="@dimen/dimen_36dp"
-            android:background="@color/color1"
+            android:layout_width="@dimen/dimen_42dp"
+            android:layout_height="@dimen/dimen_42dp"
+            android:background="@drawable/check_shape"
+            android:padding="@dimen/dimen_8dp"
             android:src="@drawable/ic_check_white_24dp"
             android:visibility="gone" />
 
@@ -50,7 +51,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_4dp"
                 android:text="Ankleshwar, Gujarat"
-                android:textColor="@color/tile2"
                 android:textSize="@dimen/N_TEXT" />
 
         </LinearLayout>

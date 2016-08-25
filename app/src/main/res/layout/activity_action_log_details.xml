@@ -22,14 +22,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_8dp"
             android:orientation="horizontal">
 
             <com.webmne.salestracker.widget.TfButton
                 android:id="@+id/btnRemark"
                 style="@style/MyButtonStyle"
                 android:layout_width="0dp"
-                android:layout_margin="@dimen/dimen_8dp"
-                android:layout_marginTop="@dimen/dimen_16dp"
+                android:layout_marginRight="@dimen/dimen_8dp"
                 android:layout_weight="1"
                 android:text="@string/btn_remark" />
 
@@ -37,8 +37,7 @@
                 android:id="@+id/btnReopen"
                 style="@style/MyButtonStyle"
                 android:layout_width="0dp"
-                android:layout_margin="@dimen/dimen_8dp"
-                android:layout_marginTop="@dimen/dimen_16dp"
+                android:layout_marginLeft="@dimen/dimen_8dp"
                 android:layout_weight="1"
                 android:text="@string/btn_reopen" />
 

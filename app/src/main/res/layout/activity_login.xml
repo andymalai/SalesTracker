@@ -23,6 +23,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_margin="@dimen/dimen_24dp"
                 android:text="@string/title_login"
+                android:textColor="@color/splash_text"
                 android:textSize="@dimen/SPLASH_TEXT"
                 app:isBold="true" />
 

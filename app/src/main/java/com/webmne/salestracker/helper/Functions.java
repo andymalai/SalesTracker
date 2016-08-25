@@ -69,12 +69,12 @@ public class Functions {
     }
 
     public static Typeface getRegularFont(Context _context) {
-        Typeface tf = Typeface.createFromAsset(_context.getAssets(), "fonts/Raleway-Regular.ttf");
+        Typeface tf = Typeface.createFromAsset(_context.getAssets(), "fonts/Ubuntu-Regular.ttf");
         return tf;
     }
 
     public static Typeface getBoldFont(Context _context) {
-        Typeface tf = Typeface.createFromAsset(_context.getAssets(), "fonts/Raleway-Bold.ttf");
+        Typeface tf = Typeface.createFromAsset(_context.getAssets(), "fonts/Ubuntu-Bold.ttf");
         return tf;
     }
 

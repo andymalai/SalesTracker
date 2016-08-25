@@ -1,6 +1,8 @@
 package com.webmne.salestracker.actionlog.adapter;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -55,6 +57,7 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
 
         LinearLayout dateLayout;
         TfTextView txtDate, txtMonth, txtYear, txtStatus, txtDescription, txtAgentName, txtLastUpdate;
+        private View viewIndicate;
 
         public LogHolder(View itemView) {
             super(itemView);
@@ -66,17 +69,19 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
             txtDescription = (TfTextView) itemView.findViewById(R.id.txtDescription);
             txtAgentName = (TfTextView) itemView.findViewById(R.id.txtAgentName);
             txtLastUpdate = (TfTextView) itemView.findViewById(R.id.txtLastUpdate);
+            viewIndicate = itemView.findViewById(R.id.viewIndicate);
         }
 
+        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         public void setActionLog(ActionLogModel model) {
             txtAgentName.setText(String.format("%s", model.getAgentName()));
 
             if (model.isCompleted()) {
                 txtStatus.setText("Completed");
-                txtStatus.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
+                viewIndicate.setBackground(ContextCompat.getDrawable(context, R.drawable.completed_shape));
             } else {
                 txtStatus.setText("Pending");
-                txtStatus.setBackgroundColor(ContextCompat.getColor(context, R.color.fb));
+                viewIndicate.setBackground(ContextCompat.getDrawable(context, R.drawable.pending_shape));
             }
         }
     }

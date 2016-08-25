@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.contacts.model.BranchContactModel;
@@ -58,9 +57,8 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
     class BranchContactViewHolder extends RecyclerView.ViewHolder {
 
         TfTextView txtMarketerName, txtPosition, txtBranchRegion, letterIcon;
-        ImageView ivCall,ivEmail;
+        ImageView ivCall, ivEmail;
         LinearLayout parentView;
-        ImageView iv_info;
 
         public BranchContactViewHolder(View itemView) {
             super(itemView);
@@ -69,7 +67,6 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
             txtBranchRegion = (TfTextView) itemView.findViewById(R.id.txtBranchRegion);
             letterIcon = (TfTextView) itemView.findViewById(R.id.letterIcon);
             parentView = (LinearLayout) itemView.findViewById(R.id.parentView);
-            iv_info = (ImageView) itemView.findViewById(R.id.iv_info);
             ivCall = (ImageView) itemView.findViewById(R.id.ivCall);
             ivEmail = (ImageView) itemView.findViewById(R.id.ivEmail);
 
@@ -82,15 +79,13 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
             txtBranchRegion.setText(String.format("%s , %s", branchContactModel.getBranch(), branchContactModel.getRegion()));
             letterIcon.setText(branchContactModel.getName().substring(0, 1));
 
-            if (TextUtils.isEmpty(branchContactModel.getPhone()))
-            {
+            if (TextUtils.isEmpty(branchContactModel.getPhone())) {
                 ivCall.setVisibility(View.GONE);
             } else {
                 ivCall.setVisibility(View.VISIBLE);
             }
 
-            if (TextUtils.isEmpty(branchContactModel.getEmail()))
-            {
+            if (TextUtils.isEmpty(branchContactModel.getEmail())) {
                 ivEmail.setVisibility(View.GONE);
             } else {
                 ivEmail.setVisibility(View.VISIBLE);
@@ -124,8 +119,7 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
 
                     try {
                         context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-                    }
-                    catch (android.content.ActivityNotFoundException ex) {
+                    } catch (android.content.ActivityNotFoundException ex) {
                     }
 
                 }

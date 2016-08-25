@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -74,6 +75,12 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Home
            // txtHomeTileName.setTextColor(item.getContentColor());
             itemView.setBackgroundColor(item.getBackgroundColor());
             itemView.setId(item.getId());
+            itemView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return false;
+                }
+            });
             itemView.setOnClickListener(tileClickListsner);
         }
     }

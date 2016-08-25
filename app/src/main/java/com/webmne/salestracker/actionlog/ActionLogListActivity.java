@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.webmne.salestracker.R;
@@ -94,6 +95,7 @@ public class ActionLogListActivity extends AppCompatActivity {
                 Functions.fireIntent(ActionLogListActivity.this, ActionLogDetailsActivity.class);
             }
         });
+
     }
 
     private void getActionLogList() {
@@ -104,7 +106,7 @@ public class ActionLogListActivity extends AppCompatActivity {
             model.setAgentName("Agent " + i);
             model.setDateRaised("18-8-2016");
             model.setDepartment("Hub Operations");
-            model.setDescription("Description");
+            model.setDescription(getString(R.string.dummy));
             model.setLastUpdate("22-8-2016");
             model.setSLA(2);
             if (i % 2 == 0) {

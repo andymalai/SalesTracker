@@ -94,6 +94,8 @@
 
     <!--activity_action_log_list.xml-->
     <string name="action_log_title">Action Log</string>
+    <string name="pending">Pending</string>
+    <string name="completed">Completed</string>
 
     <!--activity_add_action_log.xml-->
     <string name="add_action_log_title">Add Action Log</string>
@@ -130,7 +132,7 @@
     <!--activity_action_log_details.xml-->
     <string name="btn_remark">Add Remark</string>
     <string name="btn_reopen">Reopen Action</string>
-    <string name="action_log_details_title">Action Log</string>
+    <string name="action_log_details_title">Action Log Details</string>
 
     <!--layout_action_log.xml-->
     <string name="agent_name">Agent Name</string>

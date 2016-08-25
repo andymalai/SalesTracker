@@ -28,10 +28,11 @@
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
 
+        <include layout="@layout/layout_divider" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_8dp"
             android:orientation="horizontal">
 
             <com.webmne.salestracker.widget.TfTextView
@@ -50,10 +51,11 @@
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
 
+        <include layout="@layout/layout_divider" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_8dp"
             android:orientation="horizontal">
 
             <com.webmne.salestracker.widget.TfTextView
@@ -72,10 +74,11 @@
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
 
+        <include layout="@layout/layout_divider" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_8dp"
             android:orientation="horizontal">
 
             <com.webmne.salestracker.widget.TfTextView
@@ -94,10 +97,11 @@
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
 
+        <include layout="@layout/layout_divider" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_8dp"
             android:orientation="horizontal">
 
             <com.webmne.salestracker.widget.TfTextView
@@ -116,10 +120,11 @@
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
 
+        <include layout="@layout/layout_divider" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_8dp"
             android:orientation="horizontal">
 
             <com.webmne.salestracker.widget.TfTextView
@@ -138,10 +143,11 @@
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
 
+        <include layout="@layout/layout_divider" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_8dp"
             android:orientation="horizontal">
 
             <com.webmne.salestracker.widget.TfTextView
@@ -159,5 +165,7 @@
                 android:text="@string/last_update"
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
+
     </LinearLayout>
+
 </layout>

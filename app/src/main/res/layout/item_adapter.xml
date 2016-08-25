@@ -12,7 +12,7 @@
         android:paddingLeft="@dimen/dimen_2dp"
         android:paddingTop="@dimen/dimen_8dp"
         android:text="Item"
-        android:textSize="@dimen/M_TEXT"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/half_black"
+        android:textSize="@dimen/M_TEXT" />
 
 </LinearLayout>

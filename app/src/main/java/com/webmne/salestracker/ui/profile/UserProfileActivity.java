@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.widget.TfButton;
 import com.webmne.salestracker.widget.TfEditText;
 import com.webmne.salestracker.widget.TfTextView;
@@ -74,13 +75,16 @@ public class UserProfileActivity extends AppCompatActivity {
 
     @OnClick({R.id.txtCancel, R.id.btnEdit})
     public void onClick(View view) {
+        Functions.hideKeyPad(this, view);
         switch (view.getId()) {
             case R.id.txtCancel:
                 isEditMode = !isEditMode;
                 txtCancel.setVisibility(View.GONE);
                 btnEdit.setText(getString(R.string.btn_edit));
-                edtEmpPhone.setEnabled(false);
-                edtEmpEmailId.setEnabled(false);
+                edtEmpPhone.setFocusable(false);
+                edtEmpPhone.setFocusableInTouchMode(false);
+                edtEmpEmailId.setFocusable(false);
+                edtEmpEmailId.setFocusableInTouchMode(false);
                 break;
 
             case R.id.btnEdit:
@@ -88,15 +92,17 @@ public class UserProfileActivity extends AppCompatActivity {
                 if (isEditMode) {
                     txtCancel.setVisibility(View.VISIBLE);
                     btnEdit.setText(getString(R.string.btn_save));
-                    edtEmpPhone.setEnabled(true);
-                    edtEmpEmailId.setEnabled(true);
+                    edtEmpPhone.setFocusableInTouchMode(true);
+                    edtEmpEmailId.setFocusableInTouchMode(true);
 
                 } else {
                     SimpleToast.ok(UserProfileActivity.this, getString(R.string.profile_success));
                     txtCancel.setVisibility(View.GONE);
                     btnEdit.setText(getString(R.string.btn_edit));
-                    edtEmpPhone.setEnabled(false);
-                    edtEmpEmailId.setEnabled(false);
+                    edtEmpPhone.setFocusable(false);
+                    edtEmpPhone.setFocusableInTouchMode(false);
+                    edtEmpEmailId.setFocusable(false);
+                    edtEmpEmailId.setFocusableInTouchMode(false);
                 }
                 break;
         }

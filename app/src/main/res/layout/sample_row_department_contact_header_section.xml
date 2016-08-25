@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/parentView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/off_white"
     android:orientation="horizontal"
-    android:padding="@dimen/dimen_16dp">
+    android:paddingBottom="@dimen/dimen_12dp"
+    android:paddingLeft="@dimen/dimen_16dp"
+    android:paddingRight="@dimen/dimen_16dp"
+    android:paddingTop="@dimen/dimen_12dp">
 
     <com.webmne.salestracker.widget.TfTextView
         android:id="@+id/txtDepartment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="section"
-        android:textSize="@dimen/XL_TEXT" />
+        android:textSize="@dimen/L_TEXT" />
 
 </LinearLayout>
