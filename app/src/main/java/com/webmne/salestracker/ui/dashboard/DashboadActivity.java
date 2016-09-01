@@ -11,6 +11,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.databinding.ActivityDashboadBinding;
 import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.ui.dashboard.adapter.DashboardAdapter;
 import com.webmne.salestracker.ui.dashboard.model.HomeTileBean;
 import com.webmne.salestracker.ui.dashboard.model.HomeTileConfiguration;
@@ -46,7 +47,7 @@ public class DashboadActivity extends AppCompatActivity {
         setSupportActionBar(dashboadBinding.toolbarLayout.toolbar);
 
         // change message runtime, welcome <username>
-        dashboadBinding.toolbarLayout.txtCustomTitle.setText("Welcome User");
+        dashboadBinding.toolbarLayout.txtCustomTitle.setText(String.format("%s, %s", "Welcome", PrefUtils.getUserProfile(this).getFirstName()));
 
         initRecylerView();
 

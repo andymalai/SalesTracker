@@ -145,4 +145,7 @@
     <string name="dept">Department</string>
     <string name="sla">SLA</string>
     <string name="last_update">Last Update</string>
+
+    <!--layout_empty_view.xml-->
+    <string name="no_record">No Records</string>
 </resources>
