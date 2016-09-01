@@ -12,6 +12,7 @@ import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.APIListener;
 import com.webmne.salestracker.api.LoginApi;
+import com.webmne.salestracker.api.model.LoginResponse;
 import com.webmne.salestracker.contactus.ContactUsActivity;
 import com.webmne.salestracker.databinding.ActivityLoginBinding;
 import com.webmne.salestracker.helper.AppConstants;
@@ -19,7 +20,8 @@ import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.ui.dashboard.DashboadActivity;
-import com.webmne.salestracker.ui.model.UserProfile;
+
+import java.util.concurrent.TimeoutException;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -49,6 +51,12 @@ public class LoginActivity extends AppCompatActivity {
         loginBinding.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (!Functions.isConnected(LoginActivity.this)) {
+                    SimpleToast.error(LoginActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                    return;
+                }
+
                 if (TextUtils.isEmpty(Functions.toStr(loginBinding.edtEmpId))) {
                     SimpleToast.error(LoginActivity.this, getString(R.string.emp_error), getString(R.string.fa_error));
                     return;
@@ -85,34 +93,42 @@ public class LoginActivity extends AppCompatActivity {
 
     private void doLogin() {
 
-        loginApi.login("json", "MKT_guj_001", "MKT_guj_001", "9", new APIListener<UserProfile>() {
+       /*SimpleToast.ok(LoginActivity.this, getString(R.string.login_success));
+        Functions.fireIntent(LoginActivity.this, DashboadActivity.class);*/
+
+        loginApi.login("json", Functions.toStr(loginBinding.edtPassword), Functions.toStr(loginBinding.edtEmpId), new APIListener<LoginResponse>() {
             @Override
-            public void onResponse(Response<UserProfile> response) {
+            public void onResponse(Response<LoginResponse> response) {
                 if (response.body() != null) {
 
-                    UserProfile profile = response.body();
+                    LoginResponse loginResponse = response.body();
 
-                    Log.e("profile_res", MyApplication.getGson().toJson(profile));
+                    Log.e("profile_res", MyApplication.getGson().toJson(loginResponse));
 
-                    if (profile.getResponseCode().equals(AppConstants.SUCCESS)) {
+                    if (loginResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
 
-                        PrefUtils.setUserProfile(LoginActivity.this, profile);
+                        PrefUtils.setUserProfile(LoginActivity.this, loginResponse.getData());
 
                         SimpleToast.ok(LoginActivity.this, getString(R.string.login_success));
                         Functions.fireIntent(LoginActivity.this, DashboadActivity.class);
+                        finish();
 
                     } else {
-
+                        SimpleToast.error(LoginActivity.this, loginResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
 
                 } else {
-
+                    SimpleToast.error(LoginActivity.this, "Something went wrong. Please try again", getString(R.string.fa_error));
                 }
             }
 
             @Override
-            public void onFailure(Call<UserProfile> call, Throwable t) {
-
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                if (t instanceof TimeoutException) {
+                    SimpleToast.error(LoginActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
+                } else {
+                    SimpleToast.error(LoginActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
             }
         });
     }

@@ -28,4 +28,14 @@
         <attr name="frv_headerDividersEnabled" format="boolean" />
         <attr name="frv_footerDividersEnabled" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="CalendarView">
+        <attr name="dateFormat" format="string"/>
+    </declare-styleable>
+    <declare-styleable name="FlowLayout">
+        <attr name="android:gravity" />
+    </declare-styleable>
+    <declare-styleable name="FlowLayout_Layout">
+        <attr name="android:layout_gravity" />
+    </declare-styleable>
 </resources>

@@ -16,6 +16,7 @@ import com.webmne.salestracker.contacts.ContactActivity;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.TileId;
 import com.webmne.salestracker.ui.dashboard.model.HomeTileBean;
+import com.webmne.salestracker.visitplan.SalesVisitPlanActivity;
 import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
@@ -101,6 +102,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Home
                 Functions.fireIntent(context, ActionLogListActivity.class);
 
             } else if (selectedId == TileId.SALES_VISIT_PLAN.getId()) {
+                Functions.fireIntent(context, SalesVisitPlanActivity.class);
 
             } else if (selectedId == TileId.EMPLOYEE.getId()) {
 

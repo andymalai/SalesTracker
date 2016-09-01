@@ -1,7 +1,7 @@
 package com.webmne.salestracker.api;
 
+import com.webmne.salestracker.api.model.LoginResponse;
 import com.webmne.salestracker.helper.MyApplication;
-import com.webmne.salestracker.ui.model.UserProfile;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,18 +19,18 @@ public class LoginApi {
         appApi = MyApplication.getRetrofit().create(AppApi.class);
     }
 
-    public void login(String json, String password, String username, String roleId, final APIListener<UserProfile> apiListener) {
+    public void login(String json, String password, String username, final APIListener<LoginResponse> apiListener) {
 
-        Call<UserProfile> profileCall = appApi.login(json, password, username, roleId);
+        Call<LoginResponse> profileCall = appApi.login(json, password, username);
 
-        profileCall.enqueue(new Callback<UserProfile>() {
+        profileCall.enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 apiListener.onResponse(response);
             }
 
             @Override
-            public void onFailure(Call<UserProfile> call, Throwable t) {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
                 apiListener.onFailure(call, t);
             }
         });

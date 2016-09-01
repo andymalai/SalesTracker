@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Sales Tracker</string>
+    <string name="time_out">Server Time out.</string>
+    <string name="try_again">Something went wrong. Please try again</string>
+    <string name="no_internet_connection">No Internet Connection</string>
 
     <!--commons-->
     <string name="dummy">The following are top voted examples for showing how to use android.databinding.DataBindingUtil. These examples are extracted from open source projects. You can vote up the examples you like and your votes will be used in our system to product more good examples. </string>

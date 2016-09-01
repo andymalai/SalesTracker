@@ -1,7 +1,7 @@
 package com.webmne.salestracker.api;
 
+import com.webmne.salestracker.api.model.LoginResponse;
 import com.webmne.salestracker.helper.AppConstants;
-import com.webmne.salestracker.ui.model.UserProfile;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -13,6 +13,6 @@ import retrofit2.http.Query;
 public interface AppApi {
 
     @GET(AppConstants.LoginBase)
-    Call<UserProfile> login(@Query("format") String format, @Query("password") String password, @Query("username") String username, @Query("roleID") String roleID);
+    Call<LoginResponse> login(@Query("format") String format, @Query("password") String password, @Query("username") String username);
 
 }

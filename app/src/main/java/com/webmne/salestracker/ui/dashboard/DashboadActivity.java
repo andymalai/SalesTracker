@@ -45,6 +45,7 @@ public class DashboadActivity extends AppCompatActivity {
             dashboadBinding.toolbarLayout.toolbar.setTitle("");
         setSupportActionBar(dashboadBinding.toolbarLayout.toolbar);
 
+        // change message runtime, welcome <username>
         dashboadBinding.toolbarLayout.txtCustomTitle.setText("Welcome User");
 
         initRecylerView();

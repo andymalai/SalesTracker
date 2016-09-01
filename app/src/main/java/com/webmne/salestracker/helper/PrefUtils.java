@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.webmne.salestracker.agent.model.AgentModel;
-import com.webmne.salestracker.ui.model.UserProfile;
+import com.webmne.salestracker.api.model.UserProfile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,10 +32,12 @@ public class PrefUtils {
         String toJson = MyApplication.getGson().toJson(response);
         setBranchId(context, response.getBranch());
         Prefs.with(context).save(USER_PROFILE, toJson);
+
+        setLoggedIn(context, true);
     }
 
-    public static void setBranchId(Context context, String userID) {
-        Prefs.with(context).save(BRANCH_ID, userID);
+    public static void setBranchId(Context context, String branchId) {
+        Prefs.with(context).save(BRANCH_ID, branchId);
     }
 
     public static String getBranchId(Context context) {

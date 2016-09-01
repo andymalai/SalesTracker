@@ -5,6 +5,11 @@ package com.webmne.salestracker.helper;
  */
 public class AppConstants {
 
+    // Calendar Mode
+    public static int DAY_VIEW = 0;
+    public static int WEEK_VIEW = 1;
+    public static int MONTH_VIEW = 2;
+
     // Response Code
     public static final String SUCCESS = "1";
 

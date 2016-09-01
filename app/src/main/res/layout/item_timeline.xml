@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="68dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minHeight="35dp"
+        android:padding="8dp"
+        android:text="\nTime"
+        android:textAppearance="@android:style/TextAppearance.Medium" />
+
+    <com.webmne.salestracker.widget.calendar.TimeLineView
+        android:id="@+id/timeline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

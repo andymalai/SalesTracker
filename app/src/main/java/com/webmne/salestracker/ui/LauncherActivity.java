@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 
-import com.hanks.htextview.HTextView;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.databinding.ActivityLauncherBinding;
 import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.PrefUtils;
+import com.webmne.salestracker.ui.dashboard.DashboadActivity;
 
 public class LauncherActivity extends AppCompatActivity {
 
@@ -32,7 +33,11 @@ public class LauncherActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                Functions.fireIntent(LauncherActivity.this, LoginActivity.class);
+                if (PrefUtils.getLoggedIn(LauncherActivity.this)) {
+                    Functions.fireIntent(LauncherActivity.this, DashboadActivity.class);
+                } else {
+                    Functions.fireIntent(LauncherActivity.this, LoginActivity.class);
+                }
                 finish();
             }
         }.start();
