@@ -138,7 +138,7 @@ public class AgentsListActivity extends AppCompatActivity {
     private void getAgents() {
 
         agentList = new ArrayList<>();
-        /*for (int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= 20; i++) {
             AgentModel agent = new AgentModel();
             agent.setAgentId(i);
             agent.setAgentName("Agent " + i);
@@ -147,11 +147,7 @@ public class AgentsListActivity extends AppCompatActivity {
             agent.setColor(ContextCompat.getColor(this, R.color.tile2));
             agentList.add(agent);
         }
-        adapter.setAgentList(agentList);*/
-
-        if (agentList.size() == 0) {
-
-        }
+        adapter.setAgentList(agentList);
     }
 
     private void initRecyclerView() {

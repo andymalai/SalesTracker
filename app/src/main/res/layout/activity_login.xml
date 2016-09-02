@@ -49,7 +49,7 @@
                     android:layout_marginTop="@dimen/dimen_4dp"
                     android:hint="@string/edit_emp_id"
                     android:inputType="text"
-                    android:text="employee" />
+                    android:text="MKT_guj_001" />
 
             </LinearLayout>
 
@@ -75,7 +75,7 @@
                     android:layout_marginTop="@dimen/dimen_4dp"
                     android:hint="@string/edit_pwd"
                     android:inputType="textPassword"
-                    android:text="employee" />
+                    android:text="MKT_guj_001" />
             </LinearLayout>
 
 

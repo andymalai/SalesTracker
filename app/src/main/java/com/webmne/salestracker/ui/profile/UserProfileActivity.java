@@ -1,108 +1,100 @@
 package com.webmne.salestracker.ui.profile;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.api.model.UserProfile;
+import com.webmne.salestracker.databinding.ActivityUserProfileBinding;
 import com.webmne.salestracker.helper.Functions;
-import com.webmne.salestracker.widget.TfButton;
-import com.webmne.salestracker.widget.TfEditText;
-import com.webmne.salestracker.widget.TfTextView;
+import com.webmne.salestracker.helper.PrefUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
+public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-public class UserProfileActivity extends AppCompatActivity {
-
-    @BindView(R.id.txtCustomTitle)
-    TfTextView txtCustomTitle;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.edtEmpId)
-    TfEditText edtEmpId;
-    @BindView(R.id.edtEmpPosition)
-    TfEditText edtEmpPosition;
-    @BindView(R.id.edtEmpName)
-    TfEditText edtEmpName;
-    @BindView(R.id.edtEmpPhone)
-    TfEditText edtEmpPhone;
-    @BindView(R.id.edtEmpEmailId)
-    TfEditText edtEmpEmailId;
-    @BindView(R.id.edtEmpBranch)
-    TfEditText edtEmpBranch;
-    @BindView(R.id.btnEdit)
-    TfButton btnEdit;
-
-    Unbinder unbinder;
-    @BindView(R.id.txtCancel)
-    TfTextView txtCancel;
+    private ActivityUserProfileBinding viewBinding;
     private boolean isEditMode = false;
+    private UserProfile userProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
+        viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_user_profile);
 
-        unbinder = ButterKnife.bind(this);
+        userProfile = PrefUtils.getUserProfile(this);
 
         init();
     }
 
     private void init() {
-        if (toolbar != null)
-            toolbar.setTitle("");
-        setSupportActionBar(toolbar);
+        if (viewBinding.toolbarLayout.toolbar != null)
+            viewBinding.toolbarLayout.toolbar.setTitle("");
+        setSupportActionBar(viewBinding.toolbarLayout.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        viewBinding.toolbarLayout.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        txtCustomTitle.setText(getString(R.string.profile_title));
+        viewBinding.toolbarLayout.txtCustomTitle.setText(getString(R.string.profile_title));
+
+        setProfileDetails();
+
+        actionListener();
+    }
+
+    private void actionListener() {
+        viewBinding.txtCancel.setOnClickListener(this);
+        viewBinding.btnEdit.setOnClickListener(this);
+    }
+
+    private void setProfileDetails() {
+        viewBinding.edtEmpName.setText(userProfile.getFirstName());
+        viewBinding.edtEmpPosition.setText(userProfile.getPos_name());
+        viewBinding.edtEmpPhone.setText(userProfile.getMobile());
+        viewBinding.edtEmpEmailId.setText(userProfile.getEmail());
+        viewBinding.edtEmpBranch.setText(userProfile.getBranch_name());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
+        viewBinding.unbind();
     }
 
-    @OnClick({R.id.txtCancel, R.id.btnEdit})
     public void onClick(View view) {
         Functions.hideKeyPad(this, view);
+
         switch (view.getId()) {
             case R.id.txtCancel:
                 isEditMode = !isEditMode;
-                txtCancel.setVisibility(View.GONE);
-                btnEdit.setText(getString(R.string.btn_edit));
-                edtEmpPhone.setFocusable(false);
-                edtEmpPhone.setFocusableInTouchMode(false);
-                edtEmpEmailId.setFocusable(false);
-                edtEmpEmailId.setFocusableInTouchMode(false);
+                viewBinding.txtCancel.setVisibility(View.GONE);
+                viewBinding.btnEdit.setText(getString(R.string.btn_edit));
+                viewBinding.edtEmpPhone.setFocusable(false);
+                viewBinding.edtEmpPhone.setFocusableInTouchMode(false);
+                viewBinding.edtEmpEmailId.setFocusable(false);
+                viewBinding.edtEmpEmailId.setFocusableInTouchMode(false);
                 break;
 
             case R.id.btnEdit:
                 isEditMode = !isEditMode;
                 if (isEditMode) {
-                    txtCancel.setVisibility(View.VISIBLE);
-                    btnEdit.setText(getString(R.string.btn_save));
-                    edtEmpPhone.setFocusableInTouchMode(true);
-                    edtEmpEmailId.setFocusableInTouchMode(true);
+                    viewBinding.txtCancel.setVisibility(View.VISIBLE);
+                    viewBinding.btnEdit.setText(getString(R.string.btn_save));
+                    viewBinding.edtEmpPhone.setFocusableInTouchMode(true);
+                    viewBinding.edtEmpEmailId.setFocusableInTouchMode(true);
 
                 } else {
                     SimpleToast.ok(UserProfileActivity.this, getString(R.string.profile_success));
-                    txtCancel.setVisibility(View.GONE);
-                    btnEdit.setText(getString(R.string.btn_edit));
-                    edtEmpPhone.setFocusable(false);
-                    edtEmpPhone.setFocusableInTouchMode(false);
-                    edtEmpEmailId.setFocusable(false);
-                    edtEmpEmailId.setFocusableInTouchMode(false);
+                    viewBinding.txtCancel.setVisibility(View.GONE);
+                    viewBinding.btnEdit.setText(getString(R.string.btn_edit));
+                    viewBinding.edtEmpPhone.setFocusable(false);
+                    viewBinding.edtEmpPhone.setFocusableInTouchMode(false);
+                    viewBinding.edtEmpEmailId.setFocusable(false);
+                    viewBinding.edtEmpEmailId.setFocusableInTouchMode(false);
                 }
                 break;
         }
