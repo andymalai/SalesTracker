@@ -17,6 +17,7 @@ public class PrefUtils {
 
     private static final String USER_PROFILE = "USER_PROFILE";
     private static final String BRANCH_ID = "BRANCH_ID";
+    private static final String USER_ID = "USER_ID";
     private static final String IS_LOGGED_IN = "IS_LOGGED_IN";
     private static final String DELETE = "DELETE";
 
@@ -30,10 +31,21 @@ public class PrefUtils {
 
     public static void setUserProfile(Context context, UserProfile response) {
         String toJson = MyApplication.getGson().toJson(response);
+
         setBranchId(context, response.getBranch());
+        setUserId(context, response.getUserid());
+
         Prefs.with(context).save(USER_PROFILE, toJson);
 
         setLoggedIn(context, true);
+    }
+
+    private static void setUserId(Context context, String userid) {
+        Prefs.with(context).save(USER_ID, userid);
+    }
+
+    public static String getUserId(Context context) {
+        return Prefs.with(context).getString(USER_ID, "");
     }
 
     public static void setBranchId(Context context, String branchId) {

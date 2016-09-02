@@ -18,4 +18,6 @@ public class AppConstants {
     // login-url login.php?format=json&password=MKT_guj_001&username=MKT_guj_001&roleID=9
     public static final String LoginBase = "login.php";
 
+    public static final String BranchContact = "branch_list.php";
+
 }

@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.contacts.model.BranchContactModel;
+import com.webmne.salestracker.contacts.model.BranchContactsModel;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.widget.TfTextView;
 
@@ -24,17 +25,17 @@ import java.util.ArrayList;
 public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContactListAdapter.BranchContactViewHolder> {
 
     private Context context;
-    private ArrayList<BranchContactModel> branchContactModelList;
+    private ArrayList<BranchContactsModel> branchContactsModelList;
 
-    public void setBranchContactList(ArrayList<BranchContactModel> branchContactModelList) {
-        this.branchContactModelList = new ArrayList<>();
-        this.branchContactModelList = branchContactModelList;
+    public void setBranchContactList(ArrayList<BranchContactsModel> branchContactsModelList) {
+        this.branchContactsModelList = new ArrayList<>();
+        this.branchContactsModelList = branchContactsModelList;
         notifyDataSetChanged();
     }
 
-    public BranchContactListAdapter(Context context, ArrayList<BranchContactModel> branchContactModelList) {
+    public BranchContactListAdapter(Context context, ArrayList<BranchContactsModel> branchContactsModelList) {
         this.context = context;
-        this.branchContactModelList = branchContactModelList;
+        this.branchContactsModelList = branchContactsModelList;
     }
 
     @Override
@@ -45,13 +46,13 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
 
     @Override
     public void onBindViewHolder(BranchContactViewHolder holder, int position) {
-        BranchContactModel branchContactModel = branchContactModelList.get(position);
-        holder.setBranchContactDetails(branchContactModel, position);
+        BranchContactsModel branchContactsModel = branchContactsModelList.get(position);
+        holder.setBranchContactDetails(branchContactsModel, position);
     }
 
     @Override
     public int getItemCount() {
-        return branchContactModelList.size();
+        return branchContactsModelList.size();
     }
 
     class BranchContactViewHolder extends RecyclerView.ViewHolder {
@@ -72,20 +73,20 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
 
         }
 
-        public void setBranchContactDetails(final BranchContactModel branchContactModel, final int pos) {
+        public void setBranchContactDetails(final BranchContactsModel branchContactsModel, final int pos) {
 
-            txtMarketerName.setText(branchContactModel.getName());
-            txtPosition.setText(branchContactModel.getEmpPosition());
-            txtBranchRegion.setText(String.format("%s , %s", branchContactModel.getBranch(), branchContactModel.getRegion()));
-            letterIcon.setText(branchContactModel.getName().substring(0, 1));
+            txtMarketerName.setText(branchContactsModel.getName());
+            txtPosition.setText(branchContactsModel.getPosition());
+            txtBranchRegion.setText(String.format("%s , %s", branchContactsModel.getBranchName(), branchContactsModel.getRegion()));
+            letterIcon.setText(branchContactsModel.getName().substring(0, 1));
 
-            if (TextUtils.isEmpty(branchContactModel.getPhone())) {
+            if (TextUtils.isEmpty(branchContactsModel.getMobileNo())) {
                 ivCall.setVisibility(View.GONE);
             } else {
                 ivCall.setVisibility(View.VISIBLE);
             }
 
-            if (TextUtils.isEmpty(branchContactModel.getEmail())) {
+            if (TextUtils.isEmpty(branchContactsModel.getEmailId())) {
                 ivEmail.setVisibility(View.GONE);
             } else {
                 ivEmail.setVisibility(View.VISIBLE);
@@ -95,7 +96,7 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
                 @Override
                 public void onClick(View v) {
 
-                    Functions.makePhoneCall(context, branchContactModel.getPhone());
+                    Functions.makePhoneCall(context, branchContactsModel.getMobileNo());
 
                 }
             });
@@ -104,23 +105,7 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
                 @Override
                 public void onClick(View v) {
 
-//                    Functions.sendMailTo(context, branchContactModel.getEmail());
-
-                    String[] TO = {branchContactModel.getEmail()};
-                    String[] CC = {""};
-                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
-
-                    emailIntent.setData(Uri.parse("mailto:"));
-                    emailIntent.setType("text/plain");
-                    emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
-                    emailIntent.putExtra(Intent.EXTRA_CC, CC);
-                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your subject");
-                    emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
-
-                    try {
-                        context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-                    } catch (android.content.ActivityNotFoundException ex) {
-                    }
+                    Functions.sendMailTo(context, branchContactsModel.getEmailId());
 
                 }
             });
