@@ -1,65 +1,101 @@
 package com.webmne.salestracker.agent.model;
 
-import java.io.Serializable;
-
 /**
  * Created by sagartahelyani on 12-08-2016.
  */
-public class AgentModel implements Serializable {
+public class AgentModel {
 
-    private int agentId;
-    private String AgentName;
+    /**
+     * Agentid : 122
+     * Name : AGT2
+     * Tierid : 1
+     * Branchid : 44
+     * Region : 17
+     * AmgCode : AMG346
+     * KruniaCode : KR346
+     * MobileNo : 1111111111
+     * Emailid : AG@AMG.COM
+     */
 
-    public String getAgentContactNo() {
-        return AgentContactNo;
+    private String Agentid;
+    private String Name;
+    private String Tierid;
+    private String Branchid;
+    private String Region;
+    private String AmgCode;
+    private String KruniaCode;
+    private String MobileNo;
+    private String Emailid;
+
+    public String getAgentid() {
+        return Agentid;
     }
 
-    public void setAgentContactNo(String agentContactNo) {
-        AgentContactNo = agentContactNo;
+    public void setAgentid(String Agentid) {
+        this.Agentid = Agentid;
     }
 
-    public String getAgentEmail() {
-        return AgentEmail;
+    public String getName() {
+        return Name;
     }
 
-    public void setAgentEmail(String agentEmail) {
-        AgentEmail = agentEmail;
+    public void setName(String Name) {
+        this.Name = Name;
     }
 
-    private String AgentContactNo;
-    private String AgentEmail;
-    private boolean isChecked = false;
-    private int color;
-
-    public int getAgentId() {
-        return agentId;
+    public String getTierid() {
+        return Tierid;
     }
 
-    public void setAgentId(int agentId) {
-        this.agentId = agentId;
+    public void setTierid(String Tierid) {
+        this.Tierid = Tierid;
     }
 
-    public boolean isChecked() {
-        return isChecked;
+    public String getBranchid() {
+        return Branchid;
     }
 
-    public void setChecked(boolean checked) {
-        isChecked = checked;
+    public void setBranchid(String Branchid) {
+        this.Branchid = Branchid;
     }
 
-    public int getColor() {
-        return color;
+    public String getRegion() {
+        return Region;
     }
 
-    public void setColor(int color) {
-        this.color = color;
+    public void setRegion(String Region) {
+        this.Region = Region;
     }
 
-    public String getAgentName() {
-        return AgentName;
+    public String getAmgCode() {
+        return AmgCode;
     }
 
-    public void setAgentName(String agentName) {
-        AgentName = agentName;
+    public void setAmgCode(String AmgCode) {
+        this.AmgCode = AmgCode;
+    }
+
+    public String getKruniaCode() {
+        return KruniaCode;
+    }
+
+    public void setKruniaCode(String KruniaCode) {
+        this.KruniaCode = KruniaCode;
+    }
+
+    public String getMobileNo() {
+        return MobileNo;
+    }
+
+    public void setMobileNo(String MobileNo) {
+        this.MobileNo = MobileNo;
+    }
+
+    public String getEmailid() {
+        return Emailid;
+    }
+
+    public void setEmailid(String Emailid) {
+        this.Emailid = Emailid;
     }
 }

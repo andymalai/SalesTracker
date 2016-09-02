@@ -1,5 +1,6 @@
 package com.webmne.salestracker.api;
 
+import com.webmne.salestracker.api.model.AgentListResponse;
 import com.webmne.salestracker.api.model.LoginResponse;
 import com.webmne.salestracker.contacts.model.BranchContactModel;
 import com.webmne.salestracker.helper.AppConstants;
@@ -14,8 +15,11 @@ import retrofit2.http.Query;
 public interface AppApi {
 
     @GET(AppConstants.LoginBase)
-    Call<LoginResponse> login(@Query("format") String format, @Query("password") String password, @Query("username") String username);
+    Call<LoginResponse> login(@Query("password") String password, @Query("username") String username);
 
     @GET(AppConstants.BranchContact)
     Call<BranchContactModel> getBranchContact(@Query("format") String format, @Query("branch") String branch);
+
+    @GET(AppConstants.AgentList)
+    Call<AgentListResponse> getAgents(@Query("userid") String userid);
 }

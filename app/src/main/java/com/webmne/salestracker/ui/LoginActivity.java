@@ -96,10 +96,10 @@ public class LoginActivity extends AppCompatActivity {
        /*SimpleToast.ok(LoginActivity.this, getString(R.string.login_success));
         Functions.fireIntent(LoginActivity.this, DashboadActivity.class);*/
 
-        loginApi.login("json", Functions.toStr(loginBinding.edtPassword), Functions.toStr(loginBinding.edtEmpId), new APIListener<LoginResponse>() {
+        loginApi.login(Functions.toStr(loginBinding.edtPassword), Functions.toStr(loginBinding.edtEmpId), new APIListener<LoginResponse>() {
             @Override
             public void onResponse(Response<LoginResponse> response) {
-                if (response.body() != null) {
+                if (response.isSuccessful()) {
 
                     LoginResponse loginResponse = response.body();
 

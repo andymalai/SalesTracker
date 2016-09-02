@@ -16,8 +16,13 @@ public class AppConstants {
     public static final String BASE_URL = "http://ws-srv-php/projects/drupal/amgsales2/services/";
 
     // login-url login.php?format=json&password=MKT_guj_001&username=MKT_guj_001&roleID=9
-    public static final String LoginBase = "login.php";
+    public static final String LoginBase = "login.php?format=json";
 
+    // http://ws-srv-php/projects/drupal/amgsales2/services/branch_list.php?format=json&branch=28
     public static final String BranchContact = "branch_list.php";
+
+    // http://ws-srv-php/projects/drupal/amgsales2/services/agent_list.php?format=json&userid=676
+    public static final String AgentList = "agent_list.php?format=json";
+
 
 }

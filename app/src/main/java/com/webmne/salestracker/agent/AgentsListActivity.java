@@ -17,9 +17,11 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.agent.adapter.AgentsListAdapter;
 import com.webmne.salestracker.agent.model.AgentModel;
+import com.webmne.salestracker.api.AgentListApi;
 import com.webmne.salestracker.custom.LineDividerItemDecoration;
 import com.webmne.salestracker.databinding.ActivityAgentsListBinding;
 import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerViewOnScrollListener;
 
@@ -35,12 +37,13 @@ public class AgentsListActivity extends AppCompatActivity {
     private MenuItem searchItem;
 
     private ActivityAgentsListBinding viewBinding;
+    private AgentListApi agentListApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_agents_list);
-
+        agentListApi = new AgentListApi();
         init();
 
     }
@@ -137,6 +140,7 @@ public class AgentsListActivity extends AppCompatActivity {
 
     private void getAgents() {
 
+        // TODO: 02-09-2016
         agentList = new ArrayList<>();
         for (int i = 1; i <= 20; i++) {
             AgentModel agent = new AgentModel();
@@ -191,6 +195,7 @@ public class AgentsListActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         viewBinding.unbind();
+        agentListApi.onDestroy();
     }
 
     @OnClick(R.id.fab)

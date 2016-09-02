@@ -1,6 +1,6 @@
 package com.webmne.salestracker.api;
 
-import com.webmne.salestracker.api.model.LoginResponse;
+import com.webmne.salestracker.api.model.AgentListResponse;
 import com.webmne.salestracker.helper.MyApplication;
 
 import retrofit2.Call;
@@ -8,29 +8,28 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Created by sagartahelyani on 26-08-2016.
+ * Created by sagartahelyani on 02-09-2016.
  */
-public class LoginApi {
+public class AgentListApi {
 
     private AppApi appApi;
     private APIListener apiListener;
 
-    public LoginApi() {
+    public AgentListApi() {
         appApi = MyApplication.getRetrofit().create(AppApi.class);
     }
 
-    public void login(String password, String username, final APIListener<LoginResponse> apiListener) {
+    public void getAgents(String userid, final APIListener<AgentListResponse> apiListener) {
 
-        Call<LoginResponse> profileCall = appApi.login(password, username);
-
-        profileCall.enqueue(new Callback<LoginResponse>() {
+        Call<AgentListResponse> call = appApi.getAgents(userid);
+        call.enqueue(new Callback<AgentListResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(Call<AgentListResponse> call, Response<AgentListResponse> response) {
                 apiListener.onResponse(response);
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(Call<AgentListResponse> call, Throwable t) {
                 apiListener.onFailure(call, t);
             }
         });
@@ -45,4 +44,3 @@ public class LoginApi {
         }
     }
 }
-
