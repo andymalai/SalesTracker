@@ -46,6 +46,6 @@ public class EmptyLayout extends LinearLayout {
 
     public void setContent(String text, int icon) {
         emptyViewBinding.emptyTextView.setText(text);
-        emptyViewBinding.emptyImageView.setImageResource(R.drawable.ic_agent);
+        emptyViewBinding.emptyImageView.setImageResource(icon);
     }
 }

@@ -161,7 +161,7 @@ public class AgentsListActivity extends AppCompatActivity {
         viewBinding.agentRecyclerView.addItemDecoration(new LineDividerItemDecoration(this));
 
         viewBinding.agentRecyclerView.setEmptyView(viewBinding.emptyLayout);
-        viewBinding.emptyLayout.setContent("No Agents");
+        viewBinding.emptyLayout.setContent("No Agents", R.drawable.ic_agent);
 
         adapter = new AgentsListAdapter(this, agentList, new AgentsListAdapter.onSelectionListener() {
             @Override
