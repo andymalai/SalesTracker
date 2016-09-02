@@ -18,6 +18,7 @@
             android:layout_height="@dimen/dimen_42dp"
             android:background="@drawable/letter_shape"
             android:gravity="center"
+            android:textAllCaps="true"
             android:text="A"
             android:textColor="@color/white"
             android:textSize="@dimen/XXL_TEXT" />

@@ -7,20 +7,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.webmne.salestracker.widget.TfTextView
-            android:id="@+id/emptyTextView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Empty"
-            android:visibility="gone" />
-
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="visible">
+
+            <com.webmne.salestracker.widget.EmptyLayout
+                android:id="@+id/emptyLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
 
             <com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView
                 android:id="@+id/branchContactRecyclerView"
@@ -29,7 +28,7 @@
                 app:frv_emptyView="@id/emptyTextView"
                 app:frv_isEmptyViewKeepShowHeadOrFooter="false" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 

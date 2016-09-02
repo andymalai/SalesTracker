@@ -5,32 +5,33 @@ package com.webmne.salestracker.contacts.model;
  */
 public class BranchContactsModel {
 
+
     /**
-     * EmpId : 1
+     * Empid : RM_guj_001
      * Region : Gujarat
-     * Position : Marketer
-     * Name : MKT_guj_001
-     * MobileNo : 9898989898
-     * EmailId : mkt223@amg.com
-     * BranchId : 36
-     * BranchName : Vadodara
+     * Position : RM
+     * Name : RM_guj_001
+     * MobileNo : 88888888
+     * Emailid : RM2@amg.com
+     * Branchid : 44
+     * BranchName : Ankleshwar
      */
 
-    private int EmpId;
+    private String Empid;
     private String Region;
     private String Position;
     private String Name;
     private String MobileNo;
-    private String EmailId;
-    private int BranchId;
+    private String Emailid;
+    private String Branchid;
     private String BranchName;
 
-    public int getEmpId() {
-        return EmpId;
+    public String getEmpid() {
+        return Empid;
     }
 
-    public void setEmpId(int EmpId) {
-        this.EmpId = EmpId;
+    public void setEmpid(String Empid) {
+        this.Empid = Empid;
     }
 
     public String getRegion() {
@@ -65,20 +66,20 @@ public class BranchContactsModel {
         this.MobileNo = MobileNo;
     }
 
-    public String getEmailId() {
-        return EmailId;
+    public String getEmailid() {
+        return Emailid;
     }
 
-    public void setEmailId(String EmailId) {
-        this.EmailId = EmailId;
+    public void setEmailid(String Emailid) {
+        this.Emailid = Emailid;
     }
 
-    public int getBranchId() {
-        return BranchId;
+    public String getBranchid() {
+        return Branchid;
     }
 
-    public void setBranchId(int BranchId) {
-        this.BranchId = BranchId;
+    public void setBranchid(String Branchid) {
+        this.Branchid = Branchid;
     }
 
     public String getBranchName() {

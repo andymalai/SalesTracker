@@ -28,7 +28,7 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
     private ArrayList<BranchContactsModel> branchContactsModelList;
 
     public void setBranchContactList(ArrayList<BranchContactsModel> branchContactsModelList) {
-        this.branchContactsModelList = new ArrayList<>();
+//        this.branchContactsModelList = new ArrayList<>();
         this.branchContactsModelList = branchContactsModelList;
         notifyDataSetChanged();
     }
@@ -86,7 +86,7 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
                 ivCall.setVisibility(View.VISIBLE);
             }
 
-            if (TextUtils.isEmpty(branchContactsModel.getEmailId())) {
+            if (TextUtils.isEmpty(branchContactsModel.getEmailid())) {
                 ivEmail.setVisibility(View.GONE);
             } else {
                 ivEmail.setVisibility(View.VISIBLE);
@@ -105,7 +105,7 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
                 @Override
                 public void onClick(View v) {
 
-                    Functions.sendMailTo(context, branchContactsModel.getEmailId());
+                    Functions.sendMailTo(context, branchContactsModel.getEmailid());
 
                 }
             });

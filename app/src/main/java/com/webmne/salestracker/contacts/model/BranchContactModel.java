@@ -12,13 +12,13 @@ import java.util.ArrayList;
  */
 public class BranchContactModel extends Response {
 
-    BranchContactDataModel Data;
+    BranchContactDataModel data;
 
     public BranchContactDataModel getData() {
-        return Data;
+        return data;
     }
 
     public void setData(BranchContactDataModel data) {
-        Data = data;
+        this.data = data;
     }
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.AppApi;
 import com.webmne.salestracker.contacts.adapter.BranchContactListAdapter;
@@ -108,32 +109,32 @@ public class BranchContactFragment extends Fragment {
             @Override
             public void onResponse(Call<BranchContactModel> call, Response<BranchContactModel> response) {
 
-                if (response.body() != null) {
+                if (response.isSuccessful()) {
                     Log.e("response", MyApplication.getGson().toJson(response.body(), BranchContactModel.class));
 
                     if (response.body().getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                        branchContactsModelList.clear();
+
+                        /*branchContactsModelList.clear();
 
                         branchContactsModelList.addAll(response.body().getData().getContacts());
 
-                        branchContactListAdapter.setBranchContactList(branchContactsModelList);
+                        branchContactListAdapter.setBranchContactList(branchContactsModelList);*/
+
+                        branchContactListAdapter.setBranchContactList(response.body().getData().getContacts());
+
                     } else {
-
-
-
+                        SimpleToast.error(getActivity(), response.body().getResponse().getResponseMsg());
                     }
 
-
+                } else {
+                    SimpleToast.error(getActivity(), getString(R.string.try_again));
                 }
-
-
             }
 
             @Override
             public void onFailure(Call<BranchContactModel> call, Throwable t) {
-
                 Log.e("tag", "t:-" + t);
-
+                SimpleToast.error(getActivity(), getString(R.string.try_again));
             }
         });
 
@@ -145,6 +146,9 @@ public class BranchContactFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         fragmentBranchContactBinding.branchContactRecyclerView.setLayoutManager(layoutManager);
         fragmentBranchContactBinding.branchContactRecyclerView.addItemDecoration(new LineDividerItemDecoration(getActivity()));
+
+        fragmentBranchContactBinding.branchContactRecyclerView.setEmptyView(fragmentBranchContactBinding.emptyLayout);
+        fragmentBranchContactBinding.emptyLayout.setContent("No Branches");
 
         branchContactListAdapter = new BranchContactListAdapter(getActivity(), branchContactsModelList);
 
