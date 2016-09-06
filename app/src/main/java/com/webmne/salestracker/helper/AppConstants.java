@@ -19,10 +19,18 @@ public class AppConstants {
     public static final String LoginBase = "login.php?format=json";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/branch_list.php?format=json&branch=28
-    public static final String BranchContact = "branch_list.php";
+    public static final String BranchContact = "branch_list.php?format=json";
+
+    // http://ws-srv-php/projects/drupal/amgsales2/services/contact_department_list.php?format=json
+    public static final String DepartmentContact = "contact_department_list.php?format=json";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/agent_list.php?format=json&userid=676
     public static final String AgentList = "agent_list.php?format=json";
 
+    // http://ws-srv-php/projects/drupal/amgsales2/services/tier_list.php?format=json
+    public static final String TierList = "tier_list.php?format=json";
+
+    // http://ws-srv-php/projects/drupal/amgsales2/services/branch.php?format=json
+    public static final String BranchList = "branch.php?format=json";
 
 }

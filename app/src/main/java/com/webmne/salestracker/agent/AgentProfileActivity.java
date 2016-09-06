@@ -1,152 +1,258 @@
 package com.webmne.salestracker.agent;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.widget.TfButton;
-import com.webmne.salestracker.widget.TfEditText;
-import com.webmne.salestracker.widget.TfTextView;
+import com.webmne.salestracker.agent.adapter.BranchAdapter;
+import com.webmne.salestracker.agent.adapter.TierAdapter;
+import com.webmne.salestracker.api.APIListener;
+import com.webmne.salestracker.api.BranchApi;
+import com.webmne.salestracker.api.TierApi;
+import com.webmne.salestracker.api.model.AgentModel;
+import com.webmne.salestracker.api.model.Branch;
+import com.webmne.salestracker.api.model.BranchListResponse;
+import com.webmne.salestracker.api.model.Tier;
+import com.webmne.salestracker.api.model.TierListResponse;
+import com.webmne.salestracker.databinding.ActivityAgentProfileBinding;
+import com.webmne.salestracker.helper.AppConstants;
+import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.MyApplication;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Response;
 
-public class AgentProfileActivity extends AppCompatActivity {
+public class AgentProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    @BindView(R.id.txtCustomTitle)
-    TfTextView txtCustomTitle;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.txtCancel)
-    TfTextView txtCancel;
-    @BindView(R.id.edtAgentName)
-    TfEditText edtAgentName;
-    @BindView(R.id.spinnerTier)
-    AppCompatSpinner spinnerTier;
-    @BindView(R.id.spinnerBranch)
-    AppCompatSpinner spinnerBranch;
-    @BindView(R.id.edtPhoneNumber)
-    TfEditText edtPhoneNumber;
-    @BindView(R.id.edtEmailId)
-    TfEditText edtEmailId;
-    @BindView(R.id.edtKruniaCode)
-    TfEditText edtKruniaCode;
-    @BindView(R.id.edtAmgGeneral)
-    TfEditText edtAmgGeneral;
-    @BindView(R.id.edtDescription)
-    TfEditText edtDescription;
-    @BindView(R.id.btnEdit)
-    TfButton btnEdit;
-    @BindView(R.id.relativeLayout)
-    LinearLayout relativeLayout;
-
-    Unbinder unbinder;
     private boolean isEditMode = false;
+
+    private ActivityAgentProfileBinding viewBinding;
+    private String agent;
+    private AgentModel agentModel;
+    private TierApi tierApi;
+    private BranchApi branchApi;
+    private TierAdapter adapter;
+    private BranchAdapter branchAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agent_profile);
-        unbinder = ButterKnife.bind(this);
+
+        viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_agent_profile);
+        tierApi = new TierApi();
+        branchApi = new BranchApi();
 
         init();
     }
 
     private void init() {
-        if (toolbar != null)
-            toolbar.setTitle("");
-        setSupportActionBar(toolbar);
+        if (viewBinding.toolbarLayout.toolbar != null)
+            viewBinding.toolbarLayout.toolbar.setTitle("");
+        setSupportActionBar(viewBinding.toolbarLayout.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        viewBinding.toolbarLayout.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
 
-        txtCustomTitle.setText(getString(R.string.agent_profile_title));
+        viewBinding.toolbarLayout.txtCustomTitle.setText(getString(R.string.agent_profile_title));
 
-        spinnerTier.setEnabled(false);
-        spinnerBranch.setEnabled(false);
 
-        fetchDetails();
+        if (Functions.isConnected(this)) {
+
+            // call all ws one by one
+            fetchTier();
+
+        } else {
+            SimpleToast.error(AgentProfileActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+        }
+
+        actionListener();
+    }
+
+    private void fetchBranches() {
+        branchApi.getBranchList(new APIListener<BranchListResponse>() {
+            @Override
+            public void onResponse(Response<BranchListResponse> response) {
+                if (response.isSuccessful()) {
+                    BranchListResponse branchListResponse = response.body();
+                    if (branchListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        branchAdapter = new BranchAdapter(AgentProfileActivity.this, R.layout.item_adapter, branchListResponse.getData().getBranches());
+                        viewBinding.spinnerBranch.setAdapter(branchAdapter);
+
+                        // set details after all spinner adapter set
+                        fetchDetails();
+
+                    } else {
+                        SimpleToast.error(AgentProfileActivity.this, branchListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                } else {
+                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BranchListResponse> call, Throwable t) {
+                SimpleToast.error(AgentProfileActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+            }
+        });
+    }
+
+    private void fetchTier() {
+        tierApi.getTierList(new APIListener<TierListResponse>() {
+            @Override
+            public void onResponse(Response<TierListResponse> response) {
+                if (response.isSuccessful()) {
+
+                    TierListResponse tierListResponse = response.body();
+                    if (tierListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        adapter = new TierAdapter(AgentProfileActivity.this, R.layout.item_adapter, tierListResponse.getData().getTiers());
+                        viewBinding.spinnerTier.setAdapter(adapter);
+
+                        // call branches for set branch spinner
+                        fetchBranches();
+
+                    } else {
+                        SimpleToast.error(AgentProfileActivity.this, tierListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                } else {
+                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TierListResponse> call, Throwable t) {
+                SimpleToast.error(AgentProfileActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+            }
+        });
+    }
+
+    private void actionListener() {
+        viewBinding.btnEdit.setOnClickListener(this);
+        viewBinding.txtCancel.setOnClickListener(this);
     }
 
     private void fetchDetails() {
         // call api for fetch profile or set details from POJO
-        edtAgentName.setText("Sagar");
-        edtPhoneNumber.setText("9429841328");
-        edtEmailId.setText("sagar@gmail.com");
-        edtKruniaCode.setText("KRUNIACODE");
-        edtAmgGeneral.setText("AMGCODE");
-        edtDescription.setText("Hello\nThis is test.\nThank you");
 
+        agent = getIntent().getStringExtra("agent");
+        agentModel = MyApplication.getGson().fromJson(agent, AgentModel.class);
+
+        viewBinding.edtAgentName.setText(String.format("%s", agentModel.getName()));
+        viewBinding.edtPhoneNumber.setText(String.format("%s", agentModel.getMobileNo()));
+        viewBinding.edtEmailId.setText(String.format("%s", agentModel.getEmailid()));
+        viewBinding.edtKruniaCode.setText(String.format("%s", agentModel.getKruniaCode()));
+        viewBinding.edtAmgGeneral.setText(String.format("%s", agentModel.getAmgCode()));
+        viewBinding.edtDescription.setText("Hello\nThis is test.\nThank you");
+
+        Log.e("tier", agentModel.getTierid());
+
+        int tierPosition = getIndex(adapter, agentModel.getTierid());
+        viewBinding.spinnerTier.setSelection(tierPosition);
+
+        int branchPosition = getBranchIndex(branchAdapter, agentModel.getBranchid());
+        viewBinding.spinnerBranch.setSelection(branchPosition);
+
+        adapter.setCanOpen(false);
+    }
+
+    private int getIndex(TierAdapter adapter, String myString) {
+        int index = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            Tier tier = adapter.getItem(i);
+            if (tier.getTeirid().equals(myString)) {
+                index = i;
+                break;
+            }
+
+        }
+        return index;
+    }
+
+    private int getBranchIndex(BranchAdapter adapter, String myString) {
+        int index = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            Branch tier = adapter.getItem(i);
+            if (tier.getBranchId().equals(myString)) {
+                index = i;
+                break;
+            }
+
+        }
+        return index;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
+        viewBinding.unbind();
+        tierApi.onDestroy();
     }
 
-    @OnClick({R.id.txtCancel, R.id.btnEdit})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.txtCancel:
                 if (isEditMode) {
+                    disableFields();
                     isEditMode = !isEditMode;
-                    txtCancel.setText(getString(R.string.btn_delete));
-                    btnEdit.setText(getString(R.string.btn_edit));
-                    edtAgentName.setEnabled(false);
-                    spinnerTier.setEnabled(false);
-                    spinnerBranch.setEnabled(false);
-                    edtPhoneNumber.setEnabled(false);
-                    edtEmailId.setEnabled(false);
-                    edtKruniaCode.setEnabled(false);
-                    edtAmgGeneral.setEnabled(false);
-                    edtDescription.setEnabled(false);
                 } else {
                     Toast.makeText(AgentProfileActivity.this, "Delete", Toast.LENGTH_SHORT).show();
                 }
-
                 break;
 
             case R.id.btnEdit:
                 isEditMode = !isEditMode;
                 if (isEditMode) {
-                    txtCancel.setText(getString(R.string.btn_cancel));
-                    btnEdit.setText(getString(R.string.btn_save));
-                    edtAgentName.setEnabled(true);
-                    spinnerTier.setEnabled(true);
-                    spinnerBranch.setEnabled(true);
-                    edtPhoneNumber.setEnabled(true);
-                    edtEmailId.setEnabled(true);
-                    edtKruniaCode.setEnabled(true);
-                    edtAmgGeneral.setEnabled(true);
-                    edtDescription.setEnabled(true);
+                    enableFields();
 
                 } else {
                     SimpleToast.ok(AgentProfileActivity.this, getString(R.string.profile_success));
-                    txtCancel.setText(getString(R.string.btn_delete));
-                    btnEdit.setText(getString(R.string.btn_edit));
-                    edtAgentName.setEnabled(false);
-                    spinnerTier.setEnabled(false);
-                    spinnerBranch.setEnabled(false);
-                    edtPhoneNumber.setEnabled(false);
-                    edtEmailId.setEnabled(false);
-                    edtKruniaCode.setEnabled(false);
-                    edtAmgGeneral.setEnabled(false);
-                    edtDescription.setEnabled(false);
+                    disableFields();
                 }
                 break;
         }
+    }
+
+    private void enableFields() {
+        viewBinding.txtCancel.setText(getString(R.string.btn_cancel));
+        viewBinding.btnEdit.setText(getString(R.string.btn_save));
+
+        viewBinding.edtAgentName.setFocusableInTouchMode(true);
+        viewBinding.edtPhoneNumber.setFocusableInTouchMode(true);
+        viewBinding.edtEmailId.setFocusableInTouchMode(true);
+        viewBinding.edtKruniaCode.setFocusableInTouchMode(true);
+        viewBinding.edtAmgGeneral.setFocusableInTouchMode(true);
+        viewBinding.edtDescription.setFocusableInTouchMode(true);
+    }
+
+    private void disableFields() {
+        viewBinding.txtCancel.setText(getString(R.string.btn_delete));
+        viewBinding.btnEdit.setText(getString(R.string.btn_edit));
+
+        viewBinding.edtAgentName.setFocusableInTouchMode(false);
+        viewBinding.spinnerTier.setFocusableInTouchMode(false);
+        viewBinding.spinnerBranch.setFocusableInTouchMode(false);
+        viewBinding.edtPhoneNumber.setFocusableInTouchMode(false);
+        viewBinding.edtEmailId.setFocusableInTouchMode(false);
+        viewBinding.edtKruniaCode.setFocusableInTouchMode(false);
+        viewBinding.edtAmgGeneral.setFocusableInTouchMode(false);
+        viewBinding.edtDescription.setFocusableInTouchMode(false);
+
+        viewBinding.edtAgentName.setFocusable(false);
+        viewBinding.spinnerTier.setFocusable(false);
+        viewBinding.spinnerBranch.setFocusable(false);
+        viewBinding.edtPhoneNumber.setFocusable(false);
+        viewBinding.edtEmailId.setFocusable(false);
+        viewBinding.edtKruniaCode.setFocusable(false);
+        viewBinding.edtAmgGeneral.setFocusable(false);
+        viewBinding.edtDescription.setFocusable(false);
     }
 }

@@ -1,4 +1,4 @@
-package com.webmne.salestracker.agent.model;
+package com.webmne.salestracker.api.model;
 
 /**
  * Created by sagartahelyani on 12-08-2016.

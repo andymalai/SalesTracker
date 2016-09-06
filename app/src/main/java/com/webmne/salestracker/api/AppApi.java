@@ -1,8 +1,11 @@
 package com.webmne.salestracker.api;
 
 import com.webmne.salestracker.api.model.AgentListResponse;
+import com.webmne.salestracker.api.model.BranchListResponse;
 import com.webmne.salestracker.api.model.LoginResponse;
+import com.webmne.salestracker.api.model.TierListResponse;
 import com.webmne.salestracker.contacts.model.BranchContactModel;
+import com.webmne.salestracker.contacts.model.DepartmentContactModel;
 import com.webmne.salestracker.helper.AppConstants;
 
 import retrofit2.Call;
@@ -18,8 +21,18 @@ public interface AppApi {
     Call<LoginResponse> login(@Query("password") String password, @Query("username") String username);
 
     @GET(AppConstants.BranchContact)
-    Call<BranchContactModel> getBranchContact(@Query("format") String format, @Query("branch") String branch);
+    Call<BranchContactModel> getBranchContact(@Query("branch") String branch);
+
+    @GET(AppConstants.DepartmentContact)
+    Call<DepartmentContactModel> getDepartmentContact();
 
     @GET(AppConstants.AgentList)
     Call<AgentListResponse> getAgents(@Query("userid") String userid);
+
+    @GET(AppConstants.TierList)
+    Call<TierListResponse> getTier();
+
+    @GET(AppConstants.BranchList)
+    Call<BranchListResponse> getBranchList();
+
 }

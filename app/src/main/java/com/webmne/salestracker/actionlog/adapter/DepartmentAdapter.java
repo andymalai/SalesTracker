@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.model.Department;
-import com.webmne.salestracker.agent.model.AgentModel;
 import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;

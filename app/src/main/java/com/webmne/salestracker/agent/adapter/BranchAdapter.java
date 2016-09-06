@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.agent.model.BranchModel;
+import com.webmne.salestracker.api.model.Branch;
 import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
@@ -15,14 +15,14 @@ import java.util.ArrayList;
 /**
  * Created by sagartahelyani on 15-08-2016.
  */
-public class BranchAdapter extends ArrayAdapter<BranchModel> {
+public class BranchAdapter extends ArrayAdapter<Branch> {
 
-    private ArrayList<BranchModel> branchModels;
+    private ArrayList<Branch> branchModels;
     private Context context;
     private int textViewResourceId;
     private LayoutInflater inflater;
 
-    public BranchAdapter(Context context, int textViewResourceId, ArrayList<BranchModel> branchModels) {
+    public BranchAdapter(Context context, int textViewResourceId, ArrayList<Branch> branchModels) {
         super(context, textViewResourceId);
         this.context = context;
         this.textViewResourceId = textViewResourceId;
@@ -33,6 +33,11 @@ public class BranchAdapter extends ArrayAdapter<BranchModel> {
     @Override
     public int getCount() {
         return branchModels.size();
+    }
+
+    @Override
+    public Branch getItem(int position) {
+        return branchModels.get(position);
     }
 
     @Override

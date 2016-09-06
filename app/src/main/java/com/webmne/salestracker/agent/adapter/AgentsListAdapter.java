@@ -1,9 +1,11 @@
 package com.webmne.salestracker.agent.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +15,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.agent.model.AgentModel;
+import com.webmne.salestracker.agent.AgentProfileActivity;
+import com.webmne.salestracker.api.model.AgentModel;
 import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.widget.TfTextView;
 
@@ -80,22 +84,22 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
 
         public void setAgentDetails(final AgentModel agentModel) {
 
-            txtAgentName.setText(agentModel.getAgentName());
-            letterIcon.setText(agentModel.getAgentName().substring(0, 1));
+            txtAgentName.setText(agentModel.getName());
+            letterIcon.setText(agentModel.getName().substring(0, 1));
 
-            if (TextUtils.isEmpty(agentModel.getAgentContactNo())) {
+            if (TextUtils.isEmpty(agentModel.getMobileNo())) {
                 imgCall.setVisibility(View.GONE);
             } else {
                 imgCall.setVisibility(View.VISIBLE);
             }
 
-            if (TextUtils.isEmpty(agentModel.getAgentEmail())) {
+            if (TextUtils.isEmpty(agentModel.getEmailid())) {
                 imgEmail.setVisibility(View.GONE);
             } else {
                 imgEmail.setVisibility(View.VISIBLE);
             }
 
-            if (agentModel.isChecked()) {
+            /*if (agentModel.isChecked()) {
                 imgCheck.setVisibility(View.VISIBLE);
                 letterIcon.setVisibility(View.GONE);
                 parentView.setBackgroundColor(ContextCompat.getColor(context, R.color.off_white));
@@ -103,7 +107,7 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
                 imgCheck.setVisibility(View.GONE);
                 letterIcon.setVisibility(View.VISIBLE);
                 parentView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
-            }
+            }*/
 
             imgCheck.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,7 +118,6 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
                 private void reverseFlip() {
                     PrefUtils.setAgent(context, agentModel);
                     onSelectionListener.onSelect(false);
-                    agentModel.setChecked(false);
                     imgCheck.startAnimation(flipReverse);
                     parentView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
                     flipReverse.setAnimationListener(new Animation.AnimationListener() {
@@ -147,7 +150,6 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
                 private void flip() {
                     PrefUtils.setAgent(context, agentModel);
                     onSelectionListener.onSelect(true);
-                    agentModel.setChecked(true);
                     parentView.setBackgroundColor(ContextCompat.getColor(context, R.color.off_white));
                     letterIcon.startAnimation(flipAnim);
                     flipAnim.setAnimationListener(new Animation.AnimationListener() {
@@ -173,14 +175,14 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
             imgCall.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Functions.makePhoneCall(context, agentModel.getAgentContactNo());
+                    Functions.makePhoneCall(context, agentModel.getMobileNo());
                 }
             });
 
             imgEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Functions.sendMailTo(context, agentModel.getAgentEmail());
+                    Functions.sendMailTo(context, agentModel.getEmailid());
                 }
             });
         }

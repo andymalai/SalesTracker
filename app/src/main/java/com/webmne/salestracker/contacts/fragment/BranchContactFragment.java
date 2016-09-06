@@ -103,7 +103,7 @@ public class BranchContactFragment extends Fragment {
 
 
     private void getBranchContact() {
-        Call<BranchContactModel> call = appApi.getBranchContact("json", PrefUtils.getBranchId(getActivity()));
+        Call<BranchContactModel> call = appApi.getBranchContact(PrefUtils.getBranchId(getActivity()));
 
         call.enqueue(new Callback<BranchContactModel>() {
             @Override

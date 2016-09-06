@@ -1,115 +1,111 @@
 package com.webmne.salestracker.agent;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.LinearLayout;
 
+import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.agent.adapter.BranchAdapter;
 import com.webmne.salestracker.agent.adapter.TierAdapter;
-import com.webmne.salestracker.agent.model.BranchModel;
-import com.webmne.salestracker.agent.model.TierModel;
-import com.webmne.salestracker.widget.TfButton;
-import com.webmne.salestracker.widget.TfEditText;
-import com.webmne.salestracker.widget.TfTextView;
+import com.webmne.salestracker.api.APIListener;
+import com.webmne.salestracker.api.TierApi;
+import com.webmne.salestracker.api.model.Branch;
+import com.webmne.salestracker.api.model.TierListResponse;
+import com.webmne.salestracker.databinding.ActivityAddAgentBinding;
+import com.webmne.salestracker.helper.AppConstants;
+import com.webmne.salestracker.helper.Functions;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class AddAgentActivity extends AppCompatActivity {
 
-    @BindView(R.id.txtCustomTitle)
-    TfTextView txtCustomTitle;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.edtAgentName)
-    TfEditText edtAgentName;
-    @BindView(R.id.spinnerTier)
-    AppCompatSpinner spinnerTier;
-    @BindView(R.id.spinnerBranch)
-    AppCompatSpinner spinnerBranch;
-    @BindView(R.id.edtPhoneNumber)
-    TfEditText edtPhoneNumber;
-    @BindView(R.id.edtEmailId)
-    TfEditText edtEmailId;
-    @BindView(R.id.edtKruniaCode)
-    TfEditText edtKruniaCode;
-    @BindView(R.id.edtAmgGeneral)
-    TfEditText edtAmgGeneral;
-    @BindView(R.id.relativeLayout)
-    LinearLayout relativeLayout;
+    private ActivityAddAgentBinding viewBinding;
+    private TierApi tierApi;
+    private TierAdapter adapter;
 
-    Unbinder unbinder;
-    @BindView(R.id.edtDescription)
-    TfEditText edtDescription;
-    @BindView(R.id.btnAdd)
-    TfButton btnAdd;
-
-    private ArrayList<TierModel> tierModels;
-    private ArrayList<BranchModel> branchModels;
+    //  private ArrayList<TierModel> tierModels;
+    private ArrayList<Branch> branchModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_agent);
-        unbinder = ButterKnife.bind(this);
+
+        viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_agent);
+
+        tierApi = new TierApi();
 
         init();
     }
 
     private void init() {
-        if (toolbar != null)
-            toolbar.setTitle("");
-        setSupportActionBar(toolbar);
+        if (viewBinding.toolbarLayout.toolbar != null)
+            viewBinding.toolbarLayout.toolbar.setTitle("");
+        setSupportActionBar(viewBinding.toolbarLayout.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        viewBinding.toolbarLayout.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
 
-        txtCustomTitle.setText(getString(R.string.add_agent));
+        viewBinding.toolbarLayout.txtCustomTitle.setText(getString(R.string.add_agent));
 
-        setTierAdapter();
+        if (Functions.isConnected(this)) {
+            fetchTier();
+        } else {
+            SimpleToast.error(AddAgentActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+        }
 
         setBranchAdapter();
 
     }
 
+    private void fetchTier() {
+        tierApi.getTierList(new APIListener<TierListResponse>() {
+            @Override
+            public void onResponse(Response<TierListResponse> response) {
+                if (response.isSuccessful()) {
+
+                    TierListResponse tierListResponse = response.body();
+                    if (tierListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        adapter = new TierAdapter(AddAgentActivity.this, R.layout.item_adapter, tierListResponse.getData().getTiers());
+                        viewBinding.spinnerTier.setAdapter(adapter);
+                    } else {
+                        SimpleToast.error(AddAgentActivity.this, tierListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                } else {
+                    SimpleToast.error(AddAgentActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TierListResponse> call, Throwable t) {
+                SimpleToast.error(AddAgentActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+            }
+        });
+    }
+
     private void setBranchAdapter() {
         // fetch branches
-        branchModels = new ArrayList<>();
+       /* branchModels = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            BranchModel model = new BranchModel(i, "Branch " + (i + 1));
+            Branch model = new Branch();
             branchModels.add(model);
         }
 
         // set branches to adapter
-        spinnerBranch.setAdapter(new BranchAdapter(AddAgentActivity.this, R.layout.item_adapter, branchModels));
-    }
-
-    private void setTierAdapter() {
-        // get tier list
-        tierModels = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            TierModel model = new TierModel(i, "Tier " + (i + 1));
-            tierModels.add(model);
-        }
-
-        // set tiers to adapter
-        spinnerTier.setAdapter(new TierAdapter(AddAgentActivity.this, R.layout.item_adapter, tierModels));
+        viewBinding.spinnerBranch.setAdapter(new BranchAdapter(AddAgentActivity.this, R.layout.item_adapter, branchModels));*/
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
+        viewBinding.unbind();
     }
 }

@@ -14,7 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.contacts.model.DepartmentContactDetail;
 import com.webmne.salestracker.contacts.model.DepartmentContactModel;
+import com.webmne.salestracker.contacts.model.DepartmentContactSubDetail;
 import com.webmne.salestracker.contacts.model.DepartmentContactSubModel;
 import com.webmne.salestracker.helper.Functions;
 
@@ -47,7 +49,7 @@ public class DepartmentContactListAdapter extends RecyclerView.Adapter<RecyclerV
     public int getItemViewType(int position) {
 
         Object o = departmentContactModelList.get(position);
-        if (o instanceof DepartmentContactModel) {
+        if (o instanceof DepartmentContactDetail) {
             return DEPT_TYPE;
         } else {
             return DEPT_SUB_TYPE;
@@ -81,14 +83,14 @@ public class DepartmentContactListAdapter extends RecyclerView.Adapter<RecyclerV
         switch (holder.getItemViewType()) {
             case DEPT_TYPE:
                 DepartmentViewHolder departmentViewHolder = (DepartmentViewHolder) holder;
-                if (o instanceof DepartmentContactModel) {
-                    departmentViewHolder.setDepartment((DepartmentContactModel) o);
+                if (o instanceof DepartmentContactDetail) {
+                    departmentViewHolder.setDepartment((DepartmentContactDetail) o);
                 }
                 break;
             case DEPT_SUB_TYPE:
                 DepartmentSubViewHolder departmentSubViewHolder = (DepartmentSubViewHolder) holder;
-                if (o instanceof DepartmentContactSubModel) {
-                    departmentSubViewHolder.setSubDepartment((DepartmentContactSubModel) o);
+                if (o instanceof DepartmentContactSubDetail) {
+                    departmentSubViewHolder.setSubDepartment((DepartmentContactSubDetail) o);
                 }
                 break;
         }
@@ -115,8 +117,8 @@ public class DepartmentContactListAdapter extends RecyclerView.Adapter<RecyclerV
 
         }
 
-        public void setDepartment(DepartmentContactModel o) {
-            txtDepartment.setText(o.getDepartmentName());
+        public void setDepartment(DepartmentContactDetail o) {
+            txtDepartment.setText(o.getDeptName());
         }
     }
 
@@ -137,11 +139,11 @@ public class DepartmentContactListAdapter extends RecyclerView.Adapter<RecyclerV
 
         }
 
-        public void setSubDepartment(final DepartmentContactSubModel o)
+        public void setSubDepartment(final DepartmentContactSubDetail o)
         {
             txtName.setText(o.getName());
 
-            if (TextUtils.isEmpty(o.getMobile()))
+            if (TextUtils.isEmpty(o.getPhone()))
             {
                 ivMobile.setVisibility(View.GONE);
             } else {
@@ -159,7 +161,7 @@ public class DepartmentContactListAdapter extends RecyclerView.Adapter<RecyclerV
                 @Override
                 public void onClick(View v) {
 
-                    Functions.makePhoneCall(context, o.getMobile());
+                    Functions.makePhoneCall(context, o.getPhone());
 
                 }
             });
@@ -168,24 +170,7 @@ public class DepartmentContactListAdapter extends RecyclerView.Adapter<RecyclerV
                 @Override
                 public void onClick(View v) {
 
-//                    Functions.sendMailTo(context, o.getEmail());
-
-                    String[] TO = {o.getEmail()};
-                    String[] CC = {""};
-                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
-
-                    emailIntent.setData(Uri.parse("mailto:"));
-                    emailIntent.setType("text/plain");
-                    emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
-                    emailIntent.putExtra(Intent.EXTRA_CC, CC);
-                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your subject");
-                    emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
-
-                    try {
-                        context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-                    }
-                    catch (android.content.ActivityNotFoundException ex) {
-                    }
+                    Functions.sendMailTo(context, o.getEmail());
 
                 }
             });

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.agent.model.AgentModel;
+import com.webmne.salestracker.api.model.AgentModel;
 import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class AgentAdapter extends ArrayAdapter<AgentModel> {
         convertView = inflater.inflate(textViewResourceId, parent, false);
 
         TfTextView txtItem = (TfTextView) convertView.findViewById(R.id.txtItem);
-        txtItem.setText(agentModels.get(position).getAgentName());
+        txtItem.setText(agentModels.get(position).getName());
 
         return convertView;
     }

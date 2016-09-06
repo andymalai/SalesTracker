@@ -1,109 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.webmne.salestracker.agent.AddAgentActivity">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <include layout="@layout/app_bar" />
-
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
+        tools:context="com.webmne.salestracker.agent.AddAgentActivity">
 
-        <LinearLayout
-            android:id="@+id/relativeLayout"
+        <include
+            android:id="@+id/toolbarLayout"
+            layout="@layout/app_bar" />
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/dimen_16dp">
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbarLayout">
 
-            <com.webmne.salestracker.widget.TfEditText
-                android:id="@+id/edtAgentName"
+            <LinearLayout
+                android:id="@+id/relativeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:layout_marginLeft="@dimen/dimen_8dp"
-                android:hint="@string/add_name"
-                android:inputType="text" />
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_16dp">
 
-            <android.support.v7.widget.AppCompatSpinner
-                android:id="@+id/spinnerTier"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:overScrollMode="never"
-                android:overlapAnchor="false"
-                android:paddingBottom="@dimen/dimen_16dp"
-                android:entries="@array/tier_array"
-                android:prompt="@string/select_tier"
-                android:spinnerMode="dropdown" />
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtAgentName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_8dp"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:hint="@string/add_name"
+                    android:inputType="text" />
 
-            <android.support.v7.widget.AppCompatSpinner
-                android:id="@+id/spinnerBranch"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:overScrollMode="never"
-                android:overlapAnchor="false"
-                android:paddingBottom="@dimen/dimen_16dp"
-                android:prompt="@string/select_branch"
-                android:entries="@array/branch_array"
-                android:spinnerMode="dropdown" />
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/spinnerTier"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:entries="@array/tier_array"
+                    android:overScrollMode="never"
+                    android:overlapAnchor="false"
+                    android:paddingBottom="@dimen/dimen_16dp"
+                    android:prompt="@string/select_tier"
+                    android:spinnerMode="dropdown" />
 
-            <com.webmne.salestracker.widget.TfEditText
-                android:id="@+id/edtPhoneNumber"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:hint="@string/enter_number"
-                android:inputType="number" />
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/spinnerBranch"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:entries="@array/branch_array"
+                    android:overScrollMode="never"
+                    android:overlapAnchor="false"
+                    android:paddingBottom="@dimen/dimen_16dp"
+                    android:prompt="@string/select_branch"
+                    android:spinnerMode="dropdown" />
 
-            <com.webmne.salestracker.widget.TfEditText
-                android:id="@+id/edtEmailId"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:hint="@string/enter_email"
-                android:inputType="textEmailAddress" />
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtPhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:hint="@string/enter_number"
+                    android:inputType="number" />
 
-            <com.webmne.salestracker.widget.TfEditText
-                android:id="@+id/edtKruniaCode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:hint="@string/enter_krunia"
-                android:inputType="text" />
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtEmailId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:hint="@string/enter_email"
+                    android:inputType="textEmailAddress" />
 
-            <com.webmne.salestracker.widget.TfEditText
-                android:id="@+id/edtAmgGeneral"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:hint="@string/enter_amg"
-                android:inputType="text" />
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtKruniaCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:hint="@string/enter_krunia"
+                    android:inputType="text" />
 
-            <com.webmne.salestracker.widget.TfEditText
-                android:id="@+id/edtDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:gravity="start|top"
-                android:hint="@string/enter_desc"
-                android:inputType="textMultiLine"
-                android:minLines="3" />
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtAmgGeneral"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:hint="@string/enter_amg"
+                    android:inputType="text" />
 
-            <com.webmne.salestracker.widget.TfButton
-                android:id="@+id/btnAdd"
-                style="@style/MyButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/dimen_16dp"
-                android:text="@string/add" />
-        </LinearLayout>
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:gravity="start|top"
+                    android:hint="@string/enter_desc"
+                    android:inputType="textMultiLine"
+                    android:minLines="3" />
 
-    </ScrollView>
+                <com.webmne.salestracker.widget.TfButton
+                    android:id="@+id/btnAdd"
+                    style="@style/MyButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/dimen_16dp"
+                    android:text="@string/add" />
+            </LinearLayout>
 
-</RelativeLayout>
+        </ScrollView>
+
+    </RelativeLayout>
+</layout>

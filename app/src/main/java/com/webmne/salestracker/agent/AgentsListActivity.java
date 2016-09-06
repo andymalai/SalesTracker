@@ -1,5 +1,6 @@
 package com.webmne.salestracker.agent;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,21 +14,30 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.github.pierry.simpletoast.SimpleToast;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.agent.adapter.AgentsListAdapter;
-import com.webmne.salestracker.agent.model.AgentModel;
+import com.webmne.salestracker.api.APIListener;
 import com.webmne.salestracker.api.AgentListApi;
+import com.webmne.salestracker.api.model.AgentListResponse;
+import com.webmne.salestracker.api.model.AgentModel;
 import com.webmne.salestracker.custom.LineDividerItemDecoration;
+import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityAgentsListBinding;
+import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerViewOnScrollListener;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
-import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class AgentsListActivity extends AppCompatActivity {
 
@@ -38,6 +48,7 @@ public class AgentsListActivity extends AppCompatActivity {
 
     private ActivityAgentsListBinding viewBinding;
     private AgentListApi agentListApi;
+    private LoadingIndicatorDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +82,10 @@ public class AgentsListActivity extends AppCompatActivity {
 
         initRecyclerView();
 
-        getAgents();
+        if (Functions.isConnected(this))
+            getAgents();
+        else
+            SimpleToast.error(AgentsListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
 
         actionListener();
     }
@@ -94,7 +108,9 @@ public class AgentsListActivity extends AppCompatActivity {
         viewBinding.agentRecyclerView.setOnItemClickListener(new FamiliarRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
-                Functions.fireIntent(AgentsListActivity.this, AgentProfileActivity.class);
+                Intent intent = new Intent(AgentsListActivity.this, AgentProfileActivity.class);
+                intent.putExtra("agent", MyApplication.getGson().toJson(agentList.get(position)));
+                startActivity(intent);
             }
         });
 
@@ -113,7 +129,7 @@ public class AgentsListActivity extends AppCompatActivity {
         viewBinding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new CountDownTimer(3000, 1000) {
+                new CountDownTimer(2000, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
 
@@ -125,6 +141,13 @@ public class AgentsListActivity extends AppCompatActivity {
                         viewBinding.swipeRefresh.setRefreshing(false);
                     }
                 }.start();
+            }
+        });
+
+        viewBinding.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Functions.fireIntent(AgentsListActivity.this, AddAgentActivity.class);
             }
         });
     }
@@ -139,19 +162,42 @@ public class AgentsListActivity extends AppCompatActivity {
     }
 
     private void getAgents() {
+        viewBinding.contentLayout.setVisibility(View.GONE);
+        showProgress();
 
-        // TODO: 02-09-2016
         agentList = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
-            AgentModel agent = new AgentModel();
-            agent.setAgentId(i);
-            agent.setAgentName("Agent " + i);
-            agent.setAgentContactNo("9429841325");
-            agent.setAgentEmail("sagar@webmyne.com");
-            agent.setColor(ContextCompat.getColor(this, R.color.tile2));
-            agentList.add(agent);
-        }
-        adapter.setAgentList(agentList);
+
+        agentListApi.getAgents(PrefUtils.getUserId(this), new APIListener<AgentListResponse>() {
+            @Override
+            public void onResponse(Response<AgentListResponse> response) {
+                dismissProgress();
+                viewBinding.contentLayout.setVisibility(View.VISIBLE);
+                if (response.isSuccessful()) {
+                    AgentListResponse listResponse = response.body();
+                    if (listResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        agentList.addAll(listResponse.getData().getAgents());
+                        adapter.setAgentList(listResponse.getData().getAgents());
+                    } else {
+                        SimpleToast.error(AgentsListActivity.this, listResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                } else {
+                    SimpleToast.error(AgentsListActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AgentListResponse> call, Throwable t) {
+                dismissProgress();
+                viewBinding.contentLayout.setVisibility(View.VISIBLE);
+                if (t instanceof TimeoutException) {
+                    SimpleToast.error(AgentsListActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
+                } else if (t instanceof UnknownHostException) {
+                    SimpleToast.error(AgentsListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                } else {
+                    SimpleToast.error(AgentsListActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
+            }
+        });
     }
 
     private void initRecyclerView() {
@@ -198,11 +244,6 @@ public class AgentsListActivity extends AppCompatActivity {
         agentListApi.onDestroy();
     }
 
-    @OnClick(R.id.fab)
-    public void onClick() {
-        Functions.fireIntent(this, AddAgentActivity.class);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_agent, menu);
@@ -212,5 +253,17 @@ public class AgentsListActivity extends AppCompatActivity {
         viewBinding.searchView.setVoiceSearch(true);
         viewBinding.searchView.setHint(getString(R.string.search));
         return true;
+    }
+
+    public void showProgress() {
+        if (dialog == null) {
+            dialog = new LoadingIndicatorDialog(this, "Loading Agents..", android.R.style.Theme_Translucent_NoTitleBar);
+        }
+        dialog.show();
+    }
+
+    public void dismissProgress() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
     }
 }

@@ -14,7 +14,7 @@ import com.webmne.salestracker.actionlog.adapter.DepartmentAdapter;
 import com.webmne.salestracker.actionlog.adapter.InChargeAdapter;
 import com.webmne.salestracker.actionlog.model.Department;
 import com.webmne.salestracker.actionlog.model.InCharge;
-import com.webmne.salestracker.agent.model.AgentModel;
+import com.webmne.salestracker.api.model.AgentModel;
 import com.webmne.salestracker.databinding.ActivityAddActionLogBinding;
 import com.webmne.salestracker.helper.Functions;
 
@@ -102,7 +102,7 @@ public class AddActionLogActivity extends AppCompatActivity {
         agentList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             AgentModel model = new AgentModel();
-            model.setAgentName("Agent " + i);
+            model.setName("Agent " + i);
             agentList.add(model);
         }
         binding.spinnerAgent.setAdapter(new AgentAdapter(this, R.layout.item_adapter, agentList));

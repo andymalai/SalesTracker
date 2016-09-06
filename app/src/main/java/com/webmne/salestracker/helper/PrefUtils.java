@@ -3,7 +3,7 @@ package com.webmne.salestracker.helper;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.webmne.salestracker.agent.model.AgentModel;
+import com.webmne.salestracker.api.model.AgentModel;
 import com.webmne.salestracker.api.model.UserProfile;
 
 import java.util.ArrayList;

@@ -1,7 +1,5 @@
 package com.webmne.salestracker.api.model;
 
-import com.webmne.salestracker.agent.model.AgentModel;
-
 import java.util.ArrayList;
 
 /**

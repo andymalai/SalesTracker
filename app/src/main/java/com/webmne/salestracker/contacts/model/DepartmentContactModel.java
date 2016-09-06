@@ -1,25 +1,22 @@
 package com.webmne.salestracker.contacts.model;
 
+import com.webmne.salestracker.api.model.Response;
+
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by vatsaldesai on 22-08-2016.
  */
-public class DepartmentContactModel implements Serializable {
+public class DepartmentContactModel extends com.webmne.salestracker.api.model.Response {
 
-    private String departmentName;
+    DepartmentContactDataModel data;
 
-    public DepartmentContactModel(String departmentName) {
-        this.departmentName = departmentName;
+    public DepartmentContactDataModel getData() {
+        return data;
     }
 
-
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
+    public void setData(DepartmentContactDataModel data) {
+        this.data = data;
     }
 }

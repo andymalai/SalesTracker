@@ -5,29 +5,41 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.api.AppApi;
 import com.webmne.salestracker.contacts.adapter.DepartmentContactListAdapter;
 import com.webmne.salestracker.contacts.model.DepartmentContactModel;
-import com.webmne.salestracker.contacts.model.DepartmentContactSubModel;
-import com.webmne.salestracker.custom.LineDividerItemDecoration;
+import com.webmne.salestracker.custom.DepartmentContactsImpl;
 import com.webmne.salestracker.databinding.FragmentBranchContactBinding;
+import com.webmne.salestracker.helper.AppConstants;
+import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerViewOnScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class DepartmentContactFragment extends Fragment {
+
+    AppApi appApi;
 
     FragmentBranchContactBinding fragmentBranchContactBinding;
 
     private DepartmentContactListAdapter departmentContactListAdapter;
     private List<Object> departmentContactModelList;
+
+    DepartmentContactsImpl departmentContacts;
 
     public DepartmentContactFragment() {
         // Required empty public constructor
@@ -57,6 +69,9 @@ public class DepartmentContactFragment extends Fragment {
 
 
     private void init() {
+
+        departmentContacts = new DepartmentContactsImpl();
+        appApi = MyApplication.getRetrofit().create(AppApi.class);
 
         initRecyclerView();
 
@@ -90,46 +105,39 @@ public class DepartmentContactFragment extends Fragment {
 
 
     private void getBranchContact() {
+        Call<DepartmentContactModel> call = appApi.getDepartmentContact();
 
-        List<Object> list = new ArrayList<>();
-        list.add(new DepartmentContactModel("Department1"));
-        list.add(new DepartmentContactSubModel("Name1", "8523647853", "abc@amg.com"));
-        list.add(new DepartmentContactSubModel("Name2", "8523647853", "abc@amg.com"));
-        list.add(new DepartmentContactModel("Department2"));
-        list.add(new DepartmentContactSubModel("Name3", "8523647853", "abc@amg.com"));
-        list.add(new DepartmentContactModel("Department3"));
-        list.add(new DepartmentContactSubModel("Name4", "8523647853", "abc@amg.com"));
-        list.add(new DepartmentContactSubModel("Name5", "8523647853", "abc@amg.com"));
+        call.enqueue(new Callback<DepartmentContactModel>() {
+            @Override
+            public void onResponse(Call<DepartmentContactModel> call, Response<DepartmentContactModel> response) {
 
-        departmentContactModelList.addAll(list);
+                if (response.isSuccessful()) {
+                    Log.e("response", MyApplication.getGson().toJson(response.body(), DepartmentContactModel.class));
 
-        departmentContactListAdapter.setDepartmentContactList(departmentContactModelList);
+                    DepartmentContactModel contactModel = response.body();
 
+                    if (contactModel.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
 
+                        departmentContactModelList = departmentContacts.getSortedDepartmentList(contactModel.getData().getContacts());
 
-//        for (int i = 0; i < 2; i++)
-//        {
-//            DepartmentContactModel departmentContactModel = new DepartmentContactModel();
-//
-//            departmentContactModel.setDepartmentName("Department " + i);
-//
-//            List<DepartmentContactSubModel> departmentContactSubModelList = new ArrayList<>();
-//
-//            for (int j = 0; j < 2; j++)
-//            {
-//                DepartmentContactSubModel departmentContactSubModel = new DepartmentContactSubModel();
-//                departmentContactSubModel.setName("Name " + j);
-//                departmentContactSubModel.setMobile("8523647853");
-//                departmentContactSubModel.setEmail("vat@amg.com");
-//                departmentContactSubModelList.add(departmentContactSubModel);
-//            }
-//
-//            departmentContactModel.setDepartmentContactSubModel(departmentContactSubModelList);
-//
-//            departmentContactModelList.add(departmentContactModel);
-//        }
-//
-//        departmentContactListAdapter.setDepartmentContactList(departmentContactModelList);
+                        departmentContactListAdapter.setDepartmentContactList(departmentContactModelList);
+
+                    } else {
+                        SimpleToast.error(getActivity(), response.body().getResponse().getResponseMsg());
+                    }
+
+                } else {
+                    SimpleToast.error(getActivity(), getString(R.string.try_again));
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<DepartmentContactModel> call, Throwable t) {
+
+            }
+        });
+
 
     }
 
