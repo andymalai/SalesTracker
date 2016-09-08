@@ -4,6 +4,7 @@ package com.webmne.salestracker.helper;
  * @author jatin
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -25,6 +26,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.api.model.UserProfile;
+import com.webmne.salestracker.ui.LoginActivity;
 
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -203,5 +206,17 @@ public class Functions {
         void onClickYes(MaterialDialog dialog);
 
         void onClickNo(MaterialDialog dialog);
+    }
+
+    public static void closeSession(Context context) {
+
+        UserProfile userProfile = new UserProfile();
+        PrefUtils.clearUserProfile(context, userProfile);
+
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+
     }
 }

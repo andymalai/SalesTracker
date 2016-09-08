@@ -17,14 +17,17 @@ import com.webmne.salestracker.api.AppApi;
 import com.webmne.salestracker.contacts.adapter.DepartmentContactListAdapter;
 import com.webmne.salestracker.contacts.model.DepartmentContactModel;
 import com.webmne.salestracker.custom.DepartmentContactsImpl;
+import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.FragmentBranchContactBinding;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerViewOnScrollListener;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,7 +42,9 @@ public class DepartmentContactFragment extends Fragment {
     private DepartmentContactListAdapter departmentContactListAdapter;
     private List<Object> departmentContactModelList;
 
-    DepartmentContactsImpl departmentContacts;
+    private DepartmentContactsImpl departmentContacts;
+
+    private LoadingIndicatorDialog dialog;
 
     public DepartmentContactFragment() {
         // Required empty public constructor
@@ -105,12 +110,16 @@ public class DepartmentContactFragment extends Fragment {
 
 
     private void getBranchContact() {
+        fragmentBranchContactBinding.relativeLayout.setVisibility(View.GONE);
+        showProgress();
+
         Call<DepartmentContactModel> call = appApi.getDepartmentContact();
 
         call.enqueue(new Callback<DepartmentContactModel>() {
             @Override
             public void onResponse(Call<DepartmentContactModel> call, Response<DepartmentContactModel> response) {
-
+                fragmentBranchContactBinding.relativeLayout.setVisibility(View.VISIBLE);
+                dismissProgress();
                 if (response.isSuccessful()) {
                     Log.e("response", MyApplication.getGson().toJson(response.body(), DepartmentContactModel.class));
 
@@ -134,10 +143,17 @@ public class DepartmentContactFragment extends Fragment {
 
             @Override
             public void onFailure(Call<DepartmentContactModel> call, Throwable t) {
-
+                fragmentBranchContactBinding.relativeLayout.setVisibility(View.VISIBLE);
+                dismissProgress();
+                if (t instanceof TimeoutException) {
+                    SimpleToast.error(getActivity(), getString(R.string.time_out), getString(R.string.fa_error));
+                } else if (t instanceof UnknownHostException) {
+                    SimpleToast.error(getActivity(), getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                } else {
+                    SimpleToast.error(getActivity(), getString(R.string.try_again), getString(R.string.fa_error));
+                }
             }
         });
-
 
     }
 
@@ -154,5 +170,16 @@ public class DepartmentContactFragment extends Fragment {
         fragmentBranchContactBinding.branchContactRecyclerView.setHasFixedSize(true);
     }
 
+    public void showProgress() {
+        if (dialog == null) {
+            dialog = new LoadingIndicatorDialog(getActivity(), "Loading...", android.R.style.Theme_Translucent_NoTitleBar);
+        }
+        dialog.show();
+    }
+
+    public void dismissProgress() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+    }
 
 }

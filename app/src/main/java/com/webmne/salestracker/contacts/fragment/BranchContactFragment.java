@@ -18,6 +18,7 @@ import com.webmne.salestracker.contacts.adapter.BranchContactListAdapter;
 import com.webmne.salestracker.contacts.model.BranchContactModel;
 import com.webmne.salestracker.contacts.model.BranchContactsModel;
 import com.webmne.salestracker.custom.LineDividerItemDecoration;
+import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.FragmentBranchContactBinding;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.MyApplication;
@@ -25,7 +26,9 @@ import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerViewOnScrollListener;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,6 +42,8 @@ public class BranchContactFragment extends Fragment {
 
     private BranchContactListAdapter branchContactListAdapter;
     private ArrayList<BranchContactsModel> branchContactsModelList;
+
+    private LoadingIndicatorDialog dialog;
 
     public BranchContactFragment() {
         // Required empty public constructor
@@ -103,22 +108,20 @@ public class BranchContactFragment extends Fragment {
 
 
     private void getBranchContact() {
+        fragmentBranchContactBinding.relativeLayout.setVisibility(View.GONE);
+        showProgress();
+
         Call<BranchContactModel> call = appApi.getBranchContact(PrefUtils.getBranchId(getActivity()));
 
         call.enqueue(new Callback<BranchContactModel>() {
             @Override
             public void onResponse(Call<BranchContactModel> call, Response<BranchContactModel> response) {
-
+                fragmentBranchContactBinding.relativeLayout.setVisibility(View.VISIBLE);
+                dismissProgress();
                 if (response.isSuccessful()) {
                     Log.e("response", MyApplication.getGson().toJson(response.body(), BranchContactModel.class));
 
                     if (response.body().getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-
-                        /*branchContactsModelList.clear();
-
-                        branchContactsModelList.addAll(response.body().getData().getContacts());
-
-                        branchContactListAdapter.setBranchContactList(branchContactsModelList);*/
 
                         branchContactListAdapter.setBranchContactList(response.body().getData().getContacts());
 
@@ -133,8 +136,15 @@ public class BranchContactFragment extends Fragment {
 
             @Override
             public void onFailure(Call<BranchContactModel> call, Throwable t) {
-                Log.e("tag", "t:-" + t);
-                SimpleToast.error(getActivity(), getString(R.string.try_again));
+                fragmentBranchContactBinding.relativeLayout.setVisibility(View.VISIBLE);
+                dismissProgress();
+                if (t instanceof TimeoutException) {
+                    SimpleToast.error(getActivity(), getString(R.string.time_out), getString(R.string.fa_error));
+                } else if (t instanceof UnknownHostException) {
+                    SimpleToast.error(getActivity(), getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                } else {
+                    SimpleToast.error(getActivity(), getString(R.string.try_again), getString(R.string.fa_error));
+                }
             }
         });
 
@@ -154,6 +164,18 @@ public class BranchContactFragment extends Fragment {
 
         fragmentBranchContactBinding.branchContactRecyclerView.setAdapter(branchContactListAdapter);
         fragmentBranchContactBinding.branchContactRecyclerView.setHasFixedSize(true);
+    }
+
+    public void showProgress() {
+        if (dialog == null) {
+            dialog = new LoadingIndicatorDialog(getActivity(), "Loading...", android.R.style.Theme_Translucent_NoTitleBar);
+        }
+        dialog.show();
+    }
+
+    public void dismissProgress() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
     }
 
 

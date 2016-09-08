@@ -70,7 +70,7 @@ public class DashboardActivity extends AppCompatActivity {
                     @Override
                     public void onClickYes(MaterialDialog dialog) {
                         // close session
-                        finish();
+                        Functions.closeSession(DashboardActivity.this);
                     }
 
                     @Override

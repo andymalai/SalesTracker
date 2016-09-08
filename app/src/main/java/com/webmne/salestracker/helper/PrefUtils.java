@@ -40,6 +40,17 @@ public class PrefUtils {
         setLoggedIn(context, true);
     }
 
+    public static void clearUserProfile(Context context, UserProfile response) {
+        String toJson = MyApplication.getGson().toJson(response);
+
+        setBranchId(context, "");
+        setUserId(context, "");
+
+        Prefs.with(context).save(USER_PROFILE, toJson);
+
+        setLoggedIn(context, false);
+    }
+
     private static void setUserId(Context context, String userid) {
         Prefs.with(context).save(USER_ID, userid);
     }
