@@ -19,7 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="vatsal" />
+            android:text="vatsal"
+            android:textSize="@dimen/N_TEXT" />
 
         <ImageView
             android:id="@+id/ivMobile"

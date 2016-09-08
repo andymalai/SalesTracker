@@ -1,5 +1,6 @@
 package com.webmne.salestracker.ui.dashboard.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
@@ -71,9 +72,9 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Home
 
         public void setDetails(final HomeTileBean item) {
             imgHomeTileIcon.setImageResource(item.getTileIcon());
-           // imgHomeTileIcon.setColorFilter(item.getContentColor(), PorterDuff.Mode.SRC_ATOP);
+            // imgHomeTileIcon.setColorFilter(item.getContentColor(), PorterDuff.Mode.SRC_ATOP);
             txtHomeTileName.setText(item.getTileName());
-           // txtHomeTileName.setTextColor(item.getContentColor());
+            // txtHomeTileName.setTextColor(item.getContentColor());
             itemView.setBackgroundColor(item.getBackgroundColor());
             itemView.setId(item.getId());
             itemView.setOnTouchListener(new View.OnTouchListener() {
@@ -111,6 +112,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Home
             } else if (selectedId == TileId.TARGET.getId()) {
 
             }
+            ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
     };
 }

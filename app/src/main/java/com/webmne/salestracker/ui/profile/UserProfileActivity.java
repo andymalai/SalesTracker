@@ -37,6 +37,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.push_down_in, R.anim.push_up_out);
             }
         });
         viewBinding.toolbarLayout.txtCustomTitle.setText(getString(R.string.profile_title));
@@ -44,6 +45,12 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         setProfileDetails();
 
         actionListener();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.push_down_in, R.anim.push_up_out);
     }
 
     private void actionListener() {

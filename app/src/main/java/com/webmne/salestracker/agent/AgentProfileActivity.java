@@ -19,10 +19,14 @@ import com.webmne.salestracker.api.model.Branch;
 import com.webmne.salestracker.api.model.BranchListResponse;
 import com.webmne.salestracker.api.model.Tier;
 import com.webmne.salestracker.api.model.TierListResponse;
+import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityAgentProfileBinding;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
+
+import java.net.UnknownHostException;
+import java.util.concurrent.TimeoutException;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -38,6 +42,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     private BranchApi branchApi;
     private TierAdapter adapter;
     private BranchAdapter branchAdapter;
+    private LoadingIndicatorDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +64,11 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 
         viewBinding.toolbarLayout.txtCustomTitle.setText(getString(R.string.agent_profile_title));
-
 
         if (Functions.isConnected(this)) {
 
@@ -78,9 +83,12 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void fetchBranches() {
+        showProgress();
+
         branchApi.getBranchList(new APIListener<BranchListResponse>() {
             @Override
             public void onResponse(Response<BranchListResponse> response) {
+                dismissProgress();
                 if (response.isSuccessful()) {
                     BranchListResponse branchListResponse = response.body();
                     if (branchListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
@@ -101,15 +109,25 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
 
             @Override
             public void onFailure(Call<BranchListResponse> call, Throwable t) {
-                SimpleToast.error(AgentProfileActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                dismissProgress();
+                if (t instanceof TimeoutException) {
+                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
+                } else if (t instanceof UnknownHostException) {
+                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                } else {
+                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
             }
         });
     }
 
     private void fetchTier() {
+        showProgress();
+
         tierApi.getTierList(new APIListener<TierListResponse>() {
             @Override
             public void onResponse(Response<TierListResponse> response) {
+                dismissProgress();
                 if (response.isSuccessful()) {
 
                     TierListResponse tierListResponse = response.body();
@@ -130,7 +148,14 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
 
             @Override
             public void onFailure(Call<TierListResponse> call, Throwable t) {
-                SimpleToast.error(AgentProfileActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                dismissProgress();
+                if (t instanceof TimeoutException) {
+                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
+                } else if (t instanceof UnknownHostException) {
+                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                } else {
+                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
             }
         });
     }
@@ -254,5 +279,23 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
         viewBinding.edtKruniaCode.setFocusable(false);
         viewBinding.edtAmgGeneral.setFocusable(false);
         viewBinding.edtDescription.setFocusable(false);
+    }
+
+    public void showProgress() {
+        if (dialog == null) {
+            dialog = new LoadingIndicatorDialog(this, "Loading Agent Profile..", android.R.style.Theme_Translucent_NoTitleBar);
+        }
+        dialog.show();
+    }
+
+    public void dismissProgress() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

@@ -9,6 +9,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,6 +71,7 @@ public class AgentsListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 
@@ -93,15 +96,23 @@ public class AgentsListActivity extends AppCompatActivity {
     private void actionListener() {
         viewBinding.searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(AgentsListActivity.this, "Do search " + query, Toast.LENGTH_SHORT).show();
-                return false;
+            public boolean onQueryTextSubmit(String newText) {
+                if (TextUtils.isEmpty(newText)) {
+                    adapter.setAgentList(agentList);
+                } else {
+                    adapter.searchFilter(newText);
+                }
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Do some magic
-                return false;
+                if (TextUtils.isEmpty(newText)) {
+                    adapter.setAgentList(agentList);
+                } else {
+                    adapter.searchFilter(newText);
+                }
+                return true;
             }
         });
 
@@ -109,8 +120,9 @@ public class AgentsListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
                 Intent intent = new Intent(AgentsListActivity.this, AgentProfileActivity.class);
-                intent.putExtra("agent", MyApplication.getGson().toJson(agentList.get(position)));
+                intent.putExtra("agent", MyApplication.getGson().toJson(adapter.getAgentList().get(position)));
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
@@ -148,8 +160,28 @@ public class AgentsListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Functions.fireIntent(AgentsListActivity.this, AddAgentActivity.class);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
+
+        viewBinding.txtDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("size", getSelectedItems() + "  #");
+            }
+
+        });
+    }
+
+    private ArrayList<AgentModel> filterSearch(ArrayList<AgentModel> agentList, String query) {
+        final ArrayList<AgentModel> filterAgent = new ArrayList<>();
+        for (AgentModel model : agentList) {
+            final String text = model.getName().toLowerCase();
+            if (text.contains(query.toLowerCase())) {
+                filterAgent.add(model);
+            }
+        }
+        return filterAgent;
     }
 
     @Override
@@ -158,6 +190,7 @@ public class AgentsListActivity extends AppCompatActivity {
             viewBinding.searchView.closeSearch();
         } else {
             super.onBackPressed();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
     }
 
@@ -211,22 +244,22 @@ public class AgentsListActivity extends AppCompatActivity {
 
         adapter = new AgentsListAdapter(this, agentList, new AgentsListAdapter.onSelectionListener() {
             @Override
-            public void onSelect(boolean isSelect) {
+            public void onSelect() {
 
-                if (isSelect) {
-                    searchItem.setVisible(false);
-                    viewBinding.txtDelete.setVisibility(View.VISIBLE);
-                    viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(AgentsListActivity.this, R.color.tile1));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        getWindow().setStatusBarColor(ContextCompat.getColor(AgentsListActivity.this, R.color.tile2));
-                    }
-                } else {
+                if (getSelectedItems() == 0) {
                     viewBinding.txtDelete.setVisibility(View.GONE);
                     searchItem.setVisible(true);
                     viewBinding.searchView.setVisibility(View.VISIBLE);
                     viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimary));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         getWindow().setStatusBarColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimaryDark));
+                    }
+                } else {
+                    searchItem.setVisible(false);
+                    viewBinding.txtDelete.setVisibility(View.VISIBLE);
+                    viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(AgentsListActivity.this, R.color.tile1));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        getWindow().setStatusBarColor(ContextCompat.getColor(AgentsListActivity.this, R.color.tile2));
                     }
                 }
             }
@@ -265,5 +298,15 @@ public class AgentsListActivity extends AppCompatActivity {
     public void dismissProgress() {
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();
+    }
+
+    private int getSelectedItems() {
+        int selected = 0;
+        for (AgentModel model : agentList) {
+            if (model.isChecked()) {
+                selected++;
+            }
+        }
+        return selected;
     }
 }

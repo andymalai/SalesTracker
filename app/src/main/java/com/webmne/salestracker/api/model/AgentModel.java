@@ -1,9 +1,11 @@
 package com.webmne.salestracker.api.model;
 
+import java.io.Serializable;
+
 /**
  * Created by sagartahelyani on 12-08-2016.
  */
-public class AgentModel {
+public class AgentModel implements Serializable {
 
     /**
      * Agentid : 122
@@ -15,6 +17,7 @@ public class AgentModel {
      * KruniaCode : KR346
      * MobileNo : 1111111111
      * Emailid : AG@AMG.COM
+     * Checked : false
      */
 
     private String Agentid;
@@ -26,6 +29,15 @@ public class AgentModel {
     private String KruniaCode;
     private String MobileNo;
     private String Emailid;
+    private boolean IsChecked = false;
+
+    public boolean isChecked() {
+        return IsChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        IsChecked = checked;
+    }
 
     public String getAgentid() {
         return Agentid;

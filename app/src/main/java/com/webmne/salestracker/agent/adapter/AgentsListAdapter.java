@@ -1,11 +1,9 @@
 package com.webmne.salestracker.agent.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.agent.AgentProfileActivity;
 import com.webmne.salestracker.api.model.AgentModel;
 import com.webmne.salestracker.helper.Functions;
-import com.webmne.salestracker.helper.MyApplication;
-import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
@@ -99,7 +94,7 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
                 imgEmail.setVisibility(View.VISIBLE);
             }
 
-            /*if (agentModel.isChecked()) {
+            if (agentModel.isChecked()) {
                 imgCheck.setVisibility(View.VISIBLE);
                 letterIcon.setVisibility(View.GONE);
                 parentView.setBackgroundColor(ContextCompat.getColor(context, R.color.off_white));
@@ -107,7 +102,7 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
                 imgCheck.setVisibility(View.GONE);
                 letterIcon.setVisibility(View.VISIBLE);
                 parentView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
-            }*/
+            }
 
             imgCheck.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -116,8 +111,9 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
                 }
 
                 private void reverseFlip() {
-                    PrefUtils.setAgent(context, agentModel);
-                    onSelectionListener.onSelect(false);
+                    //PrefUtils.setAgent(context, agentModel);
+                    agentModel.setChecked(false);
+                    onSelectionListener.onSelect();
                     imgCheck.startAnimation(flipReverse);
                     parentView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
                     flipReverse.setAnimationListener(new Animation.AnimationListener() {
@@ -148,8 +144,9 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
                 }
 
                 private void flip() {
-                    PrefUtils.setAgent(context, agentModel);
-                    onSelectionListener.onSelect(true);
+                    // PrefUtils.setAgent(context, agentModel);
+                    agentModel.setChecked(true);
+                    onSelectionListener.onSelect();
                     parentView.setBackgroundColor(ContextCompat.getColor(context, R.color.off_white));
                     letterIcon.startAnimation(flipAnim);
                     flipAnim.setAnimationListener(new Animation.AnimationListener() {
@@ -189,6 +186,22 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
     }
 
     public interface onSelectionListener {
-        void onSelect(boolean isSelect);
+        void onSelect();
+    }
+
+    public void searchFilter(String searchQuery) {
+        final ArrayList<AgentModel> filterAgent = new ArrayList<>();
+        for (AgentModel model : agentList) {
+            final String text = model.getName().toLowerCase();
+            if (text.contains(searchQuery.toLowerCase())) {
+                filterAgent.add(model);
+            }
+        }
+        setAgentList(filterAgent);
+
+    }
+
+    public ArrayList<AgentModel> getAgentList() {
+        return agentList;
     }
 }

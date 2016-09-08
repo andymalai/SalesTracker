@@ -19,7 +19,7 @@ import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
-import com.webmne.salestracker.ui.dashboard.DashboadActivity;
+import com.webmne.salestracker.ui.dashboard.DashboardActivity;
 
 import java.util.concurrent.TimeoutException;
 
@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
     private void doLogin() {
 
        /*SimpleToast.ok(LoginActivity.this, getString(R.string.login_success));
-        Functions.fireIntent(LoginActivity.this, DashboadActivity.class);*/
+        Functions.fireIntent(LoginActivity.this, DashboardActivity.class);*/
 
         loginApi.login(Functions.toStr(loginBinding.edtPassword), Functions.toStr(loginBinding.edtEmpId), new APIListener<LoginResponse>() {
             @Override
@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                         PrefUtils.setUserProfile(LoginActivity.this, loginResponse.getData());
 
                         SimpleToast.ok(LoginActivity.this, getString(R.string.login_success));
-                        Functions.fireIntent(LoginActivity.this, DashboadActivity.class);
+                        Functions.fireIntent(LoginActivity.this, DashboardActivity.class);
                         finish();
 
                     } else {

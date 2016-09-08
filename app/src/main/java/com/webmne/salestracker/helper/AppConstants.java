@@ -5,6 +5,13 @@ package com.webmne.salestracker.helper;
  */
 public class AppConstants {
 
+    // User Position Constants
+    public static String MARKETER = "Marketer";
+    public static String HOS = "HOS";
+    public static String BM = "BM";
+    public static String RM = "RM";
+
+
     // Calendar Mode
     public static int DAY_VIEW = 0;
     public static int WEEK_VIEW = 1;

@@ -9,7 +9,7 @@ import com.webmne.salestracker.R;
 import com.webmne.salestracker.databinding.ActivityLauncherBinding;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.PrefUtils;
-import com.webmne.salestracker.ui.dashboard.DashboadActivity;
+import com.webmne.salestracker.ui.dashboard.DashboardActivity;
 
 public class LauncherActivity extends AppCompatActivity {
 
@@ -34,7 +34,7 @@ public class LauncherActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 if (PrefUtils.getLoggedIn(LauncherActivity.this)) {
-                    Functions.fireIntent(LauncherActivity.this, DashboadActivity.class);
+                    Functions.fireIntent(LauncherActivity.this, DashboardActivity.class);
                 } else {
                     Functions.fireIntent(LauncherActivity.this, LoginActivity.class);
                 }

@@ -31,11 +31,12 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
         }
         setSupportActionBar(binding.toolbarLayout.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        
+
         binding.toolbarLayout.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
         binding.toolbarLayout.txtCustomTitle.setText(getString(R.string.action_log_details_title));
@@ -51,5 +52,11 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
         actionLog.setLastUpdate("22-08-2016");
 
         binding.actionLog.setActionLog(actionLog);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

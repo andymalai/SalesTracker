@@ -32,30 +32,38 @@
                     android:hint="@string/add_name"
                     android:inputType="text" />
 
+                <com.webmne.salestracker.widget.TfTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:text="@string/select_tier"
+                    android:textSize="@dimen/S_TEXT" />
+
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/spinnerTier"
                     style="@style/Widget.AppCompat.Spinner.Underlined"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_8dp"
-                    android:entries="@array/tier_array"
                     android:overScrollMode="never"
                     android:overlapAnchor="false"
                     android:paddingBottom="@dimen/dimen_16dp"
-                    android:prompt="@string/select_tier"
                     android:spinnerMode="dropdown" />
+
+                <com.webmne.salestracker.widget.TfTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:text="@string/select_branch"
+                    android:textSize="@dimen/S_TEXT" />
 
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/spinnerBranch"
                     style="@style/Widget.AppCompat.Spinner.Underlined"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_8dp"
-                    android:entries="@array/branch_array"
                     android:overScrollMode="never"
                     android:overlapAnchor="false"
                     android:paddingBottom="@dimen/dimen_16dp"
-                    android:prompt="@string/select_branch"
                     android:spinnerMode="dropdown" />
 
                 <com.webmne.salestracker.widget.TfEditText

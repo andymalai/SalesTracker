@@ -10,14 +10,19 @@ import com.webmne.salestracker.R;
 import com.webmne.salestracker.agent.adapter.BranchAdapter;
 import com.webmne.salestracker.agent.adapter.TierAdapter;
 import com.webmne.salestracker.api.APIListener;
+import com.webmne.salestracker.api.BranchApi;
 import com.webmne.salestracker.api.TierApi;
 import com.webmne.salestracker.api.model.Branch;
+import com.webmne.salestracker.api.model.BranchListResponse;
 import com.webmne.salestracker.api.model.TierListResponse;
+import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityAddAgentBinding;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -26,7 +31,10 @@ public class AddAgentActivity extends AppCompatActivity {
 
     private ActivityAddAgentBinding viewBinding;
     private TierApi tierApi;
+    private BranchApi branchApi;
     private TierAdapter adapter;
+    private BranchAdapter branchAdapter;
+    private LoadingIndicatorDialog dialog;
 
     //  private ArrayList<TierModel> tierModels;
     private ArrayList<Branch> branchModels;
@@ -38,6 +46,7 @@ public class AddAgentActivity extends AppCompatActivity {
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_agent);
 
         tierApi = new TierApi();
+        branchApi = new BranchApi();
 
         init();
     }
@@ -51,31 +60,45 @@ public class AddAgentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 
         viewBinding.toolbarLayout.txtCustomTitle.setText(getString(R.string.add_agent));
 
         if (Functions.isConnected(this)) {
+
+            // call all ws one by one
             fetchTier();
+
         } else {
             SimpleToast.error(AddAgentActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
         }
 
-        setBranchAdapter();
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     private void fetchTier() {
+        showProgress();
+
         tierApi.getTierList(new APIListener<TierListResponse>() {
             @Override
             public void onResponse(Response<TierListResponse> response) {
+                dismissProgress();
                 if (response.isSuccessful()) {
 
                     TierListResponse tierListResponse = response.body();
                     if (tierListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                         adapter = new TierAdapter(AddAgentActivity.this, R.layout.item_adapter, tierListResponse.getData().getTiers());
                         viewBinding.spinnerTier.setAdapter(adapter);
+
+                        // call branches for set branch spinner
+                        fetchBranches();
                     } else {
                         SimpleToast.error(AddAgentActivity.this, tierListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
@@ -86,21 +109,63 @@ public class AddAgentActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TierListResponse> call, Throwable t) {
-                SimpleToast.error(AddAgentActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                dismissProgress();
+                if (t instanceof TimeoutException) {
+                    SimpleToast.error(AddAgentActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
+                } else if (t instanceof UnknownHostException) {
+                    SimpleToast.error(AddAgentActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                } else {
+                    SimpleToast.error(AddAgentActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
             }
         });
     }
 
-    private void setBranchAdapter() {
-        // fetch branches
-       /* branchModels = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            Branch model = new Branch();
-            branchModels.add(model);
-        }
+    private void fetchBranches() {
+        showProgress();
+        branchApi.getBranchList(new APIListener<BranchListResponse>() {
+            @Override
+            public void onResponse(Response<BranchListResponse> response) {
+                dismissProgress();
+                if (response.isSuccessful()) {
+                    BranchListResponse branchListResponse = response.body();
+                    if (branchListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        branchAdapter = new BranchAdapter(AddAgentActivity.this, R.layout.item_adapter, branchListResponse.getData().getBranches());
+                        viewBinding.spinnerBranch.setAdapter(branchAdapter);
 
-        // set branches to adapter
-        viewBinding.spinnerBranch.setAdapter(new BranchAdapter(AddAgentActivity.this, R.layout.item_adapter, branchModels));*/
+                    } else {
+                        SimpleToast.error(AddAgentActivity.this, branchListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                } else {
+                    SimpleToast.error(AddAgentActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BranchListResponse> call, Throwable t) {
+                dismissProgress();
+                if (t instanceof TimeoutException) {
+                    SimpleToast.error(AddAgentActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
+                } else if (t instanceof UnknownHostException) {
+                    SimpleToast.error(AddAgentActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                } else {
+                    SimpleToast.error(AddAgentActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
+            }
+        });
+    }
+
+    public void showProgress() {
+        if (dialog == null) {
+            dialog = new LoadingIndicatorDialog(this, "Loading Agents..", android.R.style.Theme_Translucent_NoTitleBar);
+        }
+        dialog.show();
+    }
+
+    public void dismissProgress() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
     }
 
     @Override

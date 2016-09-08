@@ -76,7 +76,7 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
         public void setBranchContactDetails(final BranchContactsModel branchContactsModel, final int pos) {
 
             txtMarketerName.setText(branchContactsModel.getName());
-            txtPosition.setText(branchContactsModel.getPosition());
+            txtPosition.setText(String.format("(%s)", branchContactsModel.getPosition()));
             txtBranchRegion.setText(String.format("%s , %s", branchContactsModel.getBranchName(), branchContactsModel.getRegion()));
             letterIcon.setText(branchContactsModel.getName().substring(0, 1));
 

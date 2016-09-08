@@ -19,7 +19,7 @@ import com.webmne.salestracker.ui.profile.UserProfileActivity;
 
 import java.util.ArrayList;
 
-public class DashboadActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity {
 
     ActivityDashboadBinding dashboadBinding;
 
@@ -58,14 +58,15 @@ public class DashboadActivity extends AppCompatActivity {
         dashboadBinding.imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Functions.fireIntent(DashboadActivity.this, UserProfileActivity.class);
+                Functions.fireIntent(DashboardActivity.this, UserProfileActivity.class);
+                overridePendingTransition(R.anim.push_up_in, R.anim.push_down_out);
             }
         });
 
         dashboadBinding.imgLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Functions.showPrompt(DashboadActivity.this, "Yes", "No", getString(R.string.logout_text), new Functions.onPromptListener() {
+                Functions.showPrompt(DashboardActivity.this, "Yes", "No", getString(R.string.logout_text), new Functions.onPromptListener() {
                     @Override
                     public void onClickYes(MaterialDialog dialog) {
                         // close session
@@ -87,17 +88,17 @@ public class DashboadActivity extends AppCompatActivity {
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         dashboadBinding.recyclerView.setLayoutManager(layoutManager);
-        adapter = new DashboardAdapter(DashboadActivity.this, tiles);
+        adapter = new DashboardAdapter(DashboardActivity.this, tiles);
         dashboadBinding.recyclerView.setAdapter(adapter);
         dashboadBinding.recyclerView.setHasFixedSize(true);
 
-        final HomeTileConfiguration configuration = new HomeTileConfiguration(this);
+        final HomeTileConfiguration configuration = new HomeTileConfiguration();
 
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 // pass role id
-                tiles = configuration.getDashboardOptions(1);
+                tiles = configuration.getDashboardOptions(PrefUtils.getUserProfile(DashboardActivity.this).getPos_name());
                 return null;
             }
 

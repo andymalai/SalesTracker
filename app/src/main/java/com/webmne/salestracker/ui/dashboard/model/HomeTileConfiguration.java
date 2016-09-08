@@ -1,8 +1,7 @@
 package com.webmne.salestracker.ui.dashboard.model;
 
-import android.content.Context;
-
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.TileId;
 
 import java.util.ArrayList;
@@ -12,45 +11,61 @@ import java.util.ArrayList;
  */
 public class HomeTileConfiguration {
 
-    private Context context;
+    // marketer grid options
+    private String[] marketNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan"};
+    private int[] marketIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId()};
+    private int[] marketIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan};
 
-    private String[] marketNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee", "Manage Visit Plan", "Target"};
+    // HOS grid options
+    private String[] hosNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee", "Manage Visit Plan"};
+    private int[] hosIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId(),
+            TileId.MANAGE_VISIT_PLAN.getId()};
+    private int[] hosIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee,
+            R.drawable.ic_manage};
 
-    //    private String[] colors = {"#bb6666", "#af4c4c", "#af4c4c", "#bb6666", "#bb6666", "#af4c4c", "#af4c4c"};
-    private String[] colors = {"#ffffff", "#f1f1f1", "#f1f1f1", "#ffffff", "#ffffff", "#f1f1f1", "#f1f1f1"};
-
-    private String[] bgColors = {"#ffffff", "#d8d8d8", "#d8d8d8", "#ffffff", "#ffffff", "#d8d8d8", "#ffffff"};
-
-    private int[] ids = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId(),
+    // BM grid options
+    private String[] bmNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee", "Manage Visit Plan", "Target"};
+    private int[] bmIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId(),
             TileId.MANAGE_VISIT_PLAN.getId(), TileId.TARGET.getId()};
-
-    private int[] icons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee,
+    private int[] bmIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee,
             R.drawable.ic_manage, R.drawable.ic_target};
 
-    public HomeTileConfiguration(Context context) {
-        this.context = context;
-    }
+    // RM grid options
+    private String[] rmNames = {"Contacts", "Action Log", "Sales Visit Plan", "Employee", "Manage Visit Plan"};
+    private int[] rmIds = {TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId(),
+            TileId.MANAGE_VISIT_PLAN.getId()};
+    private int[] rmIcons = {R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee,
+            R.drawable.ic_manage};
 
-    public ArrayList<HomeTileBean> getDashboardOptions(int id) {
+    private String[] bgColors = {"#ffffff", "#f1f1f1", "#f1f1f1", "#ffffff", "#ffffff", "#f1f1f1", "#f1f1f1"};
+
+    public ArrayList<HomeTileBean> getDashboardOptions(String position) {
 
         ArrayList<HomeTileBean> arr = new ArrayList<>();
 
         // depends on Id, change methods
-        arr = getMarketOptions();
-
+        if (position.equals(AppConstants.MARKETER)) {
+            arr = getMarketOptions();
+        } else if (position.equals(AppConstants.HOS)) {
+            arr = getHeadOptions();
+        } else if (position.equals(AppConstants.BM)) {
+            arr = getBranchOptions();
+        } else if (position.equals(AppConstants.RM)) {
+            arr = getRegionOptions();
+        }
         return arr;
     }
 
     public ArrayList<HomeTileBean> getMarketOptions() {
         ArrayList<HomeTileBean> arr = new ArrayList<>();
 
-        for (int i = context.getResources().getInteger(R.integer.market_start); i <= context.getResources().getInteger(R.integer.market_end); i++) {
+        for (int i = 0; i < marketNames.length; i++) {
             HomeTileBean tile = new HomeTileBean();
             tile.setTileName(marketNames[i]);
-            tile.setBackgroundColor(colors[i]);
-            tile.setContentColor(colors[i]);
-            tile.setId(ids[i]);
-            tile.setTileIcon(icons[i]);
+            tile.setBackgroundColor(bgColors[i]);
+            tile.setContentColor(bgColors[i]);
+            tile.setId(marketIds[i]);
+            tile.setTileIcon(marketIcons[i]);
             arr.add(tile);
         }
         return arr;
@@ -59,12 +74,12 @@ public class HomeTileConfiguration {
     public ArrayList<HomeTileBean> getHeadOptions() {
         ArrayList<HomeTileBean> arr = new ArrayList<>();
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < hosNames.length; i++) {
             HomeTileBean tile = new HomeTileBean();
-            tile.setTileName(marketNames[i]);
-            tile.setBackgroundColor(colors[i]);
-            tile.setId(ids[i]);
-            tile.setTileIcon(icons[i]);
+            tile.setTileName(hosNames[i]);
+            tile.setBackgroundColor(bgColors[i]);
+            tile.setId(hosIds[i]);
+            tile.setTileIcon(hosIcons[i]);
             arr.add(tile);
         }
         return arr;
@@ -73,12 +88,12 @@ public class HomeTileConfiguration {
     public ArrayList<HomeTileBean> getBranchOptions() {
         ArrayList<HomeTileBean> arr = new ArrayList<>();
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < bmNames.length; i++) {
             HomeTileBean tile = new HomeTileBean();
-            tile.setTileName(marketNames[i]);
-            tile.setBackgroundColor(colors[i]);
-            tile.setId(ids[i]);
-            tile.setTileIcon(icons[i]);
+            tile.setTileName(bmNames[i]);
+            tile.setBackgroundColor(bgColors[i]);
+            tile.setId(bmIds[i]);
+            tile.setTileIcon(bmIcons[i]);
             arr.add(tile);
         }
         return arr;
@@ -87,18 +102,17 @@ public class HomeTileConfiguration {
     public ArrayList<HomeTileBean> getRegionOptions() {
         ArrayList<HomeTileBean> arr = new ArrayList<>();
 
-        for (int i = 0; i < marketNames.length; i++) {
+        for (int i = 0; i < rmNames.length; i++) {
             HomeTileBean tile = new HomeTileBean();
-            tile.setTileName(marketNames[i]);
-            tile.setBackgroundColor(colors[i]);
-            tile.setId(ids[i]);
-            tile.setTileIcon(icons[i]);
+            tile.setTileName(rmNames[i]);
+            tile.setBackgroundColor(bgColors[i]);
+            tile.setId(rmIds[i]);
+            tile.setTileIcon(rmIcons[i]);
             arr.add(tile);
         }
         return arr;
     }
 }
-
 
 /*
 

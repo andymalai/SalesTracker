@@ -8,18 +8,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.adapter.AgentAdapter;
 import com.webmne.salestracker.actionlog.adapter.DepartmentAdapter;
 import com.webmne.salestracker.actionlog.adapter.InChargeAdapter;
 import com.webmne.salestracker.actionlog.model.Department;
 import com.webmne.salestracker.actionlog.model.InCharge;
+import com.webmne.salestracker.api.APIListener;
+import com.webmne.salestracker.api.AgentListApi;
+import com.webmne.salestracker.api.model.AgentListResponse;
 import com.webmne.salestracker.api.model.AgentModel;
+import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityAddActionLogBinding;
+import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.PrefUtils;
 
 import java.io.File;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class AddActionLogActivity extends AppCompatActivity {
 
@@ -28,11 +40,17 @@ public class AddActionLogActivity extends AppCompatActivity {
     private ArrayList<Department> deptList;
     private ArrayList<InCharge> inChargeList;
     private static final int FILE_SELECT_CODE = 0;
+    private AgentListApi agentListApi;
+    private LoadingIndicatorDialog dialog;
+    private AgentAdapter agentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_action_log);
+
+        agentListApi = new AgentListApi();
 
         init();
     }
@@ -46,12 +64,17 @@ public class AddActionLogActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 
         binding.toolbarLayout.txtCustomTitle.setText(getString(R.string.add_action_log_title));
 
-        setAgentAdapter();
+        if (Functions.isConnected(this)) {
+            getAgents();
+        } else {
+            SimpleToast.error(AddActionLogActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+        }
 
         setDepartmentAdapter();
 
@@ -71,6 +94,49 @@ public class AddActionLogActivity extends AppCompatActivity {
                 } catch (android.content.ActivityNotFoundException ex) {
                     // Potentially direct the user to the Market with a Dialog
                     Toast.makeText(AddActionLogActivity.this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    private void getAgents() {
+        showProgress();
+
+        agentList = new ArrayList<>();
+
+        agentListApi.getAgents(PrefUtils.getUserId(this), new APIListener<AgentListResponse>() {
+            @Override
+            public void onResponse(Response<AgentListResponse> response) {
+                dismissProgress();
+                if (response.isSuccessful()) {
+                    AgentListResponse listResponse = response.body();
+                    if (listResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        agentList.addAll(listResponse.getData().getAgents());
+                        agentAdapter = new AgentAdapter(AddActionLogActivity.this, R.layout.item_adapter, agentList);
+                        binding.spinnerAgent.setAdapter(agentAdapter);
+                    } else {
+                        SimpleToast.error(AddActionLogActivity.this, listResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                } else {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AgentListResponse> call, Throwable t) {
+                dismissProgress();
+                if (t instanceof TimeoutException) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
+                } else if (t instanceof UnknownHostException) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                } else {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
                 }
             }
         });
@@ -118,5 +184,17 @@ public class AddActionLogActivity extends AppCompatActivity {
             binding.edtSelectFile.setText(file.getName());
             String path = Functions.getPath(this, uri);
         }
+    }
+
+    public void showProgress() {
+        if (dialog == null) {
+            dialog = new LoadingIndicatorDialog(this, "Loading..", android.R.style.Theme_Translucent_NoTitleBar);
+        }
+        dialog.show();
+    }
+
+    public void dismissProgress() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
     }
 }
