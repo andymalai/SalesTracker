@@ -83,6 +83,8 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
             txtAgentName.setText(agentModel.getName());
             letterIcon.setText(agentModel.getName().substring(0, 1));
 
+            txtLocaion.setText(String.format("%s, %s", agentModel.getBranchName(), agentModel.getRegionName()));
+
             if (TextUtils.isEmpty(agentModel.getMobileNo())) {
                 imgCall.setVisibility(View.GONE);
             } else {

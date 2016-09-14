@@ -1,22 +1,19 @@
 package com.webmne.salestracker.actionlog;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.adapter.LogListAdapter;
-import com.webmne.salestracker.actionlog.model.ActionLogListModel;
+import com.webmne.salestracker.actionlog.model.ActionLogListResponse;
 import com.webmne.salestracker.actionlog.model.ActionLogModel;
 import com.webmne.salestracker.custom.LineDividerItemDecoration;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
@@ -28,8 +25,6 @@ import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -114,59 +109,44 @@ public class ActionLogListActivity extends AppCompatActivity {
         binding.agentRecyclerView.setOnItemClickListener(new FamiliarRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
-                Functions.fireIntent(ActionLogListActivity.this, ActionLogDetailsActivity.class);
+//                Functions.fireIntent(ActionLogListActivity.this, ActionLogDetailsActivity.class);
+
+                Intent intent = new Intent(ActionLogListActivity.this, ActionLogDetailsActivity.class);
+                intent.putExtra("action", MyApplication.getGson().toJson(actionLogList.get(position)));
+                startActivity(intent);
+
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
     }
 
-    private void getActionLogList()
-    {
-        showProgress(getString(R.string.delete_agents));
+    private void getActionLogList() {
+        showProgress(getString(R.string.loading));
 
         actionLogList = new ArrayList<>();
-
-        Log.e("action_log_list_url", AppConstants.ActionLogList + PrefUtils.getUserId(this));
 
         new CallWebService(this, AppConstants.ActionLogList + PrefUtils.getUserId(this), CallWebService.TYPE_GET) {
 
             @Override
             public void response(String response) {
 
-                Log.e("getResponse", response);
-
                 dismissProgress();
 
-                ActionLogListModel getActionLogListResponse = MyApplication.getGson().fromJson(response, ActionLogListModel.class);
+                ActionLogListResponse getActionLogListResponse = MyApplication.getGson().fromJson(response, ActionLogListResponse.class);
 
-                if (getActionLogListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS))
-                {
-                    actionLogList = getActionLogListResponse.getData().getAction();
+                if (getActionLogListResponse != null) {
 
-                    for (int i = 0; i < actionLogList.size(); i++)
-                    {
-                        ActionLogModel model = new ActionLogModel();
-                        model.setId(actionLogList.get(i).getId());
-                        model.setAgentName(actionLogList.get(i).getAgentName());
-                        model.setDescription(actionLogList.get(i).getDescription());
-                        model.setCreatedDatetime(actionLogList.get(i).getCreatedDatetime());
-                        model.setStatus(actionLogList.get(i).getStatus());
-                        model.setDepartmentName(actionLogList.get(i).getDepartmentName());
-                        model.setSla(actionLogList.get(i).getSla());
-                        model.setReopen(actionLogList.get(i).getReopen());
-                        model.setUpdatedDatetime(actionLogList.get(i).getUpdatedDatetime());
-                        model.setAttachmentPath(actionLogList.get(i).getAttachmentPath());
-                        model.setAttachment(actionLogList.get(i).getAttachment());
-                        model.setRemarkCount(actionLogList.get(i).getRemarkCount());
-                        actionLogList.add(model);
+                    if (getActionLogListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        actionLogList = getActionLogListResponse.getData().getAction();
+                        adapter.setActionList(actionLogList);
+
+                    } else {
+                        SimpleToast.error(ActionLogListActivity.this, getActionLogListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
 
-                    adapter.setActionList(actionLogList);
-                } 
-                else 
-                {
-                    SimpleToast.error(ActionLogListActivity.this, getActionLogListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                } else {
+                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
                 }
             }
 

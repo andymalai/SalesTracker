@@ -29,18 +29,20 @@ import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.model.UserProfile;
 import com.webmne.salestracker.ui.LoginActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Functions {
 
+    public static final String ServerDateTimeFormat = "yyyy/MM/dd HH:mm:ss";
+
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
-    private static Pattern pattern;
-    private static Matcher matcher;
 
     public static void fireIntent(Context context, Class cls) {
         Intent i = new Intent(context, cls);
@@ -83,8 +85,8 @@ public class Functions {
     }
 
     public static boolean emailValidation(String email) {
-        pattern = Pattern.compile(EMAIL_PATTERN);
-        matcher = pattern.matcher(email);
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
 
@@ -181,6 +183,24 @@ public class Functions {
                 }).show();
     }
 
+    public static String parseDate(String inputDate, String outputPattern) {
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat(ServerDateTimeFormat);
+
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(inputDate);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
     public static String getPath(Context context, Uri uri) {
         if ("content".equalsIgnoreCase(uri.getScheme())) {
             String[] projection = {"_data"};
@@ -200,6 +220,22 @@ public class Functions {
         }
 
         return null;
+    }
+
+    public static String getStatus(Context context, String status) {
+
+        if (status.equals(AppConstants.PENDING)) {
+            return context.getString(R.string.pending);
+
+        } else if (status.equals(AppConstants.REJECTED)) {
+            return context.getString(R.string.reject);
+
+        } else if (status.equals(AppConstants.PROCESSING)) {
+            return context.getString(R.string.processing);
+
+        } else {
+            return context.getString(R.string.completed);
+        }
     }
 
     public interface onPromptListener {

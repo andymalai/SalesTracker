@@ -6,37 +6,51 @@ import android.os.CountDownTimer;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 
+import com.android.volley.VolleyError;
+import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.adapter.RemarkListAdapter;
-import com.webmne.salestracker.actionlog.model.RemarkModel;
+import com.webmne.salestracker.api.model.Remark;
+import com.webmne.salestracker.api.model.RemarksListResponse;
 import com.webmne.salestracker.custom.LineDividerItemDecoration;
+import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityRemarkListBinding;
+import com.webmne.salestracker.helper.AppConstants;
+import com.webmne.salestracker.helper.MyApplication;
+import com.webmne.salestracker.helper.volley.CallWebService;
+import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
  * Created by vatsaldesai on 13-09-2016.
  */
-public class RemarkListActivity extends AppCompatActivity{
+public class RemarkListActivity extends AppCompatActivity {
 
     private ActivityRemarkListBinding activityRemarkListBinding;
-    private ArrayList<RemarkModel> remarkModelList;
+    private ArrayList<Remark> remarkModelList;
     private RemarkListAdapter remarkListAdapter;
+    private String actionlog;
+    private String[] actionlogSplit;
+    private LoadingIndicatorDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         activityRemarkListBinding = DataBindingUtil.setContentView(this, R.layout.activity_remark_list);
 
         init();
 
     }
 
-    private void init()
-    {
+    private void init() {
+
+        getIntentData();
+
         if (activityRemarkListBinding.toolbarLayout.toolbar != null)
             activityRemarkListBinding.toolbarLayout.toolbar.setTitle("");
         setSupportActionBar(activityRemarkListBinding.toolbarLayout.toolbar);
@@ -60,9 +74,25 @@ public class RemarkListActivity extends AppCompatActivity{
 
         initRecyclerView();
 
-        getRemarkList();
-
         actionListener();
+    }
+
+    public void showProgress(String string) {
+        if (dialog == null) {
+            dialog = new LoadingIndicatorDialog(this, string, android.R.style.Theme_Translucent_NoTitleBar);
+        }
+        dialog.show();
+    }
+
+    public void dismissProgress() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+    }
+
+    private void getIntentData() {
+        actionlog = getIntent().getStringExtra("actionlog");
+        actionlogSplit = actionlog.split("_");
+        Log.e("id", actionlogSplit[1]);
     }
 
     @Override
@@ -71,8 +101,7 @@ public class RemarkListActivity extends AppCompatActivity{
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    private void actionListener()
-    {
+    private void actionListener() {
         activityRemarkListBinding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -94,24 +123,45 @@ public class RemarkListActivity extends AppCompatActivity{
     }
 
     private void getRemarkList() {
+
+        showProgress(getString(R.string.loading));
+
         remarkModelList = new ArrayList<>();
 
-        long date = System.currentTimeMillis();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy h:mm aa");
+        new CallWebService(this, AppConstants.ActionLogRemarksList + actionlogSplit[1], CallWebService.TYPE_GET) {
+            @Override
+            public void response(String response) {
 
-        for (int i = 1; i <= 10; i++) {
-            RemarkModel model = new RemarkModel();
-            model.setName("Name " + i);
-            model.setPosition("BM");
-            model.setDetail(getString(R.string.dummy));
-            model.setDate(sdf.format(date));
-            remarkModelList.add(model);
-        }
+                dismissProgress();
 
-        remarkListAdapter.setRemarkList(remarkModelList);
+                RemarksListResponse remarksListResponse = MyApplication.getGson().fromJson(response, RemarksListResponse.class);
+
+                if (remarksListResponse != null) {
+
+                    Log.e("remarksListResponse", MyApplication.getGson().toJson(remarksListResponse));
+
+                    if (remarksListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        remarkListAdapter.setRemarkList(remarksListResponse.getData().getRemarks());
+                    }
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, RemarkListActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(RemarkListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
     }
 
     private void initRecyclerView() {
+
         remarkModelList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         activityRemarkListBinding.agentRecyclerView.setLayoutManager(layoutManager);
@@ -119,6 +169,8 @@ public class RemarkListActivity extends AppCompatActivity{
         remarkListAdapter = new RemarkListAdapter(this, remarkModelList);
         activityRemarkListBinding.agentRecyclerView.setAdapter(remarkListAdapter);
         activityRemarkListBinding.agentRecyclerView.setHasFixedSize(true);
+
+        getRemarkList();
     }
 
     @Override

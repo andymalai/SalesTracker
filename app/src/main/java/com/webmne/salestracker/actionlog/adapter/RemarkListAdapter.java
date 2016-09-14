@@ -1,15 +1,13 @@
 package com.webmne.salestracker.actionlog.adapter;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.actionlog.model.RemarkModel;
+import com.webmne.salestracker.api.model.Remark;
 import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
@@ -20,14 +18,14 @@ import java.util.ArrayList;
 public class RemarkListAdapter extends RecyclerView.Adapter<RemarkListAdapter.LogHolder> {
 
     private Context context;
-    private ArrayList<RemarkModel> remarkModelList;
+    private ArrayList<Remark> remarkModelList;
 
-    public RemarkListAdapter(Context context, ArrayList<RemarkModel> remarkModelList) {
+    public RemarkListAdapter(Context context, ArrayList<Remark> remarkModelList) {
         this.context = context;
         this.remarkModelList = remarkModelList;
     }
 
-    public void setRemarkList(ArrayList<RemarkModel> remarkModelList) {
+    public void setRemarkList(ArrayList<Remark> remarkModelList) {
         this.remarkModelList = new ArrayList<>();
         this.remarkModelList = remarkModelList;
         notifyDataSetChanged();
@@ -42,8 +40,8 @@ public class RemarkListAdapter extends RecyclerView.Adapter<RemarkListAdapter.Lo
 
     @Override
     public void onBindViewHolder(LogHolder holder, int position) {
-        RemarkModel model = remarkModelList.get(position);
-        holder.setActionLog(model);
+        Remark model = remarkModelList.get(position);
+        holder.setRemark(model);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class RemarkListAdapter extends RecyclerView.Adapter<RemarkListAdapter.Lo
 
     class LogHolder extends RecyclerView.ViewHolder {
 
-        TfTextView txtName,txtDesc,txtDate,txtPosition;
+        TfTextView txtName, txtDesc, txtDate, txtPosition;
 
         public LogHolder(View itemView) {
             super(itemView);
@@ -63,18 +61,11 @@ public class RemarkListAdapter extends RecyclerView.Adapter<RemarkListAdapter.Lo
             txtDate = (TfTextView) itemView.findViewById(R.id.txtDate);
         }
 
-        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-        public void setActionLog(RemarkModel model) {
-
+        public void setRemark(Remark model) {
             txtName.setText(model.getName());
             txtPosition.setText(String.format("(%s)", model.getPosition()));
-            txtDesc.setText(model.getDetail());
-            txtDate.setText(model.getDate());
-
-//            String text=null;
-//            txtAgentName.setText(String.format("%s", text));
-
-
+            txtDesc.setText(model.getDescription());
+            txtDate.setText("Date");
         }
     }
 }

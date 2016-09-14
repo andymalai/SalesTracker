@@ -8,10 +8,13 @@ import android.view.View;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.model.ActionLogModel;
 import com.webmne.salestracker.databinding.ActivityActionLogDetailsBinding;
+import com.webmne.salestracker.helper.MyApplication;
 
 public class ActionLogDetailsActivity extends AppCompatActivity {
 
     private ActivityActionLogDetailsBinding binding;
+    private String action;
+    private ActionLogModel actionLog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +45,14 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
         binding.toolbarLayout.txtCustomTitle.setText(getString(R.string.action_log_details_title));
 
         // static, change this fetch from intent
-//        ActionLogModel actionLog = new ActionLogModel();
-//        actionLog.setAgentName("Sagar");
-//        actionLog.setCompleted(false);
-//        actionLog.setSLA(2);
-//        actionLog.setDescription(getString(R.string.dummy));
-//        actionLog.setDepartment("Hub Operation");
-//        actionLog.setDateRaised("18-08-2016");
-//        actionLog.setLastUpdate("22-08-2016");
 
-//        binding.actionLog.setActionLog(actionLog);
+        fetchActionLogDetails();
+    }
+
+    private void fetchActionLogDetails() {
+        action = getIntent().getStringExtra("action");
+        actionLog = MyApplication.getGson().fromJson(action, ActionLogModel.class);
+        binding.actionLog.setActionLog(actionLog);
     }
 
     @Override

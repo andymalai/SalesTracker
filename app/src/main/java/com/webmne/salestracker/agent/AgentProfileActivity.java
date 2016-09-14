@@ -50,6 +50,8 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     private BranchAdapter branchAdapter;
     private LoadingIndicatorDialog dialog;
 
+    private String tierId;
+
     private ArrayList<Integer> selectedAgentIds;
 
     @Override
@@ -91,7 +93,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void fetchBranches() {
-        showProgress(getString(R.string.load_agent_profile));
+        showProgress(getString(R.string.loading));
 
         branchApi.getBranchList(new APIListener<BranchListResponse>() {
             @Override
@@ -124,7 +126,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void fetchTier() {
-        showProgress(getString(R.string.load_agent_profile));
+        showProgress(getString(R.string.loading));
 
         tierApi.getTierList(new APIListener<TierListResponse>() {
             @Override
@@ -172,7 +174,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
         viewBinding.edtEmailId.setText(String.format("%s", agentModel.getEmailid()));
         viewBinding.edtKruniaCode.setText(String.format("%s", agentModel.getKruniaCode()));
         viewBinding.edtAmgGeneral.setText(String.format("%s", agentModel.getAmgCode()));
-        viewBinding.edtDescription.setText("Hello\nThis is test.\nThank you");
+        viewBinding.edtDescription.setText(String.format("%s", agentModel.getDescription()));
 
         Log.e("tier", agentModel.getTierid());
 
@@ -250,11 +252,68 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
                     enableFields();
 
                 } else {
-                    SimpleToast.ok(AgentProfileActivity.this, getString(R.string.profile_success));
-                    disableFields();
+                    doUpdateProfile();
+
                 }
                 break;
         }
+    }
+
+    private void doUpdateProfile() {
+
+        showProgress(getString(R.string.update_agents_profile));
+
+        Tier tier = (Tier) viewBinding.spinnerTier.getSelectedItem();
+        tierId = tier.getTeirid();
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("AgentName", Functions.toStr(viewBinding.edtAgentName));
+            json.put("TierId", Integer.parseInt(tierId));
+            json.put("EmailId", Functions.toStr(viewBinding.edtEmailId));
+            json.put("Description", Functions.toStr(viewBinding.edtDescription));
+            json.put("MobileNo", Functions.toStr(viewBinding.edtPhoneNumber));
+            json.put("AgentId", Integer.parseInt(agentModel.getAgentid()));
+            json.put("AmgCode", Functions.toStr(viewBinding.edtAmgGeneral));
+            json.put("KruniaCode", Functions.toStr(viewBinding.edtKruniaCode));
+
+            Log.e("update_req", json.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        new CallWebService(AgentProfileActivity.this, AppConstants.UpdateAgent, CallWebService.TYPE_POST, json) {
+
+            @Override
+            public void response(String response) {
+                dismissProgress();
+
+                com.webmne.salestracker.api.model.Response wsResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
+                if (wsResponse != null) {
+                    if (wsResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        SimpleToast.ok(AgentProfileActivity.this, getString(R.string.profile_success));
+                        disableFields();
+                        finish();
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                    } else {
+                        SimpleToast.error(AgentProfileActivity.this, wsResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, AgentProfileActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(AgentProfileActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
     }
 
     private void enableFields() {
@@ -264,9 +323,11 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
         viewBinding.edtAgentName.setFocusableInTouchMode(true);
         viewBinding.edtPhoneNumber.setFocusableInTouchMode(true);
         viewBinding.edtEmailId.setFocusableInTouchMode(true);
+        viewBinding.edtDescription.setFocusableInTouchMode(true);
         viewBinding.edtKruniaCode.setFocusableInTouchMode(true);
         viewBinding.edtAmgGeneral.setFocusableInTouchMode(true);
-        viewBinding.edtDescription.setFocusableInTouchMode(true);
+
+        adapter.setCanOpen(true);
     }
 
     private void disableFields() {
@@ -292,8 +353,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
         viewBinding.edtDescription.setFocusable(false);
     }
 
-    private void deleteAgent()
-    {
+    private void deleteAgent() {
         showProgress(getString(R.string.delete_agents));
 
         selectedAgentIds = new ArrayList<>();

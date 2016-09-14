@@ -11,6 +11,11 @@ public class AppConstants {
     public static String BM = "BM";
     public static String RM = "RM";
 
+    // Action Log Status Constants
+    public static String COMPLETE = "C";
+    public static String PENDING = "P";
+    public static String REJECTED = "R";
+    public static String PROCESSING = "";
 
     // Calendar Mode
     public static int DAY_VIEW = 0;
@@ -46,8 +51,16 @@ public class AppConstants {
     // http://ws-srv-php/projects/drupal/amgsales2/services/delete_agent.php
     public static final String DeleteAgent = BASE_URL + "delete_agent.php";
 
+    // http://ws-srv-php/projects/drupal/amgsales2/services/update_agent.php
+    public static final String UpdateAgent = BASE_URL + "update_agent.php";
+
+    // http://ws-srv-php/projects/drupal/amgsales2/services/update_profile.php
+    public static final String UpdateUserProfile = BASE_URL + "update_profile.php";
+
     // http://ws-srv-php/projects/drupal/amgsales2/services/fetch_action.php?format=json&user_id=699
     public static final String ActionLogList = BASE_URL + "fetch_action.php?format=json&user_id=";
 
+    // http://ws-srv-php/projects/drupal/amgsales2/services/display_remark.php?format=json&action_id=130
+    public static final String ActionLogRemarksList = BASE_URL + "display_remark.php?format=json&action_id=";
 
 }

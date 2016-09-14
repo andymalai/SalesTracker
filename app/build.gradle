@@ -51,7 +51,7 @@ dependencies {
     // searchview
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
     // gson
-    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.google.code.gson:gson:2.4'
     // dialog
     compile 'com.afollestad.material-dialogs:core:0.9.0.1'
     // retrofit

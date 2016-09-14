@@ -60,7 +60,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_4dp">
+            android:layout_marginBottom="@dimen/dimen_4dp"
+            android:gravity="center_vertical">
 
             <com.webmne.salestracker.widget.TfTextView
                 android:id="@+id/txtAgentName"
@@ -76,20 +77,6 @@
                 android:layout_height="@dimen/dimen_10dp"
                 android:background="@drawable/pending_shape" />
 
-            <com.webmne.salestracker.widget.TfTextView
-                android:id="@+id/txtStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/pending_shape"
-                android:paddingBottom="@dimen/dimen_8dp"
-                android:paddingLeft="@dimen/dimen_16dp"
-                android:paddingRight="@dimen/dimen_16dp"
-                android:paddingTop="@dimen/dimen_8dp"
-                android:text="Pending"
-                android:textColor="@color/white"
-                android:textSize="@dimen/S_TEXT"
-                android:visibility="gone" />
-
         </LinearLayout>
 
         <com.webmne.salestracker.widget.TfTextView
@@ -101,30 +88,48 @@
             android:text="@string/dummy"
             android:textSize="@dimen/N_TEXT" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_6dp">
-
-            <com.webmne.salestracker.widget.TfTextView
-                android:id="@+id/txtRemark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="3 remark"
-                android:textColor="@color/tile2"
-                android:textSize="@dimen/N_TEXT" />
+            android:layout_marginTop="@dimen/dimen_6dp"
+            android:orientation="vertical">
 
             <com.webmne.salestracker.widget.TfTextView
                 android:id="@+id/txtLastUpdate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:text="Last Update 21st Aug, 2016"
-                android:textColor="@color/tile2"
                 android:textSize="@dimen/N_TEXT" />
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_4dp"
+                android:orientation="horizontal">
+
+                <com.webmne.salestracker.widget.TfTextView
+                    android:id="@+id/txtStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_alignParentLeft="true"
+                    android:text="Pending"
+                    android:textColor="@color/tile2"
+                    android:textSize="@dimen/N_TEXT" />
+
+                <com.webmne.salestracker.widget.TfTextView
+                    android:id="@+id/txtRemark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="right"
+                    android:text="3 remark"
+                    android:textColor="@color/tile2"
+                    android:textSize="@dimen/N_TEXT" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
 
     </LinearLayout>
 

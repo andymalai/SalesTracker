@@ -8,7 +8,7 @@ public class ActionLogModel {
     /**
      * Id : #AMG_130
      * AgentName : Sagar1
-     * Description : manoj lodo update thay gyo
+     * Description : manoj update thay gyo
      * CreatedDatetime : 2016/09/14 01:09:32
      * Status : R
      * DepartmentName : Hub Operations

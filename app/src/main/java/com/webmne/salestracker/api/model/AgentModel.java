@@ -12,7 +12,8 @@ public class AgentModel implements Serializable {
      * Name : AGT2
      * Tierid : 1
      * Branchid : 44
-     * Region : 17
+     * RegionName : 17
+     * Description : Description
      * AmgCode : AMG346
      * KruniaCode : KR346
      * MobileNo : 1111111111
@@ -24,12 +25,31 @@ public class AgentModel implements Serializable {
     private String Name;
     private String Tierid;
     private String Branchid;
-    private String Region;
+    private String BranchName;
+    private String RegionName;
     private String AmgCode;
     private String KruniaCode;
     private String MobileNo;
     private String Emailid;
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
+
+    private String Description;
     private boolean IsChecked = false;
+
+    public String getBranchName() {
+        return BranchName;
+    }
+
+    public void setBranchName(String branchName) {
+        BranchName = branchName;
+    }
 
     public boolean isChecked() {
         return IsChecked;
@@ -71,12 +91,12 @@ public class AgentModel implements Serializable {
         this.Branchid = Branchid;
     }
 
-    public String getRegion() {
-        return Region;
+    public String getRegionName() {
+        return RegionName;
     }
 
-    public void setRegion(String Region) {
-        this.Region = Region;
+    public void setRegionName(String Region) {
+        this.RegionName = Region;
     }
 
     public String getAmgCode() {

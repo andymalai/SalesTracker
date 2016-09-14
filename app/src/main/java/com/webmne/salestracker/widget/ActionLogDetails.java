@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.model.ActionLogModel;
 import com.webmne.salestracker.databinding.LayoutActionLogBinding;
+import com.webmne.salestracker.helper.Functions;
 
 /**
  * Created by sagartahelyani on 23-08-2016.
@@ -54,15 +55,12 @@ public class ActionLogDetails extends LinearLayout {
 
     public void setActionLog(ActionLogModel actionLog) {
         binding.txtAgentName.setText(actionLog.getAgentName());
-        binding.txtDateRaised.setText(actionLog.getCreatedDatetime());
-        binding.txtDepartment.setText(actionLog.getDepartmentName());
         binding.txtDescription.setText(actionLog.getDescription());
-//        binding.txtLastUpdate.setText(actionLog.get);
-//        binding.txtSla.setText(actionLog.getSLA() + " Days");
-//        if (actionLog.isCompleted()) {
-//            binding.txtStatus.setText("Completed");
-//        } else {
-//            binding.txtStatus.setText("Pending");
-//        }
+        binding.txtDateRaised.setText(Functions.parseDate(actionLog.getCreatedDatetime(), "dd MMM yyyy, hh:mm a"));
+        binding.txtStatus.setText(String.format("%s", Functions.getStatus(context, actionLog.getStatus())));
+        binding.txtDepartment.setText(actionLog.getDepartmentName());
+        binding.txtSla.setText(String.format("%s Days", actionLog.getSla()));
+        binding.txtLastUpdate.setText(String.format("%s", Functions.parseDate(actionLog.getUpdatedDatetime(), "dd MMM yyyy, hh:mm a")));
+
     }
 }
