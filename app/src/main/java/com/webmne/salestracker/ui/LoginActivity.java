@@ -14,13 +14,16 @@ import com.webmne.salestracker.api.APIListener;
 import com.webmne.salestracker.api.LoginApi;
 import com.webmne.salestracker.api.model.LoginResponse;
 import com.webmne.salestracker.contactus.ContactUsActivity;
+import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityLoginBinding;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
+import com.webmne.salestracker.helper.RetrofitErrorHelper;
 import com.webmne.salestracker.ui.dashboard.DashboardActivity;
 
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeoutException;
 
 import retrofit2.Call;
@@ -30,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding loginBinding;
     private LoginApi loginApi;
+    private LoadingIndicatorDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,12 @@ public class LoginActivity extends AppCompatActivity {
         loginBinding.txtContactUs.setText(Html.fromHtml("<u>" + getString(R.string.contact_us) + "</u>"));
 
         actionListener();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     private void actionListener() {
@@ -80,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Functions.fireIntent(LoginActivity.this, ContactUsActivity.class);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }
@@ -96,9 +107,12 @@ public class LoginActivity extends AppCompatActivity {
        /*SimpleToast.ok(LoginActivity.this, getString(R.string.login_success));
         Functions.fireIntent(LoginActivity.this, DashboardActivity.class);*/
 
+        showProgress();
+
         loginApi.login(Functions.toStr(loginBinding.edtPassword), Functions.toStr(loginBinding.edtEmpId), new APIListener<LoginResponse>() {
             @Override
             public void onResponse(Response<LoginResponse> response) {
+                dismissProgress();
                 if (response.isSuccessful()) {
 
                     LoginResponse loginResponse = response.body();
@@ -113,6 +127,8 @@ public class LoginActivity extends AppCompatActivity {
                         Functions.fireIntent(LoginActivity.this, DashboardActivity.class);
                         finish();
 
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
                     } else {
                         SimpleToast.error(LoginActivity.this, loginResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
@@ -124,12 +140,22 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                if (t instanceof TimeoutException) {
-                    SimpleToast.error(LoginActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
-                } else {
-                    SimpleToast.error(LoginActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
-                }
+                dismissProgress();
+                RetrofitErrorHelper.showErrorMsg(t, LoginActivity.this);
             }
         });
     }
+
+    public void showProgress() {
+        if (dialog == null) {
+            dialog = new LoadingIndicatorDialog(this, "Loading..", android.R.style.Theme_Translucent_NoTitleBar);
+        }
+        dialog.show();
+    }
+
+    public void dismissProgress() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+    }
+
 }

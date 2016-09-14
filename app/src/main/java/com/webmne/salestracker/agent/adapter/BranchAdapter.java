@@ -21,6 +21,7 @@ public class BranchAdapter extends ArrayAdapter<Branch> {
     private Context context;
     private int textViewResourceId;
     private LayoutInflater inflater;
+    private boolean canOpen = true;
 
     public BranchAdapter(Context context, int textViewResourceId, ArrayList<Branch> branchModels) {
         super(context, textViewResourceId);
@@ -42,17 +43,21 @@ public class BranchAdapter extends ArrayAdapter<Branch> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return getCustomView(position, convertView, parent);
+        return getCustomView(position, parent);
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return getCustomView(position, convertView, parent);
+        if (canOpen) {
+            return getCustomView(position, parent);
+        } else {
+            return new View(context);
+        }
     }
 
-    private View getCustomView(int position, View convertView, ViewGroup parent) {
+    private View getCustomView(int position, ViewGroup parent) {
 
-        convertView = inflater.inflate(textViewResourceId, parent, false);
+        View convertView = inflater.inflate(textViewResourceId, parent, false);
 
         TfTextView txtItem = (TfTextView) convertView.findViewById(R.id.txtItem);
         txtItem.setText(branchModels.get(position).getBranchName());
@@ -60,4 +65,7 @@ public class BranchAdapter extends ArrayAdapter<Branch> {
         return convertView;
     }
 
+    public void setCanOpen(boolean canOpen) {
+        this.canOpen = canOpen;
+    }
 }

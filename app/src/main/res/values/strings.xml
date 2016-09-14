@@ -4,6 +4,10 @@
     <string name="try_again">Something went wrong. Please try again</string>
     <string name="no_internet_connection">No Internet Connection</string>
 
+    <!--progress bar text-->
+    <string name="loading_agents">Loading Agents..</string>
+    <string name="delete_agents">Deleting Agents..</string>
+
     <!--commons-->
     <string name="dummy">The following are top voted examples for showing how to use android.databinding.DataBindingUtil. These examples are extracted from open source projects. You can vote up the examples you like and your votes will be used in our system to product more good examples. </string>
     <string name="logout_text">Are you sure want to logout?</string>
@@ -41,6 +45,7 @@
     <string name="agent_title">Agents</string>
     <string name="search">Search Agents by Name</string>
     <string name="btn_delete">Delete</string>
+    <string name="delete_success">Delete Agents Successfully</string>
 
     <!--activity_add_agent.xml-->
     <string name="add_agent">Add Agent</string>
@@ -53,6 +58,14 @@
     <string name="enter_amg">Code for AMG General</string>
     <string name="enter_desc">Description</string>
     <string name="add">Add</string>
+    <string name="add_agent_success">Add Agent Successfully.</string>
+
+    <string name="enter_agent_name">Enter Agent Name</string>
+    <string name="enter_phone">Enter Phone Number</string>
+    <string name="enter_email_id">Enter Email Address</string>
+    <string name="enter_krunia_code">Enter Krunia Code</string>
+    <string name="enter_amg_code">Enter AMG General Code</string>
+    <string name="enter_description">Enter Description</string>
 
     <array name="tier_array">
         <item>STAR</item>

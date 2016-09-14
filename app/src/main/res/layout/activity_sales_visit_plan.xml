@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:calendarNS="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,6 +16,48 @@
             <include
                 android:id="@+id/toolbarLayout"
                 layout="@layout/app_bar" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/toolbarLayout"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:onClick="dayClicked"
+                        android:text="Day" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:onClick="weekClicked"
+                        android:text="Week" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:onClick="monthClicked"
+                        android:text="Month" />
+
+
+                </LinearLayout>
+
+                <com.webmne.salestracker.widget.calendar.CalendarView
+                    android:id="@+id/cv"
+                    android:layout_width="match_parent"
+                    calendarNS:dateFormat="MMMM yyyy"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
         </RelativeLayout>
 

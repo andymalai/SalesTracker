@@ -1,15 +1,20 @@
 package com.webmne.salestracker.api;
 
+import com.webmne.salestracker.api.model.AddAgentRequest;
+import com.webmne.salestracker.api.model.AddAgentResponse;
 import com.webmne.salestracker.api.model.AgentListResponse;
 import com.webmne.salestracker.api.model.BranchListResponse;
 import com.webmne.salestracker.api.model.LoginResponse;
+import com.webmne.salestracker.api.model.Response;
 import com.webmne.salestracker.api.model.TierListResponse;
 import com.webmne.salestracker.contacts.model.BranchContactModel;
 import com.webmne.salestracker.contacts.model.DepartmentContactModel;
 import com.webmne.salestracker.helper.AppConstants;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**
@@ -27,12 +32,15 @@ public interface AppApi {
     Call<DepartmentContactModel> getDepartmentContact();
 
     @GET(AppConstants.AgentList)
-    Call<AgentListResponse> getAgents(@Query("userid") String userid);
+    Call<AgentListResponse> getAgents(@Query("empid") String userid);
 
     @GET(AppConstants.TierList)
     Call<TierListResponse> getTier();
 
     @GET(AppConstants.BranchList)
     Call<BranchListResponse> getBranchList();
+
+    @POST(AppConstants.AddAgent)
+    Call<AddAgentResponse> addAgent(@Body AddAgentRequest request);
 
 }

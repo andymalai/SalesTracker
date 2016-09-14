@@ -83,6 +83,8 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
                 txtStatus.setText("Pending");
                 viewIndicate.setBackground(ContextCompat.getDrawable(context, R.drawable.pending_shape));
             }
+
+
         }
     }
 }

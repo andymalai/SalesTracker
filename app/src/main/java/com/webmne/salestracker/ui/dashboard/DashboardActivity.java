@@ -41,6 +41,12 @@ public class DashboardActivity extends AppCompatActivity {
         dashboadBinding.unbind();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
     private void init() {
         if (dashboadBinding.toolbarLayout.toolbar != null)
             dashboadBinding.toolbarLayout.toolbar.setTitle("");

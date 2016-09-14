@@ -62,7 +62,7 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
 
     class AgentViewHolder extends RecyclerView.ViewHolder {
 
-        TfTextView txtAgentName, letterIcon;
+        TfTextView txtAgentName, letterIcon, txtLocaion;
         ImageView imgCheck, imgCall, imgEmail;
         LinearLayout parentView;
 
@@ -70,6 +70,7 @@ public class AgentsListAdapter extends RecyclerView.Adapter<AgentsListAdapter.Ag
             super(itemView);
             txtAgentName = (TfTextView) itemView.findViewById(R.id.txtAgentName);
             letterIcon = (TfTextView) itemView.findViewById(R.id.letterIcon);
+            txtLocaion = (TfTextView) itemView.findViewById(R.id.txtLocaion);
             imgCheck = (ImageView) itemView.findViewById(R.id.imgCheck);
             imgCall = (ImageView) itemView.findViewById(R.id.imgCall);
             imgEmail = (ImageView) itemView.findViewById(R.id.imgEmail);

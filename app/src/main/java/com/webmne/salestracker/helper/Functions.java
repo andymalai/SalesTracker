@@ -217,6 +217,7 @@ public class Functions {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+        ((Activity) context).overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
     }
 }

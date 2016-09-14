@@ -29,6 +29,7 @@ public class ContactUsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 
@@ -39,5 +40,11 @@ public class ContactUsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         contactUsBinding.unbind();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

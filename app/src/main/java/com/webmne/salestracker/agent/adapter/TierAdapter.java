@@ -47,21 +47,21 @@ public class TierAdapter extends ArrayAdapter<Tier> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return getCustomView(position, convertView, parent);
+        return getCustomView(position, parent);
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         if (canOpen) {
-            return getCustomView(position, convertView, parent);
+            return getCustomView(position, parent);
         } else {
             return new View(context);
         }
     }
 
-    private View getCustomView(int position, View convertView, ViewGroup parent) {
+    private View getCustomView(int position, ViewGroup parent) {
 
-        convertView = inflater.inflate(textViewResourceId, parent, false);
+        View convertView = inflater.inflate(textViewResourceId, parent, false);
 
         TfTextView txtItem = (TfTextView) convertView.findViewById(R.id.txtItem);
         txtItem.setText(tierModels.get(position).getTierName());

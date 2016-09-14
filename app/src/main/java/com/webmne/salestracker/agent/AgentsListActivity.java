@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.webmne.salestracker.R;
@@ -31,12 +32,16 @@ import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
+import com.webmne.salestracker.helper.RetrofitErrorHelper;
+import com.webmne.salestracker.helper.volley.CallWebService;
+import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerViewOnScrollListener;
 
-import java.net.UnknownHostException;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -45,12 +50,12 @@ public class AgentsListActivity extends AppCompatActivity {
 
     private AgentsListAdapter adapter;
     private ArrayList<AgentModel> agentList;
-    private boolean isDeleteMode = false;
     private MenuItem searchItem;
 
     private ActivityAgentsListBinding viewBinding;
     private AgentListApi agentListApi;
     private LoadingIndicatorDialog dialog;
+    private ArrayList<Integer> selectedAgentIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,7 @@ public class AgentsListActivity extends AppCompatActivity {
     }
 
     private void init() {
+
         if (viewBinding.toolbarLayout.toolbar != null)
             viewBinding.toolbarLayout.toolbar.setTitle("");
         setSupportActionBar(viewBinding.toolbarLayout.toolbar);
@@ -84,7 +90,11 @@ public class AgentsListActivity extends AppCompatActivity {
                 R.color.color4);
 
         initRecyclerView();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (Functions.isConnected(this))
             getAgents();
         else
@@ -167,21 +177,61 @@ public class AgentsListActivity extends AppCompatActivity {
         viewBinding.txtDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("size", getSelectedItems() + "  #");
+                Log.e("selected", selectedAgentIds.toString() + "  #");
+
+                deleteAgents();
             }
 
         });
     }
 
-    private ArrayList<AgentModel> filterSearch(ArrayList<AgentModel> agentList, String query) {
-        final ArrayList<AgentModel> filterAgent = new ArrayList<>();
-        for (AgentModel model : agentList) {
-            final String text = model.getName().toLowerCase();
-            if (text.contains(query.toLowerCase())) {
-                filterAgent.add(model);
-            }
+    private void deleteAgents() {
+        showProgress(getString(R.string.delete_agents));
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("AgentID", new JSONArray(selectedAgentIds));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return filterAgent;
+        Log.e("delete_req", jsonObject.toString());
+
+        new CallWebService(this, AppConstants.DeleteAgent, CallWebService.TYPE_POST, jsonObject) {
+
+            @Override
+            public void response(String response) {
+                dismissProgress();
+
+                com.webmne.salestracker.api.model.Response deleteResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
+                Log.e("delete_res", deleteResponse.toString());
+
+                if (deleteResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                    SimpleToast.ok(AgentsListActivity.this, getString(R.string.delete_success));
+                    viewBinding.txtDelete.setVisibility(View.GONE);
+                    searchItem.setVisible(true);
+                    viewBinding.searchView.setVisibility(View.VISIBLE);
+                    viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimary));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        getWindow().setStatusBarColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimaryDark));
+                    }
+                    getAgents();
+                } else {
+                    SimpleToast.error(AgentsListActivity.this, deleteResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, AgentsListActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(AgentsListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
     }
 
     @Override
@@ -195,8 +245,9 @@ public class AgentsListActivity extends AppCompatActivity {
     }
 
     private void getAgents() {
+
         viewBinding.contentLayout.setVisibility(View.GONE);
-        showProgress();
+        showProgress(getString(R.string.loading_agents));
 
         agentList = new ArrayList<>();
 
@@ -222,13 +273,7 @@ public class AgentsListActivity extends AppCompatActivity {
             public void onFailure(Call<AgentListResponse> call, Throwable t) {
                 dismissProgress();
                 viewBinding.contentLayout.setVisibility(View.VISIBLE);
-                if (t instanceof TimeoutException) {
-                    SimpleToast.error(AgentsListActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
-                } else if (t instanceof UnknownHostException) {
-                    SimpleToast.error(AgentsListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-                } else {
-                    SimpleToast.error(AgentsListActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
-                }
+                RetrofitErrorHelper.showErrorMsg(t, AgentsListActivity.this);
             }
         });
     }
@@ -240,7 +285,7 @@ public class AgentsListActivity extends AppCompatActivity {
         viewBinding.agentRecyclerView.addItemDecoration(new LineDividerItemDecoration(this));
 
         viewBinding.agentRecyclerView.setEmptyView(viewBinding.emptyLayout);
-        viewBinding.emptyLayout.setContent("No Agents", R.drawable.ic_agent);
+        viewBinding.emptyLayout.setContent("No Agents Found.", R.drawable.ic_agent);
 
         adapter = new AgentsListAdapter(this, agentList, new AgentsListAdapter.onSelectionListener() {
             @Override
@@ -254,6 +299,7 @@ public class AgentsListActivity extends AppCompatActivity {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         getWindow().setStatusBarColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimaryDark));
                     }
+
                 } else {
                     searchItem.setVisible(false);
                     viewBinding.txtDelete.setVisibility(View.VISIBLE);
@@ -288,9 +334,9 @@ public class AgentsListActivity extends AppCompatActivity {
         return true;
     }
 
-    public void showProgress() {
+    public void showProgress(String string) {
         if (dialog == null) {
-            dialog = new LoadingIndicatorDialog(this, "Loading Agents..", android.R.style.Theme_Translucent_NoTitleBar);
+            dialog = new LoadingIndicatorDialog(this, string, android.R.style.Theme_Translucent_NoTitleBar);
         }
         dialog.show();
     }
@@ -301,12 +347,15 @@ public class AgentsListActivity extends AppCompatActivity {
     }
 
     private int getSelectedItems() {
+        selectedAgentIds = new ArrayList<>();
         int selected = 0;
         for (AgentModel model : agentList) {
             if (model.isChecked()) {
+                selectedAgentIds.add(Integer.valueOf(model.getAgentid()));
                 selected++;
             }
         }
+        Log.e("selectedAgentIds", selectedAgentIds.toString());
         return selected;
     }
 }

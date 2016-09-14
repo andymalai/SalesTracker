@@ -40,4 +40,9 @@ public class AppConstants {
     // http://ws-srv-php/projects/drupal/amgsales2/services/branch.php?format=json
     public static final String BranchList = "branch.php?format=json";
 
+    // http://ws-srv-php/projects/drupal/amgsales2/services/add_agent.php
+    public static final String AddAgent = BASE_URL + "add_agent.php";
+
+    // http://ws-srv-php/projects/drupal/amgsales2/services/delete_agent.php
+    public static final String DeleteAgent = BASE_URL + "delete_agent.php";
 }

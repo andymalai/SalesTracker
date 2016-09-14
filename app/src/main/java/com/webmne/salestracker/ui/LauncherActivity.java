@@ -25,7 +25,7 @@ public class LauncherActivity extends AppCompatActivity {
 
         binding.txtAppName.animateText(getString(R.string.app_name)); // animate
 
-        new CountDownTimer(3000, 1000) {
+        new CountDownTimer(3500, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -39,6 +39,7 @@ public class LauncherActivity extends AppCompatActivity {
                     Functions.fireIntent(LauncherActivity.this, LoginActivity.class);
                 }
                 finish();
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         }.start();
 

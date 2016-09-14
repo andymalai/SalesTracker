@@ -24,6 +24,7 @@ import com.webmne.salestracker.databinding.ActivityAgentProfileBinding;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
+import com.webmne.salestracker.helper.RetrofitErrorHelper;
 
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeoutException;
@@ -110,13 +111,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onFailure(Call<BranchListResponse> call, Throwable t) {
                 dismissProgress();
-                if (t instanceof TimeoutException) {
-                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
-                } else if (t instanceof UnknownHostException) {
-                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-                } else {
-                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
-                }
+                RetrofitErrorHelper.showErrorMsg(t, AgentProfileActivity.this);
             }
         });
     }
@@ -149,13 +144,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onFailure(Call<TierListResponse> call, Throwable t) {
                 dismissProgress();
-                if (t instanceof TimeoutException) {
-                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
-                } else if (t instanceof UnknownHostException) {
-                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-                } else {
-                    SimpleToast.error(AgentProfileActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
-                }
+                RetrofitErrorHelper.showErrorMsg(t, AgentProfileActivity.this);
             }
         });
     }
@@ -187,6 +176,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
         viewBinding.spinnerBranch.setSelection(branchPosition);
 
         adapter.setCanOpen(false);
+        branchAdapter.setCanOpen(false);
     }
 
     private int getIndex(TierAdapter adapter, String myString) {
