@@ -50,7 +50,7 @@ public class DepartmentAdapter extends ArrayAdapter<Department> {
         convertView = inflater.inflate(textViewResourceId, parent, false);
 
         TfTextView txtItem = (TfTextView) convertView.findViewById(R.id.txtItem);
-        txtItem.setText(agentModels.get(position).getDepartmentName());
+        txtItem.setText(agentModels.get(position).getDepartment());
 
         return convertView;
     }

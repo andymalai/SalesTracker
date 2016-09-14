@@ -5,22 +5,22 @@ package com.webmne.salestracker.actionlog.model;
  */
 public class Department {
 
-    private String departmentName;
-    private int departmentId;
+    private String Department;
+    private int DepartmentID;
 
-    public String getDepartmentName() {
-        return departmentName;
+    public String getDepartment() {
+        return Department;
     }
 
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
+    public void setDepartment(String department) {
+        Department = department;
     }
 
-    public int getDepartmentId() {
-        return departmentId;
+    public int getDepartmentID() {
+        return DepartmentID;
     }
 
-    public void setDepartmentId(int departmentId) {
-        this.departmentId = departmentId;
+    public void setDepartmentID(int departmentID) {
+        DepartmentID = departmentID;
     }
 }

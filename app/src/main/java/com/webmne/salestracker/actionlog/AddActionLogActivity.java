@@ -5,15 +5,18 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.adapter.AgentAdapter;
 import com.webmne.salestracker.actionlog.adapter.DepartmentAdapter;
 import com.webmne.salestracker.actionlog.adapter.InChargeAdapter;
 import com.webmne.salestracker.actionlog.model.Department;
+import com.webmne.salestracker.actionlog.model.DepartmentListModel;
 import com.webmne.salestracker.actionlog.model.InCharge;
 import com.webmne.salestracker.api.APIListener;
 import com.webmne.salestracker.api.AgentListApi;
@@ -23,7 +26,10 @@ import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityAddActionLogBinding;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
+import com.webmne.salestracker.helper.volley.CallWebService;
+import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 
 import java.io.File;
 import java.net.UnknownHostException;
@@ -106,7 +112,7 @@ public class AddActionLogActivity extends AppCompatActivity {
     }
 
     private void getAgents() {
-        showProgress();
+        showProgress(getString(R.string.loading));
 
         agentList = new ArrayList<>();
 
@@ -120,6 +126,9 @@ public class AddActionLogActivity extends AppCompatActivity {
                         agentList.addAll(listResponse.getData().getAgents());
                         agentAdapter = new AgentAdapter(AddActionLogActivity.this, R.layout.item_adapter, agentList);
                         binding.spinnerAgent.setAdapter(agentAdapter);
+
+                        setDepartmentInchargeAdapter();
+
                     } else {
                         SimpleToast.error(AddActionLogActivity.this, listResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
@@ -142,7 +151,55 @@ public class AddActionLogActivity extends AppCompatActivity {
         });
     }
 
+    private void setDepartmentAdapter() {
+
+        showProgress(getString(R.string.loading));
+
+        deptList = new ArrayList<>();
+
+        Log.e("department_list_url", AppConstants.DepartmentList);
+
+        new CallWebService(this, AppConstants.DepartmentList, CallWebService.TYPE_GET) {
+
+            @Override
+            public void response(String response) {
+
+                Log.e("getResponse", response);
+
+                dismissProgress();
+
+                DepartmentListModel getDepartmentListResponse = MyApplication.getGson().fromJson(response, DepartmentListModel.class);
+
+                if (getDepartmentListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS))
+                {
+                    deptList.addAll(getDepartmentListResponse.getData().getDepartment());
+
+                    binding.spinnerDepartment.setAdapter(new DepartmentAdapter(AddActionLogActivity.this, R.layout.item_adapter, deptList));
+
+                    setDepartmentInchargeAdapter();
+                }
+                else
+                {
+                    SimpleToast.error(AddActionLogActivity.this, getDepartmentListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, AddActionLogActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(AddActionLogActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
+    }
+
     private void setDepartmentInchargeAdapter() {
+
         inChargeList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             InCharge incharge = new InCharge();
@@ -151,17 +208,6 @@ public class AddActionLogActivity extends AppCompatActivity {
             inChargeList.add(incharge);
         }
         binding.spinnerInCharge.setAdapter(new InChargeAdapter(this, R.layout.item_adapter, inChargeList));
-    }
-
-    private void setDepartmentAdapter() {
-        deptList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            Department dept = new Department();
-            dept.setDepartmentName("Department " + i);
-            dept.setDepartmentId(i);
-            deptList.add(dept);
-        }
-        binding.spinnerDepartment.setAdapter(new DepartmentAdapter(this, R.layout.item_adapter, deptList));
     }
 
     private void setAgentAdapter() {
@@ -186,9 +232,9 @@ public class AddActionLogActivity extends AppCompatActivity {
         }
     }
 
-    public void showProgress() {
+    public void showProgress(String string) {
         if (dialog == null) {
-            dialog = new LoadingIndicatorDialog(this, "Loading..", android.R.style.Theme_Translucent_NoTitleBar);
+            dialog = new LoadingIndicatorDialog(this, string, android.R.style.Theme_Translucent_NoTitleBar);
         }
         dialog.show();
     }

@@ -39,6 +39,9 @@ public class AppConstants {
     // http://ws-srv-php/projects/drupal/amgsales2/services/agent_list.php?format=json&userid=676
     public static final String AgentList = "agent_list.php?format=json";
 
+    // http://ws-srv-php/projects/drupal/amgsales2/services/department.php?format=json
+    public static final String DepartmentList = BASE_URL + "department.php?format=json";
+
     // http://ws-srv-php/projects/drupal/amgsales2/services/tier_list.php?format=json
     public static final String TierList = "tier_list.php?format=json";
 
