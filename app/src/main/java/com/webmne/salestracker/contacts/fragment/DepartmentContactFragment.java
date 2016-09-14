@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,6 +156,19 @@ public class DepartmentContactFragment extends Fragment {
             }
         });
 
+    }
+
+
+    public void searchDepartmentContact(String text)
+    {
+        if (TextUtils.isEmpty(text))
+        {
+            departmentContactListAdapter.setDepartmentContactList(departmentContactModelList);
+        }
+        else
+        {
+            departmentContactListAdapter.searchFilter(text);
+        }
     }
 
 

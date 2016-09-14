@@ -53,8 +53,8 @@
                 <com.webmne.salestracker.widget.TfTextView
                     android:id="@+id/txtPosition"
                     android:layout_width="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_2dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_2dp"
                     android:gravity="center"
                     android:text="R" />
             </LinearLayout>

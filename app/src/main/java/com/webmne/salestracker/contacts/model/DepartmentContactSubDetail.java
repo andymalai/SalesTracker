@@ -5,12 +5,21 @@ package com.webmne.salestracker.contacts.model;
  */
 public class DepartmentContactSubDetail {
 
-    String name,email,phone;
+    String dept_id,name,email,phone;
 
-    public DepartmentContactSubDetail(String name, String email, String phone) {
+    public DepartmentContactSubDetail(String dept_id, String name, String email, String phone) {
+        this.dept_id = dept_id;
         this.name = name;
         this.email = email;
         this.phone = phone;
+    }
+
+    public String getDept_id() {
+        return dept_id;
+    }
+
+    public void setDept_id(String dept_id) {
+        this.dept_id = dept_id;
     }
 
     public String getName() {

@@ -42,16 +42,16 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
         binding.toolbarLayout.txtCustomTitle.setText(getString(R.string.action_log_details_title));
 
         // static, change this fetch from intent
-        ActionLogModel actionLog = new ActionLogModel();
-        actionLog.setAgentName("Sagar");
-        actionLog.setCompleted(false);
-        actionLog.setSLA(2);
-        actionLog.setDescription(getString(R.string.dummy));
-        actionLog.setDepartment("Hub Operation");
-        actionLog.setDateRaised("18-08-2016");
-        actionLog.setLastUpdate("22-08-2016");
+//        ActionLogModel actionLog = new ActionLogModel();
+//        actionLog.setAgentName("Sagar");
+//        actionLog.setCompleted(false);
+//        actionLog.setSLA(2);
+//        actionLog.setDescription(getString(R.string.dummy));
+//        actionLog.setDepartment("Hub Operation");
+//        actionLog.setDateRaised("18-08-2016");
+//        actionLog.setLastUpdate("22-08-2016");
 
-        binding.actionLog.setActionLog(actionLog);
+//        binding.actionLog.setActionLog(actionLog);
     }
 
     @Override

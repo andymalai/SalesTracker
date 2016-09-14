@@ -54,15 +54,15 @@ public class ActionLogDetails extends LinearLayout {
 
     public void setActionLog(ActionLogModel actionLog) {
         binding.txtAgentName.setText(actionLog.getAgentName());
-        binding.txtDateRaised.setText(actionLog.getDateRaised());
-        binding.txtDepartment.setText(actionLog.getDepartment());
+        binding.txtDateRaised.setText(actionLog.getCreatedDatetime());
+        binding.txtDepartment.setText(actionLog.getDepartmentName());
         binding.txtDescription.setText(actionLog.getDescription());
-        binding.txtLastUpdate.setText(actionLog.getLastUpdate());
-        binding.txtSla.setText(actionLog.getSLA() + " Days");
-        if (actionLog.isCompleted()) {
-            binding.txtStatus.setText("Completed");
-        } else {
-            binding.txtStatus.setText("Pending");
-        }
+//        binding.txtLastUpdate.setText(actionLog.get);
+//        binding.txtSla.setText(actionLog.getSLA() + " Days");
+//        if (actionLog.isCompleted()) {
+//            binding.txtStatus.setText("Completed");
+//        } else {
+//            binding.txtStatus.setText("Pending");
+//        }
     }
 }

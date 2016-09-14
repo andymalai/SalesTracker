@@ -21,7 +21,8 @@ public class DepartmentContactsImpl {
 
     }
 
-    public List<Object> getSortedDepartmentList(ArrayList<DepartmentContactContactsModel> contacts) {
+    public List<Object> getSortedDepartmentList(ArrayList<DepartmentContactContactsModel> contacts)
+    {
         HashSet<String> departmentId = new HashSet<String>();
 
         for (int i = 0; i < contacts.size(); i++) {
@@ -34,7 +35,7 @@ public class DepartmentContactsImpl {
 
             for (int k = 0; k < contacts.size(); k++) {
                 if (deptid.equals(contacts.get(k).getDepartmentid())) {
-                    list.add(new DepartmentContactSubDetail(contacts.get(k).getName(), contacts.get(k).getEmailid(), contacts.get(k).getMobileNo()));
+                    list.add(new DepartmentContactSubDetail(contacts.get(j).getDepartmentid(), contacts.get(k).getName(), contacts.get(k).getEmailid(), contacts.get(k).getMobileNo()));
                 }
             }
 

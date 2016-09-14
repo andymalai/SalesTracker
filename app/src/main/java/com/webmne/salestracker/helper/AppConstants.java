@@ -45,4 +45,9 @@ public class AppConstants {
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/delete_agent.php
     public static final String DeleteAgent = BASE_URL + "delete_agent.php";
+
+    // http://ws-srv-php/projects/drupal/amgsales2/services/fetch_action.php?format=json&user_id=699
+    public static final String ActionLogList = BASE_URL + "fetch_action.php?format=json&user_id=";
+
+
 }

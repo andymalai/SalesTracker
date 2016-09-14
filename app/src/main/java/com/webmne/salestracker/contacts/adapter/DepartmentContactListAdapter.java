@@ -14,11 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.contacts.model.DepartmentContactContactsModel;
 import com.webmne.salestracker.contacts.model.DepartmentContactDetail;
 import com.webmne.salestracker.contacts.model.DepartmentContactModel;
 import com.webmne.salestracker.contacts.model.DepartmentContactSubDetail;
 import com.webmne.salestracker.contacts.model.DepartmentContactSubModel;
 import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.MyApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,5 +179,44 @@ public class DepartmentContactListAdapter extends RecyclerView.Adapter<RecyclerV
 
         }
     }
+
+
+    public void searchFilter(String searchQuery)
+    {
+        List<Object> modelList = new ArrayList<>();
+
+        for (int i=0; i<departmentContactModelList.size(); i++)
+        {
+            if(departmentContactModelList.get(i) instanceof DepartmentContactDetail)
+            {
+                String text = ((DepartmentContactDetail) departmentContactModelList.get(i)).getDeptName();
+
+                if (text.toLowerCase().trim().contains(searchQuery.toLowerCase().trim()))
+                {
+                    modelList.add(departmentContactModelList.get(i));
+
+                    String str_dept_contact_id = ((DepartmentContactDetail) departmentContactModelList.get(i)).getDeptId();
+
+                    for (int j=0; j<departmentContactModelList.size(); j++)
+                    {
+                        if(departmentContactModelList.get(j) instanceof DepartmentContactSubDetail) {
+
+                            String str_sub_dept_contact_id = ((DepartmentContactSubDetail) departmentContactModelList.get(j)).getDept_id();
+
+                            if (str_dept_contact_id.equals(str_sub_dept_contact_id)) {
+                                modelList.add(departmentContactModelList.get(j));
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+        setDepartmentContactList(modelList);
+    }
+
+
 
 }

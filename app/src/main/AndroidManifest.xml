@@ -67,6 +67,12 @@
             android:name=".visitplan.SalesVisitPlanActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".actionlog.RemarkListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+
+
     </application>
 
 </manifest>

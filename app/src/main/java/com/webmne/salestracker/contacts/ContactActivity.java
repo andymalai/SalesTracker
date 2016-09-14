@@ -3,6 +3,7 @@ package com.webmne.salestracker.contacts;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -64,19 +65,44 @@ public class ContactActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                if (contactBinding.viewpager.getCurrentItem() == 0) {
-                    Toast.makeText(ContactActivity.this, "Do search of branch contact" + query, Toast.LENGTH_SHORT).show();
-                } else if (contactBinding.viewpager.getCurrentItem() == 1) {
-                    Toast.makeText(ContactActivity.this, "Do search of department contact" + query, Toast.LENGTH_SHORT).show();
+                Fragment fragment = contactPageAdapter.getItem(contactBinding.viewpager.getCurrentItem());
+
+                if (fragment instanceof BranchContactFragment) {
+
+                    BranchContactFragment branchContactFragment = (BranchContactFragment) fragment;
+
+                    branchContactFragment.searchBranchContact(query);
+                }
+                else
+                {
+                    DepartmentContactFragment departmentContactFragment = (DepartmentContactFragment) fragment;
+
+                    departmentContactFragment.searchDepartmentContact(query);
                 }
 
-                return false;
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 //Do some magic
-                return false;
+
+                Fragment fragment = contactPageAdapter.getItem(contactBinding.viewpager.getCurrentItem());
+
+                if (fragment instanceof BranchContactFragment) {
+
+                    BranchContactFragment branchContactFragment = (BranchContactFragment) fragment;
+
+                    branchContactFragment.searchBranchContact(newText);
+                }
+                else
+                {
+                    DepartmentContactFragment departmentContactFragment = (DepartmentContactFragment) fragment;
+
+                    departmentContactFragment.searchDepartmentContact(newText);
+                }
+
+                return true;
             }
         });
 

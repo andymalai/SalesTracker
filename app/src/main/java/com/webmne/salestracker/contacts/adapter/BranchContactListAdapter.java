@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,5 +130,20 @@ public class BranchContactListAdapter extends RecyclerView.Adapter<BranchContact
 
         }
     }
+
+
+    public void searchFilter(String searchQuery)
+    {
+        ArrayList<BranchContactsModel> ModelList = new ArrayList<>();
+        for (BranchContactsModel model : branchContactsModelList)
+        {
+            String text = model.getName().toLowerCase();
+            if (text.toLowerCase().trim().contains(searchQuery.toLowerCase().trim())) {
+                ModelList.add(model);
+            }
+        }
+        setBranchContactList(ModelList);
+    }
+
 
 }

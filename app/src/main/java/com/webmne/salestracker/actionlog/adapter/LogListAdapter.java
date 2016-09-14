@@ -1,17 +1,21 @@
 package com.webmne.salestracker.actionlog.adapter;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.actionlog.RemarkListActivity;
 import com.webmne.salestracker.actionlog.model.ActionLogModel;
+import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
@@ -56,7 +60,7 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
     class LogHolder extends RecyclerView.ViewHolder {
 
         LinearLayout dateLayout;
-        TfTextView txtDate, txtMonth, txtYear, txtStatus, txtDescription, txtAgentName, txtLastUpdate;
+        TfTextView txtDate, txtMonth, txtYear, txtStatus, txtDescription, txtAgentName, txtLastUpdate, txtRemark;
         private View viewIndicate;
 
         public LogHolder(View itemView) {
@@ -69,21 +73,34 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
             txtDescription = (TfTextView) itemView.findViewById(R.id.txtDescription);
             txtAgentName = (TfTextView) itemView.findViewById(R.id.txtAgentName);
             txtLastUpdate = (TfTextView) itemView.findViewById(R.id.txtLastUpdate);
+            txtRemark = (TfTextView) itemView.findViewById(R.id.txtRemark);
             viewIndicate = itemView.findViewById(R.id.viewIndicate);
         }
 
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         public void setActionLog(ActionLogModel model) {
+
             txtAgentName.setText(String.format("%s", model.getAgentName()));
 
-            if (model.isCompleted()) {
-                txtStatus.setText("Completed");
-                viewIndicate.setBackground(ContextCompat.getDrawable(context, R.drawable.completed_shape));
-            } else {
-                txtStatus.setText("Pending");
-                viewIndicate.setBackground(ContextCompat.getDrawable(context, R.drawable.pending_shape));
-            }
+//            if (model.isCompleted()) {
+//                txtStatus.setText("Completed");
+//                viewIndicate.setBackground(ContextCompat.getDrawable(context, R.drawable.completed_shape));
+//            } else {
+//                txtStatus.setText("Pending");
+//                viewIndicate.setBackground(ContextCompat.getDrawable(context, R.drawable.pending_shape));
+//            }
 
+            txtRemark.setText(Html.fromHtml(String.format("<p><u>%s %s</u></p>", model.getRemarkCount(), context.getString(R.string.remark))));
+
+            txtRemark.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Functions.fireIntent(context, RemarkListActivity.class);
+                    ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                }
+            });
 
         }
     }

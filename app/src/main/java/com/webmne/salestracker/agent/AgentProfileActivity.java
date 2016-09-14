@@ -5,8 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.agent.adapter.BranchAdapter;
@@ -25,9 +26,13 @@ import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.RetrofitErrorHelper;
+import com.webmne.salestracker.helper.volley.CallWebService;
+import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 
-import java.net.UnknownHostException;
-import java.util.concurrent.TimeoutException;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -44,6 +49,8 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     private TierAdapter adapter;
     private BranchAdapter branchAdapter;
     private LoadingIndicatorDialog dialog;
+
+    private ArrayList<Integer> selectedAgentIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +91,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void fetchBranches() {
-        showProgress();
+        showProgress(getString(R.string.load_agent_profile));
 
         branchApi.getBranchList(new APIListener<BranchListResponse>() {
             @Override
@@ -117,7 +124,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void fetchTier() {
-        showProgress();
+        showProgress(getString(R.string.load_agent_profile));
 
         tierApi.getTierList(new APIListener<TierListResponse>() {
             @Override
@@ -219,7 +226,21 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
                     disableFields();
                     isEditMode = !isEditMode;
                 } else {
-                    Toast.makeText(AgentProfileActivity.this, "Delete", Toast.LENGTH_SHORT).show();
+
+                    Functions.showPrompt(AgentProfileActivity.this, "Yes", "No", getString(R.string.agent_delete_dialog), new Functions.onPromptListener() {
+                        @Override
+                        public void onClickYes(MaterialDialog dialog) {
+
+                            deleteAgent();
+
+                        }
+
+                        @Override
+                        public void onClickNo(MaterialDialog dialog) {
+                            dialog.dismiss();
+                        }
+                    });
+
                 }
                 break;
 
@@ -271,9 +292,56 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
         viewBinding.edtDescription.setFocusable(false);
     }
 
-    public void showProgress() {
+    private void deleteAgent()
+    {
+        showProgress(getString(R.string.delete_agents));
+
+        selectedAgentIds = new ArrayList<>();
+
+        selectedAgentIds.add(Integer.valueOf(agentModel.getAgentid()));
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("AgentID", new JSONArray(selectedAgentIds));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.e("delete_req", jsonObject.toString());
+
+        new CallWebService(this, AppConstants.DeleteAgent, CallWebService.TYPE_POST, jsonObject) {
+
+            @Override
+            public void response(String response) {
+                dismissProgress();
+
+                com.webmne.salestracker.api.model.Response deleteResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
+                Log.e("delete_res", deleteResponse.toString());
+
+                if (deleteResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                    SimpleToast.ok(AgentProfileActivity.this, getString(R.string.delete_success));
+                    finish();
+                } else {
+                    SimpleToast.error(AgentProfileActivity.this, deleteResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, AgentProfileActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(AgentProfileActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
+    }
+
+    public void showProgress(String string) {
         if (dialog == null) {
-            dialog = new LoadingIndicatorDialog(this, "Loading Agent Profile..", android.R.style.Theme_Translucent_NoTitleBar);
+            dialog = new LoadingIndicatorDialog(this, string, android.R.style.Theme_Translucent_NoTitleBar);
         }
         dialog.show();
     }

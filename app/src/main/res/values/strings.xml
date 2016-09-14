@@ -7,6 +7,7 @@
     <!--progress bar text-->
     <string name="loading_agents">Loading Agents..</string>
     <string name="delete_agents">Deleting Agents..</string>
+    <string name="load_agent_profile">Loading Agent Profile..</string>
 
     <!--commons-->
     <string name="dummy">The following are top voted examples for showing how to use android.databinding.DataBindingUtil. These examples are extracted from open source projects. You can vote up the examples you like and your votes will be used in our system to product more good examples. </string>
@@ -150,6 +151,12 @@
     <string name="btn_reopen">Reopen Action</string>
     <string name="action_log_details_title">Action Log Details</string>
 
+    <!--item_action_log.xml-->
+    <string name="remark">remark</string>
+
+    <!--activity_remark_list-->
+    <string name="remark_title">Remarks</string>
+
     <!--layout_action_log.xml-->
     <string name="agent_name">Agent Name</string>
     <string name="description">Description</string>
@@ -161,4 +168,9 @@
 
     <!--layout_empty_view.xml-->
     <string name="no_record">No Records</string>
+
+    <!--AgentProfileActivity.class-->
+    <string name="agent_delete_dialog">Are you sure, you want to delete</string>
+
+
 </resources>
