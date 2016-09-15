@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_10dp">
+
+    <com.webmne.salestracker.widget.TfEditText
+        android:id="@+id/edtDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|top"
+        android:hint="@string/enter_desc"
+        android:inputType="textMultiLine"
+        android:minLines="3" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_5dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <com.webmne.salestracker.widget.TfButton
+            android:id="@+id/btnCancel"
+            style="@style/MyButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_margin="@dimen/dimen_5dp"
+            android:layout_weight="0.5"
+            android:text="@string/btn_cancel" />
+
+        <com.webmne.salestracker.widget.TfButton
+            android:id="@+id/btnOk"
+            style="@style/MyButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_margin="@dimen/dimen_5dp"
+            android:layout_weight="0.5"
+            android:text="@string/btn_ok" />
+
+    </LinearLayout>
+</LinearLayout>

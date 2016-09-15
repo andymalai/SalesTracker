@@ -61,6 +61,6 @@ public class ActionLogDetails extends LinearLayout {
         binding.txtDepartment.setText(actionLog.getDepartmentName());
         binding.txtSla.setText(String.format("%s Days", actionLog.getSla()));
         binding.txtLastUpdate.setText(String.format("%s", Functions.parseDate(actionLog.getUpdatedDatetime(), "dd MMM yyyy, hh:mm a")));
-
+        binding.txtAttachment.setText(String.format("%s", actionLog.getAttachment()));
     }
 }

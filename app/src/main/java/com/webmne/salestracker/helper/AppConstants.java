@@ -75,6 +75,8 @@ public class AppConstants {
     // http://ws-srv-php/projects/drupal/amgsales2/services/reopen_remark.php?format=json&reopenid=130
     public static final String ReopenRemark = BASE_URL + "reopen_remark.php?format=json&reopenid=";
 
+    // http://ws-srv-php/projects/drupal/amgsales2/services/update_action.php
+    public static final String UpdateActionLog = BASE_URL + "update_action.php?format=json";
 
     // FTP details Local
     public static final String FTP_HOST = "ws-srv-php";

@@ -45,11 +45,13 @@
     <string name="btn_save">Save</string>
     <string name="profile_success">Profile updated successfully</string>
     <string name="btn_cancel">Cancel</string>
+    <string name="btn_ok">Ok</string>
 
     <!--activity_agents_list.xml-->
     <string name="agent_title">Agents</string>
     <string name="search">Search Agents by Name</string>
     <string name="btn_delete">Delete</string>
+
     <string name="delete_success">Delete Agents Successfully</string>
 
     <!--activity_add_agent.xml-->
@@ -153,6 +155,7 @@
     <!--activity_action_log_details.xml-->
     <string name="btn_remark">Add Remark</string>
     <string name="btn_reopen">Reopen Action</string>
+    <string name="edit">Edit</string>
     <string name="action_log_details_title">Action Log Details</string>
     <string name="reopen_success">Your request for reopen Action Log has been sent successfully</string>
 
@@ -175,12 +178,17 @@
     <string name="dept">Department</string>
     <string name="sla">SLA</string>
     <string name="last_update">Last Updated</string>
+    <string name="attachment">Attachment</string>
 
     <!--layout_empty_view.xml-->
     <string name="no_record">No Records</string>
 
     <!--AgentProfileActivity.class-->
     <string name="agent_delete_dialog">Are you sure want to delete this agent?</string>
+
+    <!--ActionLogDetailsActivity.class-->
+    <string name="dialog_title">Edit Action Log</string>
+
 
 
 </resources>

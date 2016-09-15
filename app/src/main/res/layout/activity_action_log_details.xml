@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
@@ -8,9 +9,27 @@
         android:orientation="vertical"
         tools:context="com.webmne.salestracker.actionlog.ActionLogDetailsActivity">
 
-        <include
-            android:id="@+id/toolbarLayout"
-            layout="@layout/app_bar" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include
+                android:id="@+id/toolbarLayout"
+                layout="@layout/app_bar" />
+
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="?actionBarSize"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dimen_12dp"
+                android:gravity="center"
+                android:text="@string/edit"
+                android:textColor="@color/white"
+                android:textSize="@dimen/toolbar_textsize"
+                app:isBold="true" />
+
+        </RelativeLayout>
 
         <com.webmne.salestracker.widget.ActionLogDetails
             android:id="@+id/actionLog"

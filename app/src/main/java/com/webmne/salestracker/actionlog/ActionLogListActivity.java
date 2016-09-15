@@ -163,28 +163,6 @@ public class ActionLogListActivity extends AppCompatActivity {
             }
         }.call();
 
-
-//        actionLogList = new ArrayList<>();
-//
-//        for (int i = 1; i < 10; i++) {
-//            ActionLogModel model = new ActionLogModel();
-//            model.setAgentName("Agent " + i);
-//            model.setDateRaised("18-8-2016");
-//            model.setDepartment("Hub Operations");
-//            model.setDescription(getString(R.string.dummy));
-//            model.setCountRemark(10);
-//            model.setLastUpdate("22-8-2016");
-//            model.setSLA(2);
-//            if (i % 2 == 0) {
-//                model.setCompleted(true);
-//            } else {
-//                model.setCompleted(false);
-//            }
-//            actionLogList.add(model);
-//        }
-//
-//        adapter.setActionList(actionLogList);
-
     }
 
     private void initRecyclerView() {
