@@ -16,6 +16,8 @@
     <string name="logout_text">Are you sure want to logout?</string>
     <string name="subject">Your Subject</string>
     <string name="msg">Your Message</string>
+    <string name="str_true">True</string>
+    <string name="str_false">False</string>
 
     <!--font_awesome icons string-->
     <string name="fa_error">{fa-exclamation-triangle}</string>
@@ -152,6 +154,7 @@
     <string name="btn_remark">Add Remark</string>
     <string name="btn_reopen">Reopen Action</string>
     <string name="action_log_details_title">Action Log Details</string>
+    <string name="reopen_success">Your request for reopen Action Log has been sent successfully</string>
 
     <!--item_action_log.xml-->
     <string name="remark">remark</string>
