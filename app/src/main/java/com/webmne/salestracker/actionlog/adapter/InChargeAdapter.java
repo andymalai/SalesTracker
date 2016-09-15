@@ -7,8 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.actionlog.model.Department;
-import com.webmne.salestracker.actionlog.model.InCharge;
+import com.webmne.salestracker.api.model.InCharge;
 import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
@@ -37,6 +36,11 @@ public class InChargeAdapter extends ArrayAdapter<InCharge> {
     }
 
     @Override
+    public InCharge getItem(int position) {
+        return agentModels.get(position);
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         return getCustomView(position, convertView, parent);
     }
@@ -51,9 +55,14 @@ public class InChargeAdapter extends ArrayAdapter<InCharge> {
         convertView = inflater.inflate(textViewResourceId, parent, false);
 
         TfTextView txtItem = (TfTextView) convertView.findViewById(R.id.txtItem);
-        txtItem.setText(agentModels.get(position).getInChargeName());
+        txtItem.setText(agentModels.get(position).getPicName());
 
         return convertView;
     }
 
+    public void setPic(ArrayList<InCharge> departmentPic) {
+        agentModels = new ArrayList<>();
+        agentModels = departmentPic;
+        notifyDataSetChanged();
+    }
 }

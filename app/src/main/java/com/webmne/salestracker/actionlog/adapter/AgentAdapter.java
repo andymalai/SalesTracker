@@ -36,6 +36,11 @@ public class AgentAdapter extends ArrayAdapter<AgentModel> {
     }
 
     @Override
+    public AgentModel getItem(int position) {
+        return agentModels.get(position);
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         return getCustomView(position, convertView, parent);
     }

@@ -47,13 +47,18 @@ public class DashboardActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // change message runtime, welcome <username>
+        dashboadBinding.toolbarLayout.txtCustomTitle.setText(String.format("%s, %s", "Welcome", PrefUtils.getUserProfile(this).getFirstName()));
+
+    }
+
     private void init() {
         if (dashboadBinding.toolbarLayout.toolbar != null)
             dashboadBinding.toolbarLayout.toolbar.setTitle("");
         setSupportActionBar(dashboadBinding.toolbarLayout.toolbar);
-
-        // change message runtime, welcome <username>
-        dashboadBinding.toolbarLayout.txtCustomTitle.setText(String.format("%s, %s", "Welcome", PrefUtils.getUserProfile(this).getFirstName()));
 
         initRecylerView();
 

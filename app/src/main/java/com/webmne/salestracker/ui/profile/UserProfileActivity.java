@@ -149,6 +149,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 if (wsResponse != null) {
                     if (wsResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                         SimpleToast.ok(UserProfileActivity.this, getString(R.string.profile_success));
+                        setProfilePref();
                         disableFields();
                         finish();
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -170,6 +171,14 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 SimpleToast.error(UserProfileActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
             }
         }.call();
+    }
+
+    private void setProfilePref() {
+        UserProfile profile = PrefUtils.getUserProfile(this);
+        profile.setFirstName(Functions.toStr(viewBinding.edtEmpName));
+        profile.setMobile(Functions.toStr(viewBinding.edtEmpPhone));
+        profile.setEmail(Functions.toStr(viewBinding.edtEmpEmailId));
+        PrefUtils.setUserProfile(this, profile);
     }
 
     public void showProgress(String string) {

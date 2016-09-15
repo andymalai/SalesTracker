@@ -6,7 +6,7 @@ package com.webmne.salestracker.actionlog.model;
 public class Department {
 
     private String Department;
-    private int DepartmentID;
+    private String DepartmentID;
 
     public String getDepartment() {
         return Department;
@@ -16,11 +16,11 @@ public class Department {
         Department = department;
     }
 
-    public int getDepartmentID() {
+    public String getDepartmentID() {
         return DepartmentID;
     }
 
-    public void setDepartmentID(int departmentID) {
+    public void setDepartmentID(String departmentID) {
         DepartmentID = departmentID;
     }
 }

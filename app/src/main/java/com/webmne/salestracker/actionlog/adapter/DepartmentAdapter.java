@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class DepartmentAdapter extends ArrayAdapter<Department> {
 
     private ArrayList<Department> agentModels;
+
     private Context context;
     private int textViewResourceId;
     private LayoutInflater inflater;
@@ -30,9 +31,20 @@ public class DepartmentAdapter extends ArrayAdapter<Department> {
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    public void setDepartmentList(ArrayList<Department> agentModels) {
+        this.agentModels = new ArrayList<>();
+        this.agentModels = agentModels;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return agentModels.size();
+    }
+
+    @Override
+    public Department getItem(int position) {
+        return agentModels.get(position);
     }
 
     @Override

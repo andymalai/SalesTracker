@@ -42,6 +42,9 @@ public class AppConstants {
     // http://ws-srv-php/projects/drupal/amgsales2/services/department.php?format=json
     public static final String DepartmentList = BASE_URL + "department.php?format=json";
 
+    // http://ws-srv-php/projects/drupal/amgsales2/services/departmentpic.php?format=json
+    public static final String DepartmentPicList = BASE_URL + "departmentpic.php?format=json";
+
     // http://ws-srv-php/projects/drupal/amgsales2/services/tier_list.php?format=json
     public static final String TierList = "tier_list.php?format=json";
 
