@@ -3,8 +3,10 @@ package com.webmne.salestracker.actionlog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,6 +42,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
+import it.sauronsoftware.ftp4j.FTPClient;
+import it.sauronsoftware.ftp4j.FTPDataTransferListener;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -59,7 +63,9 @@ public class AddActionLogActivity extends AppCompatActivity {
     private String deptId;
     private String inChargeName;
     private String agentId;
-
+    private String priority;
+    private File file;
+    private boolean isFileUploaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +100,10 @@ public class AddActionLogActivity extends AppCompatActivity {
             SimpleToast.error(AddActionLogActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
         }
 
+        actionListener();
+    }
+
+    private void actionListener() {
         binding.edtSelectFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,11 +122,137 @@ public class AddActionLogActivity extends AppCompatActivity {
             }
         });
 
-        actionListener();
+        binding.btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                priority = (String) binding.spinnerPriority.getSelectedItem();
+
+                if (TextUtils.isEmpty(agentId)) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.select_agent), getString(R.string.fa_error));
+                    return;
+                }
+
+                if (TextUtils.isEmpty(deptId)) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.select_dept), getString(R.string.fa_error));
+                    return;
+                }
+
+                if (TextUtils.isEmpty(inChargeName)) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.select_pic), getString(R.string.fa_error));
+                    return;
+                }
+
+                if (TextUtils.isEmpty(priority)) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.select_priority), getString(R.string.fa_error));
+                    return;
+                }
+
+                if (TextUtils.isEmpty(Functions.toStr(binding.edtDescription))) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.enter_description), getString(R.string.fa_error));
+                    return;
+                }
+
+                doUploadFile();
+
+            }
+        });
     }
 
-    private void actionListener() {
+    private void doUploadFile() {
 
+        new AsyncTask<Void, Void, Void>() {
+
+            FTPClient client = new FTPClient();
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                showProgress(getString(R.string.loading));
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    client.connect(AppConstants.FTP_HOST, 21);
+                    client.login(AppConstants.FTP_USER, AppConstants.FTP_PASSWORD);
+                    client.setType(FTPClient.TYPE_BINARY);
+                    client.changeDirectory("/drupal/amgsales2/sites/default/files/userfile/");
+
+                    client.upload(file, new MyTransferListener());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    try {
+                        client.disconnect(true);
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                if (isFileUploaded) {
+                    doAddActionLog();
+                } else {
+                    dismissProgress();
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.upload_failed), getString(R.string.fa_error));
+                }
+            }
+        }.execute();
+
+    }
+
+    private void doAddActionLog() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("UserId", PrefUtils.getUserId(this));
+            json.put("AgentId", Integer.parseInt(agentId));
+            json.put("Description", Functions.toStr(binding.edtDescription));
+            json.put("Status", "");
+            json.put("Priroty", binding.spinnerPriority.getSelectedItem());
+            json.put("File", Functions.toStr(binding.edtSelectFile));
+            json.put("DepartmentId", Integer.parseInt(deptId));
+            json.put("PicName", inChargeName);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.e("action_req", json.toString());
+
+        new CallWebService(this, AppConstants.AddActionLog, CallWebService.TYPE_POST, json) {
+            @Override
+            public void response(String response) {
+                dismissProgress();
+
+                com.webmne.salestracker.api.model.Response addResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
+                if (addResponse != null) {
+                    if (addResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        SimpleToast.ok(AddActionLogActivity.this, getString(R.string.add_action_success));
+                    } else {
+                        SimpleToast.error(AddActionLogActivity.this, addResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                } else {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, AddActionLogActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(AddActionLogActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
     }
 
     @Override
@@ -317,9 +453,10 @@ public class AddActionLogActivity extends AppCompatActivity {
         if (requestCode == FILE_SELECT_CODE && resultCode == RESULT_OK) {
             Uri uri = data.getData();
             // Get the path
-            File file = new File(uri.getPath());
+            file = new File(uri.getPath());
             binding.edtSelectFile.setText(file.getName());
             String path = Functions.getPath(this, uri);
+            Log.e("path", path);
         }
     }
 
@@ -333,5 +470,33 @@ public class AddActionLogActivity extends AppCompatActivity {
     public void dismissProgress() {
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();
+    }
+
+    private class MyTransferListener implements FTPDataTransferListener {
+        @Override
+        public void started() {
+            Log.e("FTP", "File uploading start..");
+        }
+
+        @Override
+        public void transferred(int i) {
+            Log.e("FTP", "File transfered. " + i);
+        }
+
+        @Override
+        public void completed() {
+            Log.e("FTP", "File transfer completed.");
+            isFileUploaded = true;
+        }
+
+        @Override
+        public void aborted() {
+            Log.e("FTP", "File transfer aborted.");
+        }
+
+        @Override
+        public void failed() {
+            Log.e("FTP", "File transfer failed.");
+        }
     }
 }

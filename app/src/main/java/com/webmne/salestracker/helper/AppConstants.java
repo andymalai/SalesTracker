@@ -66,7 +66,15 @@ public class AppConstants {
     // http://ws-srv-php/projects/drupal/amgsales2/services/fetch_action.php?format=json&user_id=699
     public static final String ActionLogList = BASE_URL + "fetch_action.php?format=json&user_id=";
 
+    // http://ws-srv-php/projects/drupal/amgsales2/services/add_action.php
+    public static final String AddActionLog = BASE_URL + "add_action.php";
+
     // http://ws-srv-php/projects/drupal/amgsales2/services/display_remark.php?format=json&action_id=130
     public static final String ActionLogRemarksList = BASE_URL + "display_remark.php?format=json&action_id=";
+
+    // FTP details Local
+    public static final String FTP_HOST = "ws-srv-php";
+    public static final String FTP_USER = "projects";
+    public static final String FTP_PASSWORD = "projects";
 
 }

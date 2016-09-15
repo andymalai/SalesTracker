@@ -122,6 +122,8 @@
     <string name="select_pic">Select In-charge</string>
     <string name="select_priority">Select Priority</string>
     <string name="select_file">Select File</string>
+    <string name="upload_failed">Failed to uploading file.</string>
+    <string name="add_action_success">Action log added successfully.</string>
     <array name="agent_array">
         <item>Agent 1</item>
         <item>Agent 2</item>
@@ -143,7 +145,7 @@
     <array name="priority_array">
         <item>High</item>
         <item>Medium</item>
-        <item>Regular</item>
+        <item>Low</item>
     </array>
 
     <!--activity_action_log_details.xml-->
