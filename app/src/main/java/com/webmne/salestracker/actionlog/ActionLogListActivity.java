@@ -68,8 +68,6 @@ public class ActionLogListActivity extends AppCompatActivity {
 
         initRecyclerView();
 
-        getActionLogList();
-
         actionListener();
     }
 
@@ -77,6 +75,12 @@ public class ActionLogListActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    @Override
+    protected void onResume() {
+        getActionLogList();
+        super.onResume();
     }
 
     private void actionListener() {
@@ -109,7 +113,6 @@ public class ActionLogListActivity extends AppCompatActivity {
         binding.agentRecyclerView.setOnItemClickListener(new FamiliarRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
-//                Functions.fireIntent(ActionLogListActivity.this, ActionLogDetailsActivity.class);
 
                 Intent intent = new Intent(ActionLogListActivity.this, ActionLogDetailsActivity.class);
                 intent.putExtra("action", MyApplication.getGson().toJson(actionLogList.get(position)));

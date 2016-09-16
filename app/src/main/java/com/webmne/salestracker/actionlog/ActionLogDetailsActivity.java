@@ -2,14 +2,12 @@ package com.webmne.salestracker.actionlog;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
@@ -18,10 +16,13 @@ import com.webmne.salestracker.actionlog.model.ActionLogModel;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityActionLogDetailsBinding;
 import com.webmne.salestracker.helper.AppConstants;
+import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
+import com.webmne.salestracker.widget.TfButton;
+import com.webmne.salestracker.widget.TfEditText;
 
 import org.json.JSONObject;
 
@@ -32,7 +33,7 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
     private ActionLogModel actionLog;
     private LoadingIndicatorDialog dialog;
     private String[] reopenIdSplit;
-    private String reopen_url,str_desc;
+    private String reopen_url, str_desc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,28 +80,72 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(final View v) {
 
-                new MaterialDialog.Builder(ActionLogDetailsActivity.this)
+                MaterialDialog dialog = new MaterialDialog.Builder(ActionLogDetailsActivity.this)
                         .title(R.string.dialog_title)
                         .customView(R.layout.custom_dialog_action_log_edit, true)
-                        .positiveText(R.string.btn_ok)
+                        .typeface(Functions.getBoldFont(ActionLogDetailsActivity.this), Functions.getRegularFont(ActionLogDetailsActivity.this))
+                        .canceledOnTouchOutside(false)
+                        /*.positiveText(R.string.btn_ok)
                         .negativeText(R.string.btn_cancel)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 View view = dialog.getCustomView();
-                                EditText editText = (EditText) view.findViewById(R.id.edtDesc);
+                                assert view != null;
+                                TfEditText editText = (TfEditText) view.findViewById(R.id.edtDesc);
 
-                                if (!editText.getText().toString().equals("")) {
+                                if (!TextUtils.isEmpty(Functions.toStr(editText))) {
                                     str_desc = editText.getText().toString();
                                     updateActionlog();
+                                } else {
+
                                 }
                             }
-                        })
+                        })*/
                         .show();
+                initDialog(dialog);
 
             }
         });
 
+    }
+
+    private void initDialog(final MaterialDialog dialog) {
+        View view = dialog.getCustomView();
+        if (view != null) {
+            LinearLayout parentView = (LinearLayout) view.findViewById(R.id.parentView);
+            parentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            final TfEditText editText = (TfEditText) view.findViewById(R.id.edtDesc);
+            TfButton btnCancel = (TfButton) view.findViewById(R.id.btnCancel);
+            TfButton btnOk = (TfButton) view.findViewById(R.id.btnOk);
+
+            btnOk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!TextUtils.isEmpty(Functions.toStr(editText))) {
+                        str_desc = editText.getText().toString();
+                        updateActionlog();
+                    } else {
+                        SimpleToast.error(ActionLogDetailsActivity.this, "Cannot send empty description");
+                    }
+
+                }
+            });
+
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+        }
     }
 
     private void fetchActionLogDetails() {
@@ -195,7 +240,7 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
 
                 com.webmne.salestracker.api.model.Response updateActionLogResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
 
-                Log.e("tag", "update_action_log_response:-"+MyApplication.getGson().toJson(updateActionLogResponse));
+                Log.e("tag", "update_action_log_response:-" + MyApplication.getGson().toJson(updateActionLogResponse));
 
                 if (updateActionLogResponse != null) {
                     if (updateActionLogResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
