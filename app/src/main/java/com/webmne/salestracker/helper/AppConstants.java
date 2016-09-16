@@ -15,7 +15,7 @@ public class AppConstants {
     public static String COMPLETE = "C";
     public static String PENDING = "P";
     public static String REJECTED = "R";
-    public static String PROCESSING = "";
+    public static String PROCESSING = "PR";
 
     // Calendar Mode
     public static int DAY_VIEW = 0;
@@ -25,7 +25,8 @@ public class AppConstants {
     // Response Code
     public static final String SUCCESS = "1";
 
-    public static final String BASE_URL = "http://ws-srv-php/projects/drupal/amgsales2/services/";
+    // public static final String BASE_URL = "http://ws-srv-php/projects/drupal/amgsales2/services/";
+    public static final String BASE_URL = "http://demo.webmynehost.com/amgsales/services/";
 
     // login-url login.php?format=json&password=MKT_guj_001&username=MKT_guj_001&roleID=9
     public static final String LoginBase = "login.php?format=json";

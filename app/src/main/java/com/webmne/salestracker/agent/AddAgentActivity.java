@@ -126,8 +126,18 @@ public class AddAgentActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (Functions.toLength(viewBinding.edtPhoneNumber) < 10) {
+                    SimpleToast.error(AddAgentActivity.this, getString(R.string.enter_valid_phone), getString(R.string.fa_error));
+                    return;
+                }
+
                 if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtEmailId))) {
                     SimpleToast.error(AddAgentActivity.this, getString(R.string.enter_email_id), getString(R.string.fa_error));
+                    return;
+                }
+
+                if (!Functions.emailValidation(Functions.toStr(viewBinding.edtEmailId))) {
+                    SimpleToast.error(AddAgentActivity.this, getString(R.string.enter_valid_email_id), getString(R.string.fa_error));
                     return;
                 }
 

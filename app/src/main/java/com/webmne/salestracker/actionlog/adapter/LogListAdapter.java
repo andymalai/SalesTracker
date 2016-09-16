@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +89,10 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
 
             txtStatus.setText(Functions.getStatus(context, model.getStatus()));
 
-            if (model.getStatus().equals(AppConstants.PENDING)) {
+            if (TextUtils.isEmpty(model.getStatus())) {
+                viewIndicate.setBackgroundResource(R.drawable.pending_shape);
+
+            } else if (model.getStatus().equals(AppConstants.PENDING)) {
                 viewIndicate.setBackgroundResource(R.drawable.pending_shape);
 
             } else if (model.getStatus().equals(AppConstants.REJECTED)) {

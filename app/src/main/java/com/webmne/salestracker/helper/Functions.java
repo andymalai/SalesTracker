@@ -17,6 +17,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -224,7 +225,10 @@ public class Functions {
 
     public static String getStatus(Context context, String status) {
 
-        if (status.equals(AppConstants.PENDING)) {
+        if (TextUtils.isEmpty(status)) {
+            return "";
+
+        } else if (status.equals(AppConstants.PENDING)) {
             return context.getString(R.string.pending);
 
         } else if (status.equals(AppConstants.REJECTED)) {
@@ -236,6 +240,7 @@ public class Functions {
         } else {
             return context.getString(R.string.completed);
         }
+
     }
 
     public interface onPromptListener {

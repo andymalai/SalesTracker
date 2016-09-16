@@ -148,6 +148,11 @@ public class AddActionLogActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (file == null) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.select_file), getString(R.string.fa_error));
+                    return;
+                }
+
                 if (TextUtils.isEmpty(Functions.toStr(binding.edtDescription))) {
                     SimpleToast.error(AddActionLogActivity.this, getString(R.string.enter_description), getString(R.string.fa_error));
                     return;
@@ -233,6 +238,9 @@ public class AddActionLogActivity extends AppCompatActivity {
                 if (addResponse != null) {
                     if (addResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                         SimpleToast.ok(AddActionLogActivity.this, getString(R.string.add_action_success));
+                        finish();
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
                     } else {
                         SimpleToast.error(AddActionLogActivity.this, addResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
