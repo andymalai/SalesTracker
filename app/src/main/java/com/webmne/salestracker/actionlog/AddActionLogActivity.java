@@ -148,17 +148,18 @@ public class AddActionLogActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (file == null) {
-                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.select_file), getString(R.string.fa_error));
-                    return;
-                }
 
                 if (TextUtils.isEmpty(Functions.toStr(binding.edtDescription))) {
                     SimpleToast.error(AddActionLogActivity.this, getString(R.string.enter_description), getString(R.string.fa_error));
                     return;
                 }
 
-                doUploadFile();
+                if (file == null) {
+                    doAddActionLog();
+
+                } else {
+                    doUploadFile();
+                }
 
             }
         });
@@ -219,7 +220,11 @@ public class AddActionLogActivity extends AppCompatActivity {
             json.put("Description", Functions.toStr(binding.edtDescription));
             json.put("Status", "");
             json.put("Priroty", binding.spinnerPriority.getSelectedItem());
-            json.put("File", Functions.toStr(binding.edtSelectFile));
+            if (file == null) {
+                json.put("File", "");
+            } else {
+                json.put("File", Functions.toStr(binding.edtSelectFile));
+            }
             json.put("DepartmentId", Integer.parseInt(deptId));
             json.put("PicName", inChargeName);
 

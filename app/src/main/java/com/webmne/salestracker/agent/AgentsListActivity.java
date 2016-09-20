@@ -250,17 +250,20 @@ public class AgentsListActivity extends AppCompatActivity {
         showProgress(getString(R.string.loading_agents));
 
         agentList = new ArrayList<>();
+        adapter.setAgentList(agentList);
 
         agentListApi.getAgents(PrefUtils.getUserId(this), new APIListener<AgentListResponse>() {
             @Override
             public void onResponse(Response<AgentListResponse> response) {
                 dismissProgress();
+
                 viewBinding.contentLayout.setVisibility(View.VISIBLE);
                 if (response.isSuccessful()) {
                     AgentListResponse listResponse = response.body();
                     if (listResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                         agentList.addAll(listResponse.getData().getAgents());
                         adapter.setAgentList(listResponse.getData().getAgents());
+
                     } else {
                         SimpleToast.error(AgentsListActivity.this, listResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
@@ -301,6 +304,7 @@ public class AgentsListActivity extends AppCompatActivity {
                     }
 
                 } else {
+                    viewBinding.searchView.setVisibility(View.GONE);
                     searchItem.setVisible(false);
                     viewBinding.txtDelete.setVisibility(View.VISIBLE);
                     viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(AgentsListActivity.this, R.color.tile1));

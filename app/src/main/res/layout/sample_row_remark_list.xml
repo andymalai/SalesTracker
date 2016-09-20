@@ -25,7 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_2dp"
             android:gravity="center"
-            android:text="R" />
+            android:text="R"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -41,7 +42,7 @@
         android:id="@+id/txtDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_5dp"
+        android:layout_marginTop="@dimen/dimen_2dp"
         android:gravity="right"
         android:text="13-09-2016"
         android:textColor="@color/tile2"

@@ -3,10 +3,12 @@ package com.webmne.salestracker.actionlog;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
@@ -69,6 +71,7 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
     }
 
     private void actionListener() {
+
         binding.btnReopen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,6 +108,7 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
                         .show();
                 initDialog(dialog);
 
+
             }
         });
 
@@ -131,6 +135,7 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
                     if (!TextUtils.isEmpty(Functions.toStr(editText))) {
                         str_desc = editText.getText().toString();
                         updateActionlog();
+                        dialog.dismiss();
                     } else {
                         SimpleToast.error(ActionLogDetailsActivity.this, "Cannot send empty description");
                     }
@@ -219,10 +224,10 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
 
         JSONObject json = new JSONObject();
         try {
-            json.put("UserId", PrefUtils.getUserId(this));
+            json.put("UserId", Integer.parseInt(PrefUtils.getUserId(this)));
             json.put("Description", str_desc);
-            json.put("Status", actionLog.getStatus());
-            json.put("ActionLogId", reopenIdSplit[1]);
+            // json.put("Status", actionLog.getStatus());
+            json.put("ActionLogId", Integer.parseInt(reopenIdSplit[1]));
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -157,9 +157,10 @@
     <!--activity_action_log_details.xml-->
     <string name="btn_remark">Add Remark</string>
     <string name="btn_reopen">Reopen Action</string>
-    <string name="edit">Edit</string>
-    <string name="action_log_details_title">Action Log Details</string>
+    <string name="edit">Add Remark</string>
+    <string name="action_log_details_title">Details</string>
     <string name="reopen_success">Your request for reopen Action Log has been sent successfully</string>
+    <string name="no_attachment">No Attachment</string>
 
     <!--item_action_log.xml-->
     <string name="remark">remark</string>
@@ -189,8 +190,6 @@
     <string name="agent_delete_dialog">Are you sure want to delete this agent?</string>
 
     <!--ActionLogDetailsActivity.class-->
-    <string name="dialog_title">Edit Action Log</string>
-
-
+    <string name="dialog_title">Add New Remark</string>
 
 </resources>

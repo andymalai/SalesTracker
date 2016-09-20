@@ -7,6 +7,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
+import com.aspsine.multithreaddownload.DownloadConfiguration;
+import com.aspsine.multithreaddownload.DownloadManager;
 import com.google.gson.Gson;
 
 import retrofit2.Retrofit;
@@ -39,6 +41,14 @@ public class MyApplication extends Application {
 
         initRetrofit();
         initGson();
+        initDownloader();
+    }
+
+    private void initDownloader() {
+        DownloadConfiguration configuration = new DownloadConfiguration();
+        configuration.setMaxThreadNum(10);
+        configuration.setThreadNum(3);
+        DownloadManager.getInstance().init(getApplicationContext(), configuration);
     }
 
     private void initGson() {
@@ -51,7 +61,7 @@ public class MyApplication extends Application {
 
     private void initRetrofit() {
         retrofit = new Retrofit.Builder()
-                .baseUrl(AppConstants.BASE_URL)
+                .baseUrl(AppConstants.WEB_SERVICE_URL)
                 .addConverterFactory(FastJsonConverterFactory.create())
                 .build();
     }

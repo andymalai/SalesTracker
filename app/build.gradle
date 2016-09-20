@@ -59,9 +59,8 @@ dependencies {
     compile 'org.ligboy.retrofit2:converter-fastjson-android:2.1.0'
     // loading
     compile 'com.victor:lib:1.0.4'
-
     // volley
     compile 'com.android.volley:volley:1.0.0'
-
     compile files('libs/ftp4j-1.7.2.jar')
+    compile project(':library')
 }

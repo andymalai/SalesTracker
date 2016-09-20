@@ -7,14 +7,14 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Remark {
 
-    @SerializedName(value = "Description", alternate = {"HosRemark", "BmRemark", "RmRemark", "HqRemark"})
+    @SerializedName("Remarks")
     private String Description;
 
-    @SerializedName(value = "Name", alternate = {"HosName", "BmName", "RmName", "Hqname"})
+    @SerializedName("Name")
     private String Name;
 
-    @SerializedName(value = "Position", alternate = {"HosPosition", "BmPosition", "RmPosition", "HqPosition"})
-    private String Position;
+    @SerializedName("Date")
+    private String Date;
 
     public String getDescription() {
         return Description;
@@ -32,11 +32,11 @@ public class Remark {
         Name = name;
     }
 
-    public String getPosition() {
-        return Position;
+    public String getDate() {
+        return Date;
     }
 
-    public void setPosition(String position) {
-        Position = position;
+    public void setDate(String date) {
+        Date = date;
     }
 }

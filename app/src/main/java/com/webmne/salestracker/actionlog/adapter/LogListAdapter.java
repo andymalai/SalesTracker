@@ -112,7 +112,7 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
             // Last Update Date-Time Functions.parseDate(model.getCreatedDatetime(), "dd")
             txtLastUpdate.setText(String.format("%s %s", context.getString(R.string.last_update), Functions.parseDate(model.getUpdatedDatetime(), "dd MMM, yyyy hh:mm a")));
 
-            if (model.getRemarkCount().equals("0")) {
+            if (TextUtils.isEmpty(model.getRemarkCount()) || model.getRemarkCount().equals("0")) {
                 txtRemark.setVisibility(View.GONE);
             } else {
                 txtRemark.setVisibility(View.VISIBLE);

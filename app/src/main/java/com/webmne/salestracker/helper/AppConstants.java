@@ -5,6 +5,12 @@ package com.webmne.salestracker.helper;
  */
 public class AppConstants {
 
+    // Common
+    // public static final String BASE_URL = "http://ws-srv-php/projects/drupal/amgsales2/";
+    public static final String BASE_URL = "http://demo.webmynehost.com/amgsales/";
+    public static final String ATTACHMENT_PREFIX = BASE_URL;
+    public static final String WEB_SERVICE_URL = BASE_URL + "services/";
+
     // User Position Constants
     public static String MARKETER = "Marketer";
     public static String HOS = "HOS";
@@ -25,9 +31,6 @@ public class AppConstants {
     // Response Code
     public static final String SUCCESS = "1";
 
-    // public static final String BASE_URL = "http://ws-srv-php/projects/drupal/amgsales2/services/";
-    public static final String BASE_URL = "http://demo.webmynehost.com/amgsales/services/";
-
     // login-url login.php?format=json&password=MKT_guj_001&username=MKT_guj_001&roleID=9
     public static final String LoginBase = "login.php?format=json";
 
@@ -41,10 +44,10 @@ public class AppConstants {
     public static final String AgentList = "agent_list.php?format=json";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/department.php?format=json
-    public static final String DepartmentList = BASE_URL + "department.php?format=json";
+    public static final String DepartmentList = WEB_SERVICE_URL + "department.php?format=json";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/departmentpic.php?format=json
-    public static final String DepartmentPicList = BASE_URL + "departmentpic.php?format=json";
+    public static final String DepartmentPicList = WEB_SERVICE_URL + "departmentpic.php?format=json";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/tier_list.php?format=json
     public static final String TierList = "tier_list.php?format=json";
@@ -53,31 +56,31 @@ public class AppConstants {
     public static final String BranchList = "branch.php?format=json";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/add_agent.php
-    public static final String AddAgent = BASE_URL + "add_agent.php";
+    public static final String AddAgent = WEB_SERVICE_URL + "add_agent.php";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/delete_agent.php
-    public static final String DeleteAgent = BASE_URL + "delete_agent.php";
+    public static final String DeleteAgent = WEB_SERVICE_URL + "delete_agent.php";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/update_agent.php
-    public static final String UpdateAgent = BASE_URL + "update_agent.php";
+    public static final String UpdateAgent = WEB_SERVICE_URL + "update_agent.php";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/update_profile.php
-    public static final String UpdateUserProfile = BASE_URL + "update_profile.php";
+    public static final String UpdateUserProfile = WEB_SERVICE_URL + "update_profile.php";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/fetch_action.php?format=json&user_id=699
-    public static final String ActionLogList = BASE_URL + "fetch_action.php?format=json&user_id=";
+    public static final String ActionLogList = WEB_SERVICE_URL + "fetch_action.php?format=json&user_id=";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/add_action.php
-    public static final String AddActionLog = BASE_URL + "add_action.php";
+    public static final String AddActionLog = WEB_SERVICE_URL + "add_action.php";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/display_remark.php?format=json&action_id=130
-    public static final String ActionLogRemarksList = BASE_URL + "display_remark.php?format=json&action_id=";
+    public static final String ActionLogRemarksList = WEB_SERVICE_URL + "display_remark.php?format=json&action_id=";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/reopen_remark.php?format=json&reopenid=130
-    public static final String ReopenRemark = BASE_URL + "reopen_remark.php?format=json&reopenid=";
+    public static final String ReopenRemark = WEB_SERVICE_URL + "reopen_remark.php?format=json&reopenid=";
 
     // http://ws-srv-php/projects/drupal/amgsales2/services/update_action.php
-    public static final String UpdateActionLog = BASE_URL + "update_action.php?format=json";
+    public static final String UpdateActionLog = WEB_SERVICE_URL + "update_action.php";
 
     // FTP details Local
     public static final String FTP_HOST = "ws-srv-php";

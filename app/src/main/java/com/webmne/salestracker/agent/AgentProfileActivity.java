@@ -351,6 +351,9 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
         viewBinding.edtKruniaCode.setFocusable(false);
         viewBinding.edtAmgGeneral.setFocusable(false);
         viewBinding.edtDescription.setFocusable(false);
+
+        adapter.setCanOpen(false);
+        branchAdapter.setCanOpen(false);
     }
 
     private void deleteAgent() {
