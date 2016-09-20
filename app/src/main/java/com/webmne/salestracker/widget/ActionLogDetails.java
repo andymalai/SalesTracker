@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.model.ActionLogModel;
@@ -50,6 +51,22 @@ public class ActionLogDetails extends LinearLayout {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         binding = DataBindingUtil.inflate(inflater, R.layout.layout_action_log, this, true);
         parentView = binding.getRoot();
+
+        actionListener();
+    }
+
+    private void actionListener()
+    {
+        binding.txtAttachment.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(context, "click attachment..", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
 
     }
 
