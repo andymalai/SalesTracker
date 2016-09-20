@@ -62,5 +62,4 @@ dependencies {
     // volley
     compile 'com.android.volley:volley:1.0.0'
     compile files('libs/ftp4j-1.7.2.jar')
-    compile project(':library')
 }

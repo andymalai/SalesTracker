@@ -9,12 +9,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.aspsine.multithreaddownload.CallBack;
-import com.aspsine.multithreaddownload.DownloadException;
-import com.aspsine.multithreaddownload.DownloadManager;
-import com.aspsine.multithreaddownload.DownloadRequest;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.model.ActionLogModel;
 import com.webmne.salestracker.databinding.LayoutActionLogBinding;
@@ -98,65 +93,8 @@ public class ActionLogDetails extends LinearLayout {
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(actionLog.getAttachment())) {
                     String url = AppConstants.ATTACHMENT_PREFIX + actionLog.getAttachmentPath() + "/" + actionLog.getAttachment();
-               /* MimeTypeMap myMime = MimeTypeMap.getSingleton();
-                String mimeType = myMime.getMimeTypeFromExtension(Functions.fileExt(url).substring(1));
 
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse(url), mimeType);
-                context.startActivity(intent);*/
-
-                    downloadFile(actionLog, url);
                 }
-            }
-        });
-    }
-
-    private void downloadFile(ActionLogModel actionLog, String url) {
-        DownloadRequest request = new DownloadRequest.Builder()
-                .setName(actionLog.getAttachment())
-                .setUri(url)
-                .setFolder(file)
-                .build();
-
-        DownloadManager.getInstance().download(request, url, new CallBack() {
-            @Override
-            public void onStarted() {
-
-            }
-
-            @Override
-            public void onConnecting() {
-
-            }
-
-            @Override
-            public void onConnected(long total, boolean isRangeSupport) {
-
-            }
-
-            @Override
-            public void onProgress(long finished, long total, int progress) {
-
-            }
-
-            @Override
-            public void onCompleted() {
-                Toast.makeText(context, "Complete", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onDownloadPaused() {
-
-            }
-
-            @Override
-            public void onDownloadCanceled() {
-
-            }
-
-            @Override
-            public void onFailed(DownloadException e) {
-                Toast.makeText(context, "Fail: " + e.getErrorMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
