@@ -1,19 +1,26 @@
 package com.webmne.salestracker.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.model.ActionLogModel;
 import com.webmne.salestracker.databinding.LayoutActionLogBinding;
 import com.webmne.salestracker.helper.AppConstants;
+import com.webmne.salestracker.helper.DownloadHelper;
 import com.webmne.salestracker.helper.Functions;
 
 import java.io.File;
@@ -57,17 +64,43 @@ public class ActionLogDetails extends LinearLayout {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         binding = DataBindingUtil.inflate(inflater, R.layout.layout_action_log, this, true);
         parentView = binding.getRoot();
-
-        createDir();
     }
 
-    private void createDir() {
-        //file = context.getDir("/SalesTracker/ActionLog", Context.MODE_PRIVATE);
-        file = new File("/sdcard/SalesTracker/ActionLog/");
-        //file = new File(Environment.getExternalStorageDirectory().toString() + "/SalesTracker/ActionLog");
-        if (!file.exists()) {
+    private void createDir(ActionLogModel actionLog) {
+        file = new File(Environment.getExternalStorageDirectory() + AppConstants.ACTION_LOG_DIRECTORY + "/" + actionLog.getId());
+
+        if (file.exists()) {
+            File file1 = new File(Environment.getExternalStorageDirectory() + AppConstants.ACTION_LOG_DIRECTORY + "/" + actionLog.getId() + "/" + actionLog.getAttachment());
+
+            if (file1.exists()) {
+                MimeTypeMap map = MimeTypeMap.getSingleton();
+                String ext = MimeTypeMap.getFileExtensionFromUrl(file1.getName());
+                String type = map.getMimeTypeFromExtension(ext);
+
+                if (type == null)
+                    type = "*/*";
+
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    Uri data = Uri.fromFile(file1);
+                    intent.setDataAndType(data, type);
+                    context.startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(context, "Unable to view", Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                String url = AppConstants.ATTACHMENT_PREFIX + actionLog.getAttachmentPath() + "/" + actionLog.getAttachment();
+                Log.e("url", url);
+                String str_file_path = AppConstants.ACTION_LOG_DIRECTORY + actionLog.getId() + "/";
+
+                DownloadHelper downloadHelper = new DownloadHelper(context);
+                downloadHelper.startDownload(url, str_file_path, actionLog.getAttachment());
+            }
+        } else {
             file.mkdirs();
         }
+
     }
 
     public void setActionLog(final ActionLogModel actionLog) {
@@ -91,10 +124,11 @@ public class ActionLogDetails extends LinearLayout {
         binding.txtAttachment.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!TextUtils.isEmpty(actionLog.getAttachment())) {
-                    String url = AppConstants.ATTACHMENT_PREFIX + actionLog.getAttachmentPath() + "/" + actionLog.getAttachment();
 
+                if (!TextUtils.isEmpty(actionLog.getAttachment())) {
+                    createDir(actionLog);
                 }
+
             }
         });
     }
