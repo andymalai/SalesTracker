@@ -192,4 +192,8 @@
     <!--ActionLogDetailsActivity.class-->
     <string name="dialog_title">Add New Remark</string>
 
+    <!--activity_sales_visit_plan.xml-->
+    <string name="add_plan">Add Visit Plan</string>
+    <string name="sales_title">Sales Visit Plan</string>
+
 </resources>

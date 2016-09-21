@@ -246,7 +246,7 @@ public class AgentsListActivity extends AppCompatActivity {
 
     private void getAgents() {
 
-        viewBinding.contentLayout.setVisibility(View.GONE);
+        viewBinding.contentLayout.setVisibility(View.INVISIBLE);
         showProgress(getString(R.string.loading_agents));
 
         agentList = new ArrayList<>();

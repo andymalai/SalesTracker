@@ -3,6 +3,8 @@ package com.webmne.salestracker.visitplan;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import java.util.HashSet;
 public class SalesVisitPlanActivity extends AppCompatActivity {
 
     private ActivitySalesVisitPlanBinding binding;
+    private MenuItem addPlanItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +36,8 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
             binding.toolbarLayout.toolbar.setTitle("");
         }
         setSupportActionBar(binding.toolbarLayout.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         binding.toolbarLayout.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,7 +45,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
-        binding.toolbarLayout.txtCustomTitle.setText("Sales Visit Plan");
+        binding.toolbarLayout.txtCustomTitle.setText(getString(R.string.sales_title));
 
         initCalendarView();
     }
@@ -85,5 +89,22 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
     public void monthClicked(View view) {
         binding.cv.setMode(CalendarView.MODE.MONTH);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_visit_plan, menu);
+        addPlanItem = menu.findItem(R.id.action_add_plan);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_plan:
+                Toast.makeText(this, "Add Plan", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
