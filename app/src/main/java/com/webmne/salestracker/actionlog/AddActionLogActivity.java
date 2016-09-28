@@ -219,7 +219,7 @@ public class AddActionLogActivity extends AppCompatActivity {
             json.put("AgentId", Integer.parseInt(agentId));
             json.put("Description", Functions.toStr(binding.edtDescription));
             json.put("Status", "");
-            json.put("Priroty", binding.spinnerPriority.getSelectedItem());
+            json.put("Priroty", binding.spinnerPriority.getSelectedItem().toString());
             if (file == null) {
                 json.put("File", "");
             } else {

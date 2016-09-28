@@ -102,7 +102,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_plan:
-                Toast.makeText(this, "Add Plan", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.add_plan), Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);

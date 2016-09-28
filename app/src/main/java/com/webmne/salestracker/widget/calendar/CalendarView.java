@@ -111,7 +111,7 @@ public class CalendarView extends LinearLayout {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.control_calendar, this);
 
-        dividerItemDecoration = new DividerItemDecoration(_ctx,DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration = new DividerItemDecoration(_ctx, DividerItemDecoration.VERTICAL_LIST);
         loadDateFormat(attrs);
         assignUiElements();
         assignClickHandlers();
@@ -148,6 +148,7 @@ public class CalendarView extends LinearLayout {
             public void onClick(View v) {
                 switch (mode) {
                     case DAY:
+                        currentDate.add(Calendar.DAY_OF_YEAR, 1);
                         break;
                     case WEEK:
                         currentDate.add(Calendar.WEEK_OF_MONTH, 1);
@@ -166,8 +167,8 @@ public class CalendarView extends LinearLayout {
             public void onClick(View v) {
 
                 switch (mode) {
-
                     case DAY:
+                        currentDate.add(Calendar.DAY_OF_YEAR, -1);
                         break;
                     case WEEK:
                         currentDate.add(Calendar.WEEK_OF_MONTH, -1);
@@ -231,12 +232,12 @@ public class CalendarView extends LinearLayout {
                     grid.setVisibility(VISIBLE);
 
                 ArrayList<Date> cells_week = getWeekDates();
-                cells_week.add(0,new Date());
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(_ctx, LinearLayoutManager.HORIZONTAL,false);
+                cells_week.add(0, new Date());
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(_ctx, LinearLayoutManager.HORIZONTAL, false);
                 grid.setLayoutManager(linearLayoutManager);
                 WeekAdapter weekAdapter = new WeekAdapter(getContext(), cells_week, events);
 
-                grid.addItemDecoration(new DividerItemDecoration(_ctx,DividerItemDecoration.HORIZONTAL_LIST));
+                grid.addItemDecoration(new DividerItemDecoration(_ctx, DividerItemDecoration.HORIZONTAL_LIST));
 
                 grid.setAdapter(weekAdapter);
                 weekAdapter.notifyDataSetChanged();
@@ -281,7 +282,7 @@ public class CalendarView extends LinearLayout {
 
     }
 
-    private ArrayList<String> getTimeLineHours(){
+    private ArrayList<String> getTimeLineHours() {
 
         // temp set calender...
         Calendar calendar = Calendar.getInstance();
@@ -290,15 +291,15 @@ public class CalendarView extends LinearLayout {
         // initial array to hold 24
         ArrayList<String> hours = new ArrayList<>();
 
-        for (int i = 0; i <24 ; i++) {
+        for (int i = 0; i < 24; i++) {
 
             Date date = calendar.getTime();
             SimpleDateFormat sdf_day = new SimpleDateFormat("hh a");
             hours.add(sdf_day.format(date));
-            calendar.add(Calendar.HOUR_OF_DAY,1);
+            calendar.add(Calendar.HOUR_OF_DAY, 1);
 
         }
-        return  hours;
+        return hours;
 
     }
 
