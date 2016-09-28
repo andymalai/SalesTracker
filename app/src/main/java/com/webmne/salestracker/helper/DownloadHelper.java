@@ -116,8 +116,6 @@ public class DownloadHelper {
                         break;
                 }
                 break;
-
-
             case DownloadManager.STATUS_PAUSED:
                 statusText = "STATUS_PAUSED";
                 switch (reason) {

@@ -84,6 +84,10 @@ public class AppConstants {
     // http://ws-srv-php/projects/drupal/amgsales2/services/update_action.php
     public static final String UpdateActionLog = WEB_SERVICE_URL + "update_action.php";
 
+    //
+    public static final String EmployeeList = WEB_SERVICE_URL + "";
+
+
     // FTP details Local
     public static final String FTP_HOST = "ws-srv-php";
     public static final String FTP_USER = "projects";

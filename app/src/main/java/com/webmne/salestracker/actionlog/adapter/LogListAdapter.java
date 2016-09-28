@@ -83,7 +83,14 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
         public void setActionLog(final ActionLogModel model) {
 
-            txtAgentName.setText(String.format("%s", model.getAgentName()));
+            if(model.getAgentName().equals(null))
+            {
+                txtAgentName.setText(String.format("%s", context.getString(R.string.deleted_agent)));
+            }
+            else
+            {
+                txtAgentName.setText(String.format("%s", model.getAgentName()));
+            }
 
             txtDescription.setText(String.format("%s", model.getDescription()));
 
@@ -101,8 +108,11 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
             } else if (model.getStatus().equals(AppConstants.PROCESSING)) {
                 viewIndicate.setBackgroundResource(R.drawable.processing_shape);
 
-            } else {
+            } else if (model.getStatus().equals(AppConstants.COMPLETE)) {
                 viewIndicate.setBackgroundResource(R.drawable.completed_shape);
+
+            } else {
+                viewIndicate.setBackgroundResource(R.drawable.pending_shape);
             }
 
             // Created Date-Time

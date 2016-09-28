@@ -237,8 +237,11 @@ public class Functions {
         } else if (status.equals(AppConstants.PROCESSING)) {
             return context.getString(R.string.processing);
 
-        } else {
+        } else if (status.equals(AppConstants.COMPLETE)) {
             return context.getString(R.string.completed);
+
+        } else {
+            return context.getString(R.string.pending);
         }
 
     }

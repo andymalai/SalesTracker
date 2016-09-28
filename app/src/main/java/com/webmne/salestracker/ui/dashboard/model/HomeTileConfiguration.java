@@ -17,25 +17,19 @@ public class HomeTileConfiguration {
     private int[] marketIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan};
 
     // HOS grid options
-    private String[] hosNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee", "Manage Visit Plan"};
-    private int[] hosIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId(),
-            TileId.MANAGE_VISIT_PLAN.getId()};
-    private int[] hosIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee,
-            R.drawable.ic_manage};
+    private String[] hosNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee"};
+    private int[] hosIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId()};
+    private int[] hosIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee};
 
     // BM grid options
-    private String[] bmNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee", "Manage Visit Plan", "Target"};
-    private int[] bmIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId(),
-            TileId.MANAGE_VISIT_PLAN.getId(), TileId.TARGET.getId()};
-    private int[] bmIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee,
-            R.drawable.ic_manage, R.drawable.ic_target};
+    private String[] bmNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee"};
+    private int[] bmIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId()};
+    private int[] bmIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee};
 
     // RM grid options
-    private String[] rmNames = {"Contacts", "Action Log", "Sales Visit Plan", "Employee", "Manage Visit Plan"};
-    private int[] rmIds = {TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId(),
-            TileId.MANAGE_VISIT_PLAN.getId()};
-    private int[] rmIcons = {R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee,
-            R.drawable.ic_manage};
+    private String[] rmNames = {"Contacts", "Action Log", "Sales Visit Plan", "Employee"};
+    private int[] rmIds = {TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId()};
+    private int[] rmIcons = {R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee};
 
     private String[] bgColors = {"#ffffff", "#f1f1f1", "#f1f1f1", "#ffffff", "#ffffff", "#f1f1f1", "#f1f1f1"};
 
@@ -116,9 +110,9 @@ public class HomeTileConfiguration {
 
 /*
 
-MARKET: Agents, Contacts, Action Log, Sales Visit Plan
+MARKETER: Agents, Contacts, Action Log, Sales Visit Plan
 
-Head of Sales(HOS): MARKET ++ {Employee, Manage Visit Plan}
+Head of Sales(HOS): MARKETER ++ {Employee, Manage Visit Plan}
 
 Branch Manager(BM): HOS ++ {Target}
 
