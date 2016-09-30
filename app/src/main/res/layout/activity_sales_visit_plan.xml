@@ -48,8 +48,6 @@
                         android:layout_weight="1"
                         android:onClick="monthClicked"
                         android:text="Month" />
-
-
                 </LinearLayout>
 
                 <com.webmne.salestracker.widget.calendar.CalendarView

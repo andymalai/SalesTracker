@@ -57,7 +57,7 @@ public class WeekAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             "#A1887F",
             "#e57373",};
 
-    public WeekAdapter(Context _ctx, ArrayList<Date> days, HashSet<Date> eventDays) {
+    WeekAdapter(Context _ctx, ArrayList<Date> days, HashSet<Date> eventDays) {
         this._ctx = _ctx;
         this.days = days;
         this.eventDays = eventDays;
@@ -83,15 +83,12 @@ public class WeekAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return new OtherViewHolder(itemView);
         }
 
-
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        if (getItemViewType(position) == ITEM_FIRST) {
-
-        } else {
+        if (getItemViewType(position) != ITEM_FIRST) {
 
             OtherViewHolder otherViewHolder = (OtherViewHolder) holder;
             // day in question
@@ -142,7 +139,6 @@ public class WeekAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         }
 
-
     }
 
     @Override
@@ -164,11 +160,11 @@ public class WeekAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.currentDate = currentDate;
     }
 
-    public class OtherViewHolder extends RecyclerView.ViewHolder {
+    private class OtherViewHolder extends RecyclerView.ViewHolder {
 
         public TextView txtDate;
 
-        public OtherViewHolder(View view) {
+        OtherViewHolder(View view) {
             super(view);
 
             txtDate = (TextView) view.findViewById(R.id.txtItemDayWeek);
@@ -176,9 +172,9 @@ public class WeekAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public class FirstViewHolder extends RecyclerView.ViewHolder {
+    private class FirstViewHolder extends RecyclerView.ViewHolder {
 
-        public FirstViewHolder(View view) {
+        FirstViewHolder(View view) {
             super(view);
         }
     }

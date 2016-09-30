@@ -47,7 +47,7 @@ public class TimeLineView extends LinearLayout {
 
     }
 
-    private ArrayList<String> getTimeLineHours() {
+    public static ArrayList<String> getTimeLineHours() {
 
         // temp set calender...
         Calendar calendar = Calendar.getInstance();

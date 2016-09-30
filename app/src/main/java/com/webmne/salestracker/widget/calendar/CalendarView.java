@@ -54,7 +54,7 @@ public class CalendarView extends LinearLayout {
     private ImageView btnPrev;
     private ImageView btnNext;
     private TextView txtDate;
-    private RecyclerView grid;
+    private RecyclerView grid, timelineRecyclerView;
 
     // seasons' rainbow
     int[] rainbow = new int[]{
@@ -138,6 +138,7 @@ public class CalendarView extends LinearLayout {
         btnNext = (ImageView) findViewById(R.id.calendar_next_button);
         txtDate = (TextView) findViewById(R.id.calendar_date_display);
         grid = (RecyclerView) findViewById(R.id.calendar_grid);
+        timelineRecyclerView = (RecyclerView) findViewById(R.id.timelineRecyclerView);
     }
 
     private void assignClickHandlers() {
@@ -218,7 +219,7 @@ public class CalendarView extends LinearLayout {
 
                 header.setVisibility(GONE);
                 grid.setVisibility(GONE);
-
+                timelineRecyclerView.setVisibility(VISIBLE);
 
                 // update title
                 SimpleDateFormat sdf_day = new SimpleDateFormat("EEE dd-MMM-yyyy");
@@ -227,9 +228,21 @@ public class CalendarView extends LinearLayout {
 
             case WEEK:
 
+                // get time line
+                ArrayList<String> timeArray = getTimeLineHours();
+                TimeLineAdapter timeAdapter = new TimeLineAdapter(getContext(), timeArray);
+
+                LinearLayoutManager timeLayoutManager = new LinearLayoutManager(_ctx, LinearLayoutManager.VERTICAL, false);
+                timelineRecyclerView.setLayoutManager(timeLayoutManager);
+                timelineRecyclerView.setNestedScrollingEnabled(true);
+                timelineRecyclerView.setAdapter(timeAdapter);
+
                 header.setVisibility(GONE);
-                if (!grid.isShown())
+                timelineRecyclerView.setVisibility(VISIBLE);
+
+                if (!grid.isShown()) {
                     grid.setVisibility(VISIBLE);
+                }
 
                 ArrayList<Date> cells_week = getWeekDates();
                 cells_week.add(0, new Date());
@@ -238,7 +251,7 @@ public class CalendarView extends LinearLayout {
                 WeekAdapter weekAdapter = new WeekAdapter(getContext(), cells_week, events);
 
                 grid.addItemDecoration(new DividerItemDecoration(_ctx, DividerItemDecoration.HORIZONTAL_LIST));
-
+                grid.setNestedScrollingEnabled(true);
                 grid.setAdapter(weekAdapter);
                 weekAdapter.notifyDataSetChanged();
 
@@ -257,6 +270,8 @@ public class CalendarView extends LinearLayout {
                 // In month mode we need header for displaying Weekday Names
                 // Also we need to diaply grid for displaying days.
                 header.setVisibility(VISIBLE);
+                timelineRecyclerView.setVisibility(GONE);
+
                 if (!grid.isShown())
                     grid.setVisibility(VISIBLE);
 
@@ -290,12 +305,12 @@ public class CalendarView extends LinearLayout {
 
         // initial array to hold 24
         ArrayList<String> hours = new ArrayList<>();
-
+        hours.add("\nTime\n");
         for (int i = 0; i < 24; i++) {
 
             Date date = calendar.getTime();
             SimpleDateFormat sdf_day = new SimpleDateFormat("hh a");
-            hours.add(sdf_day.format(date));
+            hours.add("\n" + sdf_day.format(date) + "\n");
             calendar.add(Calendar.HOUR_OF_DAY, 1);
 
         }
