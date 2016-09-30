@@ -84,8 +84,8 @@ public class AppConstants {
     // http://ws-srv-php/projects/drupal/amgsales2/services/update_action.php
     public static final String UpdateActionLog = WEB_SERVICE_URL + "update_action.php";
 
-    //
-    public static final String EmployeeList = WEB_SERVICE_URL + "";
+    // http://demo.webmynehost.com/amgsales/services/fetch_agent_list.php?format=json&user_id=699
+    public static final String EmployeeList = WEB_SERVICE_URL + "fetch_agent_list.php?format=json&user_id=";
 
 
     // FTP details Local

@@ -211,9 +211,21 @@
     <!--EmployeeDetailActivity.class-->
     <string name="employee_delete_dialog">Are you sure want to delete this employee?</string>
 
-
     <!--activity_sales_visit_plan.xml-->
     <string name="add_plan">Add Visit Plan</string>
     <string name="sales_title">Sales Visit Plan</string>
+    <string name="add_agent_dialog_title">Add Visit Plan</string>
+
+    <!--custom_dialog_add_visit_plan.xml-->
+    <string name="shedule">Shedule</string>
+    <string name="from">From:</string>
+    <string name="to">To:</string>
+
+    <!--CustomDialogAddVisitPlan-->
+    <string name="pls_select_start_time">Please Select Start Time</string>
+    <string name="pls_select_end_time">Please Select End Time</string>
+    <string name="pls_select_agent">Please Select Agent</string>
+
+
 
 </resources>
