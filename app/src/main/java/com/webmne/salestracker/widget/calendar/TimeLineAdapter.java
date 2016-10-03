@@ -5,9 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
 
@@ -15,14 +15,14 @@ import java.util.ArrayList;
 /**
  * Created by dhruvil on 23-08-2016.
  */
-public class TimeLineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+class TimeLineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     //Context
     private Context _ctx;
     // days
-    private ArrayList<String> days;
+    private ArrayList<TimeLineHour> days;
 
-    public TimeLineAdapter(Context _ctx, ArrayList<String> days) {
+    public TimeLineAdapter(Context _ctx, ArrayList<TimeLineHour> days) {
         this._ctx = _ctx;
         this.days = days;
     }
@@ -43,8 +43,9 @@ public class TimeLineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         OtherViewHolder otherViewHolder = (OtherViewHolder) holder;
         // day in question
-        String date = days.get(position);
-        otherViewHolder.txtDate.setText(date);
+        TimeLineHour date = days.get(position);
+        otherViewHolder.txtDate.setText(date.getTime());
+        otherViewHolder.txtItemDayType.setText(date.getFormat());
 
     }
 
@@ -53,14 +54,15 @@ public class TimeLineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return days.size();
     }
 
-    public class OtherViewHolder extends RecyclerView.ViewHolder {
+    private class OtherViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView txtDate;
+        private TfTextView txtDate, txtItemDayType;
 
-        public OtherViewHolder(View view) {
+        private OtherViewHolder(View view) {
             super(view);
 
-            txtDate = (TextView) view.findViewById(R.id.txtItemDayWeek);
+            txtItemDayType = (TfTextView) view.findViewById(R.id.txtItemDayType);
+            txtDate = (TfTextView) view.findViewById(R.id.txtItemDayWeek);
         }
     }
 

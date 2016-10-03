@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,7 +20,7 @@ import java.util.HashSet;
 /**
  * Created by dhruvil on 23-08-2016.
  */
-public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder> {
+class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder> {
 
     //Context
     private Context _ctx;
@@ -29,10 +29,16 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder
     // days with events
     private HashSet<Date> eventDays;
 
+    void setOnDateSelectListener(MonthAdapter.onDateSelectListener onDateSelectListener) {
+        this.onDateSelectListener = onDateSelectListener;
+    }
+
+    private onDateSelectListener onDateSelectListener;
+
     // current displayed month
     private Calendar currentDate = Calendar.getInstance();
 
-    public MonthAdapter(Context _ctx, ArrayList<Date> days, HashSet<Date> eventDays) {
+    MonthAdapter(Context _ctx, ArrayList<Date> days, HashSet<Date> eventDays) {
         this._ctx = _ctx;
         this.days = days;
         this.eventDays = eventDays;
@@ -74,14 +80,13 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder
         }
 
         // clear styling
-        holder.txtDate.setTypeface(null, Typeface.NORMAL);
         holder.txtDate.setTextColor(Color.BLACK);
 
         //display grey if not in selected month
         if (month != currentDate.get(Calendar.MONTH)) {
             holder.txtDate.setTextColor(_ctx.getResources().getColor(R.color.greyed_out));
         }
-      
+
         //display only today
         if (day == today.getDate() && month == today.getMonth() && year == today.getYear()) {
             holder.txtDate.setTypeface(null, Typeface.BOLD);
@@ -96,17 +101,39 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder
         return days.size();
     }
 
-    public void setCurrentDate(Calendar currentDate) {
+    void setCurrentDate(Calendar currentDate) {
         this.currentDate = currentDate;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-          public TextView txtDate;
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TfTextView txtDate;
 
-        public MyViewHolder(View view) {
+        MyViewHolder(View view) {
             super(view);
-            txtDate = (TextView) view.findViewById(R.id.txtItemDayMonth);
+            txtDate = (TfTextView) view.findViewById(R.id.txtItemDayMonth);
+            txtDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Calendar calendar = Calendar.getInstance();
+                    //calendar.setTime(currentDate.getTime());
+                    //calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(((TextView) v).getText().toString()));
+                    if (days.get(getPosition()).getMonth() != currentDate.get(Calendar.MONTH)) {
 
+                    } else {
+
+                        Calendar tempCal = (Calendar) currentDate.clone();
+                        tempCal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(((TfTextView) v).getText().toString()));
+                        if (onDateSelectListener != null) {
+                            onDateSelectListener.onDateSelect(tempCal);
+                        }
+                    }
+
+                }
+            });
         }
+    }
+
+    interface onDateSelectListener {
+        void onDateSelect(Calendar currentDate);
     }
 }

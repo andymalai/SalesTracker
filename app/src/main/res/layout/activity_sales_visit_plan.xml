@@ -28,21 +28,22 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <Button
+                    <com.webmne.salestracker.widget.TfButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="dayClicked"
                         android:text="Day" />
 
-                    <Button
+                    <com.webmne.salestracker.widget.TfButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:visibility="gone"
                         android:onClick="weekClicked"
                         android:text="Week" />
 
-                    <Button
+                    <com.webmne.salestracker.widget.TfButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

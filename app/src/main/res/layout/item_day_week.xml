@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/dimen_72dp"
+    android:layout_height="@dimen/dimen_56dp"
+    android:background="@color/off_white"
     android:gravity="center_vertical"
-    android:padding="8dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dimen_8dp"
+    android:paddingTop="@dimen/dimen_8dp">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.webmne.salestracker.widget.TfTextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/txtItemDayWeek"
-        android:layout_width="100dp"
+        android:layout_width="@dimen/dimen_72dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:minHeight="35dp"
-        android:padding="8dp"
         android:text="00"
-        android:textAppearance="@android:style/TextAppearance.Medium" />
+        android:textSize="@dimen/M_TEXT"
+        android:textStyle="bold" />
+
+    <com.webmne.salestracker.widget.TfTextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/txtItemDayType"
+        android:layout_width="@dimen/dimen_72dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="00"
+        android:textAllCaps="true"
+        android:textSize="@dimen/S_TEXT"/>
 
 </LinearLayout>

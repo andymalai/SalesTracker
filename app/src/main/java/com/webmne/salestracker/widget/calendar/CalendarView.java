@@ -10,11 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.custom.WhiteLineDividerItemDecoration;
+import com.webmne.salestracker.helper.ConstantFormats;
+import com.webmne.salestracker.widget.TfTextView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,8 +26,9 @@ import java.util.HashSet;
  * Created by a7med on 28/06/2015.
  */
 public class CalendarView extends LinearLayout {
-    // for logging
-    private static final String LOGTAG = "Calendar View";
+
+    // for week days, from-to
+    String first, last;
 
     // how many days to show, defaults to six weeks, 42 days
     private static final int DAYS_COUNT = 42;
@@ -34,18 +36,18 @@ public class CalendarView extends LinearLayout {
     // how many days to show, defaults to 1 week, 7 days
     private static final int DAYS_COUNT_WEEK = 7;
 
+    private onGridSelectListener onGridSelectListener;
+
+    public void setOnGridSelectListener(CalendarView.onGridSelectListener onGridSelectListener) {
+        this.onGridSelectListener = onGridSelectListener;
+    }
+
 
     // default date format
     private static final String DATE_FORMAT = "dd-MMM yyyy";
 
-    // date format
-    private String dateFormat;
-
     // current displayed month
     private Calendar currentDate = Calendar.getInstance();
-
-    //event handling
-    private EventHandler eventHandler = null;
 
     private Context _ctx;
 
@@ -53,8 +55,11 @@ public class CalendarView extends LinearLayout {
     private LinearLayout header;
     private ImageView btnPrev;
     private ImageView btnNext;
-    private TextView txtDate;
+    private TfTextView txtDate;
     private RecyclerView grid, timelineRecyclerView;
+    private LinearLayout timelineLayout;
+    private View blankView;
+    private ArrayList<TimeLineHour> timeArray;
 
     // seasons' rainbow
     int[] rainbow = new int[]{
@@ -67,7 +72,11 @@ public class CalendarView extends LinearLayout {
     // month-season association (northern hemisphere, sorry australia :)
     int[] monthSeason = new int[]{2, 2, 3, 3, 3, 0, 0, 0, 1, 1, 1, 2};
 
-    public static enum MODE {
+    public String getCurrentDate() {
+        return ConstantFormats.sdf_day.format(currentDate.getTime());
+    }
+
+    public enum MODE {
         DAY,
         WEEK,
         MONTH
@@ -82,6 +91,7 @@ public class CalendarView extends LinearLayout {
     //This item decoration is only for week view
     private DividerItemDecoration dividerItemDecoration;
 
+    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(_ctx, LinearLayoutManager.VERTICAL, false);
 
     public CalendarView(Context context) {
         super(context);
@@ -115,7 +125,22 @@ public class CalendarView extends LinearLayout {
         loadDateFormat(attrs);
         assignUiElements();
         assignClickHandlers();
+        assignTimelineAdapter();
 
+    }
+
+    private void assignTimelineAdapter() {
+        // get time line
+        timeArray = new ArrayList<>();
+        timeArray = getTimeLineHours();
+        TimeLineAdapter timeAdapter = new TimeLineAdapter(getContext(), timeArray);
+
+        final LinearLayoutManager timeLayoutManager = new LinearLayoutManager(_ctx, LinearLayoutManager.VERTICAL, false);
+        timelineRecyclerView.setLayoutManager(timeLayoutManager);
+        timelineRecyclerView.addItemDecoration(new WhiteLineDividerItemDecoration(_ctx));
+        timelineRecyclerView.setNestedScrollingEnabled(false);
+        timelineRecyclerView.setAdapter(timeAdapter);
+        timelineRecyclerView.setHasFixedSize(true);
     }
 
     private void loadDateFormat(AttributeSet attrs) {
@@ -123,7 +148,7 @@ public class CalendarView extends LinearLayout {
 
         try {
             // try to load provided date format, and fallback to default otherwise
-            dateFormat = ta.getString(R.styleable.CalendarView_dateFormat);
+            String dateFormat = ta.getString(R.styleable.CalendarView_dateFormat);
             if (dateFormat == null)
                 dateFormat = DATE_FORMAT;
         } finally {
@@ -136,9 +161,11 @@ public class CalendarView extends LinearLayout {
         header = (LinearLayout) findViewById(R.id.calendar_header);
         btnPrev = (ImageView) findViewById(R.id.calendar_prev_button);
         btnNext = (ImageView) findViewById(R.id.calendar_next_button);
-        txtDate = (TextView) findViewById(R.id.calendar_date_display);
+        txtDate = (TfTextView) findViewById(R.id.calendar_date_display);
         grid = (RecyclerView) findViewById(R.id.calendar_grid);
         timelineRecyclerView = (RecyclerView) findViewById(R.id.timelineRecyclerView);
+        timelineLayout = (LinearLayout) findViewById(R.id.timelineLayout);
+        blankView = findViewById(R.id.blankView);
     }
 
     private void assignClickHandlers() {
@@ -150,9 +177,6 @@ public class CalendarView extends LinearLayout {
                 switch (mode) {
                     case DAY:
                         currentDate.add(Calendar.DAY_OF_YEAR, 1);
-                        break;
-                    case WEEK:
-                        currentDate.add(Calendar.WEEK_OF_MONTH, 1);
                         break;
                     case MONTH:
                         currentDate.add(Calendar.MONTH, 1);
@@ -171,39 +195,14 @@ public class CalendarView extends LinearLayout {
                     case DAY:
                         currentDate.add(Calendar.DAY_OF_YEAR, -1);
                         break;
-                    case WEEK:
-                        currentDate.add(Calendar.WEEK_OF_MONTH, -1);
-                        break;
                     case MONTH:
                         currentDate.add(Calendar.MONTH, -1);
                         break;
 
                 }
                 updateCalendar(events);
-
             }
         });
-
-//        // long-pressing a day
-//        grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> view, View cell, int position, long id) {
-//                // handle long-press
-//                if (eventHandler == null)
-//                    return false;
-//
-//                eventHandler.onDayLongPress((Date) view.getItemAtPosition(position));
-//                return true;
-//            }
-//        });
-    }
-
-    /**
-     * Display dates correctly in grid
-     */
-    public void updateCalendar() {
-        updateCalendar(null);
     }
 
     /**
@@ -214,54 +213,20 @@ public class CalendarView extends LinearLayout {
         this.events = evnts;
 
         switch (mode) {
-
             case DAY:
 
-                header.setVisibility(GONE);
-                grid.setVisibility(GONE);
-                timelineRecyclerView.setVisibility(VISIBLE);
+                header.setVisibility(View.GONE);
+                blankView.setVisibility(View.VISIBLE);
+                timelineLayout.setVisibility(View.VISIBLE);
 
                 // update title
-                SimpleDateFormat sdf_day = new SimpleDateFormat("EEE dd-MMM-yyyy");
-                txtDate.setText(sdf_day.format(currentDate.getTime()));
-                break;
+                txtDate.setText(ConstantFormats.sdf_day.format(currentDate.getTime()));
 
-            case WEEK:
-
-                // get time line
-                ArrayList<String> timeArray = getTimeLineHours();
-                TimeLineAdapter timeAdapter = new TimeLineAdapter(getContext(), timeArray);
-
-                LinearLayoutManager timeLayoutManager = new LinearLayoutManager(_ctx, LinearLayoutManager.VERTICAL, false);
-                timelineRecyclerView.setLayoutManager(timeLayoutManager);
-                timelineRecyclerView.setNestedScrollingEnabled(true);
-                timelineRecyclerView.setAdapter(timeAdapter);
-
-                header.setVisibility(GONE);
-                timelineRecyclerView.setVisibility(VISIBLE);
-
-                if (!grid.isShown()) {
-                    grid.setVisibility(VISIBLE);
-                }
-
-                ArrayList<Date> cells_week = getWeekDates();
-                cells_week.add(0, new Date());
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(_ctx, LinearLayoutManager.HORIZONTAL, false);
+                DayPlanAdapter adapter = new DayPlanAdapter(getEvents());
                 grid.setLayoutManager(linearLayoutManager);
-                WeekAdapter weekAdapter = new WeekAdapter(getContext(), cells_week, events);
-
-                grid.addItemDecoration(new DividerItemDecoration(_ctx, DividerItemDecoration.HORIZONTAL_LIST));
-                grid.setNestedScrollingEnabled(true);
-                grid.setAdapter(weekAdapter);
-                weekAdapter.notifyDataSetChanged();
-
-                // update title
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM");
-
-                Date firstDate = cells_week.get(0);
-                Date lastDate = cells_week.get(cells_week.size() - 1);
-                txtDate.setText(String.format("%s  ~  %s", sdf.format(firstDate.getTime()), sdf.format(lastDate.getTime())));
-                updateHeader();
+                grid.setNestedScrollingEnabled(false);
+                grid.setAdapter(adapter);
+                grid.setHasFixedSize(true);
 
                 break;
 
@@ -269,51 +234,79 @@ public class CalendarView extends LinearLayout {
 
                 // In month mode we need header for displaying Weekday Names
                 // Also we need to diaply grid for displaying days.
-                header.setVisibility(VISIBLE);
-                timelineRecyclerView.setVisibility(GONE);
 
-                if (!grid.isShown())
-                    grid.setVisibility(VISIBLE);
+                header.setVisibility(View.VISIBLE);
+                timelineLayout.setVisibility(View.GONE);
+                blankView.setVisibility(View.GONE);
 
                 ArrayList<Date> cells = getMonthDates();
                 // For month we set 7 columns for displaying 7 days in a row
                 GridLayoutManager manager = new GridLayoutManager(_ctx, 7);
                 grid.setLayoutManager(manager);
+
                 MonthAdapter monthAdapter = new MonthAdapter(getContext(), cells, events);
                 monthAdapter.setCurrentDate(currentDate);
-                grid.removeItemDecoration(dividerItemDecoration);
-                grid.setAdapter(monthAdapter);
+                monthAdapter.setOnDateSelectListener(new MonthAdapter.onDateSelectListener() {
+                    @Override
+                    public void onDateSelect(Calendar currentCalendar) {
+                        currentDate = currentCalendar;
+                        timelineLayout.setVisibility(VISIBLE);
+                        setMode(MODE.DAY);
+                        if (onGridSelectListener != null) {
+                            onGridSelectListener.onGridSelect(currentCalendar);
+                        }
+                    }
+                });
 
+                grid.setAdapter(monthAdapter);
+                grid.setHasFixedSize(true);
                 monthAdapter.notifyDataSetChanged();
 
                 // update title
-                SimpleDateFormat sdf_month = new SimpleDateFormat(dateFormat);
-                txtDate.setText(sdf_month.format(currentDate.getTime()));
+                txtDate.setText(ConstantFormats.sdf_month.format(currentDate.getTime()));
                 updateHeader();
 
                 break;
         }
 
-
     }
 
-    private ArrayList<String> getTimeLineHours() {
+    private ArrayList<Event> getEvents() {
+
+        ArrayList<Event> events = new ArrayList<>();
+        for (int i = 0; i < 24; i++) {
+            Event event = new Event();
+            event.setName("Name " + i);
+            event.setRemark("Remark " + i);
+            events.add(event);
+        }
+        return events;
+    }
+
+    public interface onGridSelectListener {
+        void onGridSelect(Calendar calendar);
+    }
+
+    private ArrayList<TimeLineHour> getTimeLineHours() {
 
         // temp set calender...
         Calendar calendar = Calendar.getInstance();
         calendar.set(2016, Calendar.JANUARY, 1, 0, 0, 0);
 
         // initial array to hold 24
-        ArrayList<String> hours = new ArrayList<>();
-        hours.add("\nTime\n");
+        ArrayList<TimeLineHour> hours = new ArrayList<>();
         for (int i = 0; i < 24; i++) {
 
             Date date = calendar.getTime();
-            SimpleDateFormat sdf_day = new SimpleDateFormat("hh a");
-            hours.add("\n" + sdf_day.format(date) + "\n");
-            calendar.add(Calendar.HOUR_OF_DAY, 1);
 
+            TimeLineHour hour = new TimeLineHour();
+            hour.setTime(ConstantFormats.hourMinuteFormat.format(date));
+            hour.setFormat(ConstantFormats.ampmFormat.format(date));
+
+            hours.add(hour);
+            calendar.add(Calendar.MINUTE, 30);
         }
+
         return hours;
 
     }
@@ -355,21 +348,5 @@ public class CalendarView extends LinearLayout {
         int color = rainbow[season];
         header.setBackgroundColor(getResources().getColor(color));
     }
-
-    /**
-     * Assign event handler to be passed needed events
-     */
-    public void setEventHandler(EventHandler eventHandler) {
-        this.eventHandler = eventHandler;
-    }
-
-    /**
-     * This interface defines what events to be reported to
-     * the outside world
-     */
-    public interface EventHandler {
-        void onDayLongPress(Date date);
-    }
-
 
 }

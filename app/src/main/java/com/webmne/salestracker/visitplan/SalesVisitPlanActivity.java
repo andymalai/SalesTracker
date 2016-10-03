@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.databinding.ActivitySalesVisitPlanBinding;
+import com.webmne.salestracker.helper.ConstantFormats;
 import com.webmne.salestracker.visitplan.adapter.CustomDialogVisitPlanAgentListAdapter;
 import com.webmne.salestracker.visitplan.model.AgentListModel;
 import com.webmne.salestracker.widget.TfButton;
@@ -73,6 +74,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         initCalendarView();
     }
 
+
     private void initCalendarView() {
         HashSet<Date> events = new HashSet<>();
 
@@ -84,14 +86,10 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
         binding.cv.setMode(CalendarView.MODE.MONTH);
         binding.cv.updateCalendar(events);
-
-        // assign event handler
-        binding.cv.setEventHandler(new CalendarView.EventHandler() {
+        binding.cv.setOnGridSelectListener(new CalendarView.onGridSelectListener() {
             @Override
-            public void onDayLongPress(Date date) {
-
-                DateFormat df = SimpleDateFormat.getDateInstance();
-                Toast.makeText(SalesVisitPlanActivity.this, df.format(date), Toast.LENGTH_SHORT).show();
+            public void onGridSelect(Calendar c) {
+                Toast.makeText(SalesVisitPlanActivity.this, "Select " + ConstantFormats.dateFormat.format(c.getTime()), Toast.LENGTH_SHORT).show();
             }
         });
     }
