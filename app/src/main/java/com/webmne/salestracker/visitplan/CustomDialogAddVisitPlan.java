@@ -29,8 +29,11 @@ import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by vatsaldesai on 29-09-2016.
@@ -48,6 +51,7 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
     private TfButton btnCancel, btnOk;
     private TfEditText edtStartTime, edtEndTime;
     private ProgressBar progressBar;
+    private CustomTimePickerDialog customTimePickerDialog;
 
     private String strStartTime, strEndTime, strAgentId;
 
@@ -134,16 +138,16 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
 
                 JSONObject json = new JSONObject();
                 try {
+                    json.put("UserId", PrefUtils.getUserId(context));
+                    json.put("AgentId", strAgentId);
                     json.put("StartTime", strStartTime);
                     json.put("EndTime", strEndTime);
-                    json.put("AgentId", strAgentId);
+                    json.put("Position", PrefUtils.getUserProfile(context).getPos_name());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 customDialogAddVisitPlanCallBack.addCallBack(json);
-
-                materialDialog.dismiss();
             }
         });
 
@@ -172,7 +176,27 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
 
     private void showTimePickerDialog(final String str_flag) {
 
-        final Calendar calendar = Calendar.getInstance();
+        customTimePickerDialog = new CustomTimePickerDialog(new MaterialDialog.Builder(context), context, new CustomTimePickerCallBack() {
+            @Override
+            public void timePickerCallBack(String hour, String minute) {
+
+                Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault());
+                String timeZone = new SimpleDateFormat("Z").format(calendar.getTime());
+//                Log.e("full time", "2016-10-04T" + hour + ":" + minute + ":00" + timeZone);
+
+                if (str_flag.equals("s")) {
+                    strStartTime = "2016-10-04T" + hour + ":" + minute + ":00" + timeZone;
+                    edtStartTime.setText(hour + ":" + minute);
+                } else if (str_flag.equals("e")) {
+                    strEndTime = "2016-10-04T" + hour + ":" + minute + ":00" + timeZone;
+                    edtEndTime.setText(hour + ":" + minute);
+                }
+
+            }
+        });
+
+
+//        final Calendar calendar = Calendar.getInstance();
 
 
 //        CustomTimePickerDialog.OnTimeSetListener timeSetListener = new CustomTimePickerDialog.OnTimeSetListener() {
@@ -194,27 +218,22 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
 //        };
 
 
-
-        CustomTimePickerDialog.OnTimeSetListener timeSetListener = new CustomTimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-                Log.e("tag1", calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE) + CustomTimePickerDialog.TIME_PICKER_INTERVAL);
-
-                Log.e("tag2", hourOfDay + ":" + minute);
-
-            }
-        };
-
-
-        CustomTimePickerDialog timePickerDialog = new CustomTimePickerDialog(context, timeSetListener, calendar.get(Calendar.HOUR), CustomTimePickerDialog.getRoundedMinute(calendar.get(Calendar.MINUTE) + CustomTimePickerDialog.TIME_PICKER_INTERVAL), true);
-
-        timePickerDialog.setTitle("Select Time");
-        timePickerDialog.show();
-
-
-
-
+//        CustomTimePickerDialog.OnTimeSetListener timeSetListener = new CustomTimePickerDialog.OnTimeSetListener() {
+//            @Override
+//            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//
+//                Log.e("tag1", calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE) + CustomTimePickerDialog.TIME_PICKER_INTERVAL);
+//
+//                Log.e("tag2", hourOfDay + ":" + minute);
+//
+//            }
+//        };
+//
+//
+//        CustomTimePickerDialog timePickerDialog = new CustomTimePickerDialog(context, timeSetListener, calendar.get(Calendar.HOUR), CustomTimePickerDialog.getRoundedMinute(calendar.get(Calendar.MINUTE) + CustomTimePickerDialog.TIME_PICKER_INTERVAL), true);
+//
+//        timePickerDialog.setTitle("Select Time");
+//        timePickerDialog.show();
 
 
 //        final int TIME_PICKER_INTERVAL = 15;
@@ -241,8 +260,6 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
 //        TimePickerDialog timePickerDialog = new TimePickerDialog(context, mTimePickerListener, calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), true);
 //
 //        timePickerDialog.show();
-
-
 
 
 //        TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
@@ -315,5 +332,12 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
 
     }
 
+    public void dismissDialog() {
+        if (materialDialog != null) {
+            if (materialDialog.isShowing()) {
+                materialDialog.dismiss();
+            }
+        }
+    }
 
 }

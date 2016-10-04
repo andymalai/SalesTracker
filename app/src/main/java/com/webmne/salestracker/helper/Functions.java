@@ -240,6 +240,18 @@ public class Functions {
         } else if (status.equals(AppConstants.COMPLETE)) {
             return context.getString(R.string.completed);
 
+        } else if (status.equals(AppConstants.ORDERDUE)) {
+            return context.getString(R.string.order_due);
+
+        } else if (status.equals(AppConstants.DUETODAY)) {
+            return context.getString(R.string.due_today);
+
+        } else if (status.equals(AppConstants.ONGOING)) {
+            return context.getString(R.string.on_going);
+
+        } else if (status.equals(AppConstants.APPROVE)) {
+            return context.getString(R.string.approve);
+
         } else {
             return context.getString(R.string.pending);
         }

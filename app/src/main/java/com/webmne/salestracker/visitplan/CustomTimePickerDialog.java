@@ -2,42 +2,149 @@ package com.webmne.salestracker.visitplan;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.util.Log;
+import android.view.View;
+import android.widget.NumberPicker;
 import android.widget.TimePicker;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.webmne.salestracker.R;
+import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.widget.TfButton;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by vatsaldesai on 30-09-2016.
  */
 
-public class CustomTimePickerDialog extends TimePickerDialog {
+public class CustomTimePickerDialog extends MaterialDialog {
 
-    public static final int TIME_PICKER_INTERVAL = 30;
-    private boolean mIgnoreEvent = false;
+    private Context context;
+    private CustomTimePickerCallBack customTimePickerCallBack;
+    private MaterialDialog materialDialog;
 
-    public CustomTimePickerDialog(Context context, OnTimeSetListener listener, int hourOfDay, int minute, boolean is24HourView) {
-        super(context, listener, hourOfDay, minute, is24HourView);
+    private NumberPicker np_hour, np_minute;
+    private TfButton btnCancel, btnOk;
+
+    private ArrayList<String> hourList;
+    private ArrayList<String> minuteList;
+
+    private String strHour, strMinute;
+
+    protected CustomTimePickerDialog(Builder builder, Context context, CustomTimePickerCallBack customTimePickerCallBack) {
+        super(builder);
+
+        this.context = context;
+        this.customTimePickerCallBack = customTimePickerCallBack;
+
+        init(builder);
     }
 
-    @Override
-    public void onTimeChanged(TimePicker timePicker, int hourOfDay, int minute) {
-        super.onTimeChanged(timePicker, hourOfDay, minute);
-        if (!mIgnoreEvent) {
-            minute = getRoundedMinute(minute);
-            mIgnoreEvent = true;
-            timePicker.setCurrentMinute(minute);
-            mIgnoreEvent = false;
+    private void init(Builder builder) {
+
+        materialDialog = builder
+                .title(R.string.time_picker_dialog_title)
+                .typeface(Functions.getBoldFont(context), Functions.getRegularFont(context))
+                .customView(R.layout.custom_time_picker_dialog, false)
+                .canceledOnTouchOutside(false)
+                .show();
+
+        View view = materialDialog.getCustomView();
+
+        np_hour = (NumberPicker) view.findViewById(R.id.np_hour);
+        np_minute = (NumberPicker) view.findViewById(R.id.np_minute);
+        btnCancel = (TfButton) view.findViewById(R.id.btnCancel);
+        btnOk = (TfButton) view.findViewById(R.id.btnOk);
+
+
+        actionListener();
+
+        setHourPickerData();
+
+        setMinutePickerData();
+    }
+
+    private void actionListener() {
+
+        np_hour.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+
+                strHour = hourList.get(newVal);
+
+            }
+        });
+
+        np_minute.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+
+                strMinute = minuteList.get(newVal);
+
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                materialDialog.dismiss();
+            }
+        });
+
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                customTimePickerCallBack.timePickerCallBack(strHour, strMinute);
+
+                materialDialog.dismiss();
+
+            }
+        });
+
+
+    }
+
+    private void setHourPickerData() {
+        hourList = new ArrayList<>();
+
+        for (int i = 0; i < 24; i++) {
+            hourList.add(String.format("%02d", i));
         }
+
+        np_hour.setMinValue(0);
+        np_hour.setMaxValue(hourList.size() - 1);
+        np_hour.setWrapSelectorWheel(true);
+
+        String[] hourStringArray = new String[0];
+        hourStringArray = hourList.toArray(hourStringArray);
+
+        np_hour.setDisplayedValues(hourStringArray);
+
+        strHour = hourList.get(0);
     }
 
-    public static int getRoundedMinute(int minute) {
-        if (minute % TIME_PICKER_INTERVAL != 0) {
-            int minuteFloor = minute - (minute % TIME_PICKER_INTERVAL);
-            minute = minuteFloor + (minute == minuteFloor + 1 ? TIME_PICKER_INTERVAL : 0);
-            if (minute == 60) minute = 0;
-        }
+    private void setMinutePickerData() {
+        minuteList = new ArrayList<>();
 
-        return minute;
+        minuteList.add("00");
+        minuteList.add("30");
+        minuteList.add("00");
+        minuteList.add("30");
+
+        np_minute.setMinValue(0);
+        np_minute.setMaxValue(minuteList.size() - 1);
+        np_minute.setWrapSelectorWheel(true);
+
+        String[] minuteStringArray = new String[0];
+        minuteStringArray = minuteList.toArray(minuteStringArray);
+
+        np_minute.setDisplayedValues(minuteStringArray);
+
+        strMinute = minuteList.get(0);
     }
+
 
 }
-
-

@@ -169,6 +169,10 @@
     <string name="completed">Completed</string>
     <string name="processing">Processing</string>
     <string name="reject">Rejected</string>
+    <string name="order_due">Order Due</string>
+    <string name="due_today">Due Today</string>
+    <string name="on_going">On Going</string>
+    <string name="approve">Approve</string>
 
     <!--activity_remark_list-->
     <string name="remark_title">Remarks</string>
@@ -217,15 +221,26 @@
     <string name="add_agent_dialog_title">Add Visit Plan</string>
 
     <!--custom_dialog_add_visit_plan.xml-->
-    <string name="shedule">Shedule</string>
+    <string name="schedule">Schedule</string>
     <string name="from">From:</string>
     <string name="to">To:</string>
+    <string name="agent">Agent</string>
+    <string name="total_plan">Total</string>
+    <string name="actual_plan">Act</string>
+    <string name="addition_plan">Adh</string>
 
     <!--CustomDialogAddVisitPlan-->
     <string name="pls_select_start_time">Please Select Start Time</string>
     <string name="pls_select_end_time">Please Select End Time</string>
     <string name="pls_select_agent">Please Select Agent</string>
 
+    <!--SalesVisitPlanACtivity.java-->
+    <string name="add_visit_plan_success">Visit plan added successfully.</string>
 
+    <!--custom_time_picker_dialog.xml-->
+    <string name="set">Set</string>
+
+    <!--CustomTimePickerDialog.java-->
+    <string name="time_picker_dialog_title">Select Time</string>
 
 </resources>

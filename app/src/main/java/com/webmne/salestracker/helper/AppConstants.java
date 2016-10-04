@@ -24,6 +24,10 @@ public class AppConstants {
     public static String PENDING = "P";
     public static String REJECTED = "R";
     public static String PROCESSING = "PR";
+    public static String ORDERDUE = "OD";
+    public static String DUETODAY = "DT";
+    public static String ONGOING = "OG";
+    public static String APPROVE = "A";
 
     // Calendar Mode
     public static int DAY_VIEW = 0;
@@ -86,6 +90,9 @@ public class AppConstants {
 
     // http://demo.webmynehost.com/amgsales/services/fetch_agent_list.php?format=json&user_id=699
     public static final String EmployeeList = WEB_SERVICE_URL + "fetch_agent_list.php?format=json&user_id=";
+
+    // http://demo.webmynehost.com/amgsales/services/fetch_agent_list.php?format=json&user_id=699
+    public static final String AddPlan = WEB_SERVICE_URL + "add_plan.php?format=json";
 
 
     // FTP details Local
