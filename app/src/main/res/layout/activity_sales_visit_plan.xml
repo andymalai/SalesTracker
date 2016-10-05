@@ -9,56 +9,53 @@
         android:orientation="vertical"
         tools:context="com.webmne.salestracker.visitplan.SalesVisitPlanActivity">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <include
+            android:id="@+id/toolbarLayout"
+            layout="@layout/app_bar" />
 
-            <include
-                android:id="@+id/toolbarLayout"
-                layout="@layout/app_bar" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/toolbarLayout"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:background="@color/off_white"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/dimen_12dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <View
+                    android:layout_width="@dimen/dimen_10dp"
+                    android:layout_height="@dimen/dimen_10dp"
+                    android:background="@drawable/pending_shape" />
+
+                <com.webmne.salestracker.widget.TfTextView
+                    android:id="@+id/txtProgress"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:text="Actual Progress: 50/300" />
 
-                    <com.webmne.salestracker.widget.TfButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:onClick="dayClicked"
-                        android:text="Day" />
-
-                    <com.webmne.salestracker.widget.TfButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:visibility="gone"
-                        android:onClick="weekClicked"
-                        android:text="Week" />
-
-                    <com.webmne.salestracker.widget.TfButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:onClick="monthClicked"
-                        android:text="Month" />
-                </LinearLayout>
-
-                <com.webmne.salestracker.widget.calendar.CalendarView
-                    android:id="@+id/cv"
-                    android:layout_width="match_parent"
+                <com.webmne.salestracker.widget.TfTextView
+                    android:id="@+id/txtVariance"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    calendarNS:dateFormat="MMMM yyyy" />
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:text="(36.00%)"
+                    android:textColor="@color/tile1" />
+
             </LinearLayout>
 
-        </RelativeLayout>
+            <com.webmne.salestracker.widget.calendar.CalendarView
+                android:id="@+id/cv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                calendarNS:dateFormat="MMMM yyyy" />
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -12,9 +12,6 @@ public class ConstantFormats {
     public static final SimpleDateFormat hourMinuteFormat = new SimpleDateFormat("hh.mm", Locale.US);
     public static final SimpleDateFormat ampmFormat = new SimpleDateFormat("a", Locale.US);
 
-    public static final SimpleDateFormat monthDateFormat = new SimpleDateFormat("EEE\ndd", Locale.US);
-    public static final SimpleDateFormat dayDateFormat = new SimpleDateFormat("MMM-dd", Locale.US);
-
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
 
     public static final SimpleDateFormat sdf_day = new SimpleDateFormat("EEE dd-MMM-yyyy", Locale.US);

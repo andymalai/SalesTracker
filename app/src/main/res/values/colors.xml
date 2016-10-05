@@ -18,6 +18,9 @@
     <color name="button_selected_color">#272727</color>
     <color name="blue">#1565C0</color>
 
+    <color name="selected">#2557a6</color>
+    <color name="un_selected">@color/colorPrimary</color>
+
     <color name="color1">#D066FA</color>
     <color name="color2">#96D100</color>
     <color name="color3">#00A8FF</color>

@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.widget.TfTextView;
@@ -42,16 +43,25 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
     class EventHolder extends RecyclerView.ViewHolder {
 
         private TfTextView name, remark;
+        private LinearLayout subView;
 
         private EventHolder(View itemView) {
             super(itemView);
             name = (TfTextView) itemView.findViewById(R.id.name);
             remark = (TfTextView) itemView.findViewById(R.id.remark);
+            subView = (LinearLayout) itemView.findViewById(R.id.subView);
         }
 
         public void setEvent(Event event) {
             name.setText(event.getName());
             remark.setText(event.getRemark());
+
+            if (event.isVisible()) {
+                subView.setVisibility(View.VISIBLE);
+
+            } else {
+                subView.setVisibility(View.INVISIBLE);
+            }
         }
     }
 }

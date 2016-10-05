@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
@@ -22,11 +23,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.api.model.PlanDataResponse;
+import com.webmne.salestracker.api.model.SalesPlanResponse;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivitySalesVisitPlanBinding;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.ConstantFormats;
 import com.webmne.salestracker.helper.MyApplication;
+import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import com.webmne.salestracker.visitplan.adapter.CustomDialogVisitPlanAgentListAdapter;
@@ -37,12 +41,11 @@ import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 
 public class SalesVisitPlanActivity extends AppCompatActivity {
 
@@ -81,6 +84,62 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         binding.toolbarLayout.txtCustomTitle.setText(getString(R.string.sales_title));
 
         initCalendarView();
+
+        // call fetch plan WS with current month and year
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int year = calendar.get(Calendar.YEAR);
+
+        fetchPlan(month, year);
+    }
+
+    private void fetchPlan(int month, int year) {
+
+        showProgress(getString(R.string.loading));
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("UserId", PrefUtils.getUserId(SalesVisitPlanActivity.this));
+            jsonObject.put("Month", month);
+            jsonObject.put("Year", year);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.e("fetch_plan_req", jsonObject.toString());
+
+        new CallWebService(this, AppConstants.PlanList, CallWebService.TYPE_POST, jsonObject) {
+
+            @Override
+            public void response(String response) {
+                dismissProgress();
+
+                SalesPlanResponse planResponse = MyApplication.getGson().fromJson(response, SalesPlanResponse.class);
+                if (planResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                    Log.e("plan_res", response);
+                    setPlanDetails(planResponse.getData());
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, SalesVisitPlanActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(SalesVisitPlanActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.start();
+    }
+
+    private void setPlanDetails(PlanDataResponse data) {
+        binding.txtProgress.setText(String.format("Actual Progress: %s/%s", data.getProgress(), data.getTarget()));
+
+        float variance = (Float.parseFloat(data.getProgress()) * 100) / Float.parseFloat(data.getTarget());
+        binding.txtVariance.setText(Html.fromHtml("<u>" + String.format(Locale.US, "(%.2f%s)", variance, "%") + "</u>"));
+
     }
 
 
@@ -133,13 +192,16 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_add_plan:
 
-                customDialogAddVisitPlan = new CustomDialogAddVisitPlan(new MaterialDialog.Builder(this), this, new CustomDialogAddVisitPlanCallBack() {
+//                sampleMarquee();
+
+                new CustomDialogAddVisitPlan(new MaterialDialog.Builder(this), this, new CustomDialogAddVisitPlanCallBack() {
                     @Override
                     public void addCallBack(JSONObject json) {
 
                         Log.e("json", json.toString());
 
-                        addSalesVisitPlan(json);
+                        addSalesVisitData(json);
+
                     }
                 });
 
@@ -151,48 +213,42 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     }
 
 
-    private void addSalesVisitPlan(JSONObject json) {
+    private void addSalesVisitData(JSONObject json) {
 
-        new CallWebService(this, AppConstants.AddPlan, CallWebService.TYPE_POST, json) {
-
-            @Override
-            public void response(String response) {
-                dismissProgress();
-
-                Log.e("response", response);
-
-                com.webmne.salestracker.api.model.Response addResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
-
-                if (addResponse != null) {
-                    if (addResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-
-                        customDialogAddVisitPlan.dismissDialog();
-
-                        SimpleToast.ok(context, getString(R.string.add_visit_plan_success));
-
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-
-                    } else {
-                        SimpleToast.error(context, addResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-                    }
-                } else {
-                    SimpleToast.error(context, getString(R.string.try_again), getString(R.string.fa_error));
-                }
-
-            }
-
-            @Override
-            public void error(VolleyError error) {
-                dismissProgress();
-                VolleyErrorHelper.showErrorMsg(error, SalesVisitPlanActivity.this);
-            }
-
-            @Override
-            public void noInternet() {
-                dismissProgress();
-                SimpleToast.error(SalesVisitPlanActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-            }
-        }.call();
+//        new CallWebService(this, AppConstants.AddAgent, CallWebService.TYPE_POST, json) {
+//
+//            @Override
+//            public void response(String response) {
+//                dismissProgress();
+//
+//                AddAgentResponse addAgentResponse = MyApplication.getGson().fromJson(response, AddAgentResponse.class);
+//
+//                if (addAgentResponse != null) {
+//                    Log.e("add_res", MyApplication.getGson().toJson(addAgentResponse));
+//
+//                    if (addAgentResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+//                        SimpleToast.ok(AddAgentActivity.this, getString(R.string.add_agent_success));
+//                        finish();
+//                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+//
+//                    } else {
+//                        SimpleToast.error(AddAgentActivity.this, addAgentResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void error(VolleyError error) {
+//                dismissProgress();
+//                VolleyErrorHelper.showErrorMsg(error, AddAgentActivity.this);
+//            }
+//
+//            @Override
+//            public void noInternet() {
+//                dismissProgress();
+//                SimpleToast.error(AddAgentActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+//            }
+//        }.call();
 
     }
 
@@ -247,9 +303,9 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 //    }
 
 
-    public void showProgress() {
+    public void showProgress(String str) {
         if (dialog == null) {
-            dialog = new LoadingIndicatorDialog(this, "Please wait..", android.R.style.Theme_Translucent_NoTitleBar);
+            dialog = new LoadingIndicatorDialog(this, str, android.R.style.Theme_Translucent_NoTitleBar);
         }
         dialog.show();
     }

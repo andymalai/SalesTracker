@@ -10,11 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.custom.WhiteLineDividerItemDecoration;
 import com.webmne.salestracker.helper.ConstantFormats;
+import com.webmne.salestracker.widget.TfButton;
 import com.webmne.salestracker.widget.TfTextView;
+import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,10 +59,14 @@ public class CalendarView extends LinearLayout {
     private ImageView btnPrev;
     private ImageView btnNext;
     private TfTextView txtDate;
-    private RecyclerView grid, timelineRecyclerView;
+    private FamiliarRecyclerView grid;
+    private RecyclerView timelineRecyclerView;
     private LinearLayout timelineLayout;
     private View blankView;
+    private TfButton btnDay, btnMonth;
     private ArrayList<TimeLineHour> timeArray;
+    private DayPlanAdapter adapter;
+    private ArrayList<Event> eventList;
 
     // seasons' rainbow
     int[] rainbow = new int[]{
@@ -72,8 +79,8 @@ public class CalendarView extends LinearLayout {
     // month-season association (northern hemisphere, sorry australia :)
     int[] monthSeason = new int[]{2, 2, 3, 3, 3, 0, 0, 0, 1, 1, 1, 2};
 
-    public String getCurrentDate() {
-        return ConstantFormats.sdf_day.format(currentDate.getTime());
+    public Calendar getCurrentCalendar() {
+        return currentDate;
     }
 
     public enum MODE {
@@ -162,10 +169,13 @@ public class CalendarView extends LinearLayout {
         btnPrev = (ImageView) findViewById(R.id.calendar_prev_button);
         btnNext = (ImageView) findViewById(R.id.calendar_next_button);
         txtDate = (TfTextView) findViewById(R.id.calendar_date_display);
-        grid = (RecyclerView) findViewById(R.id.calendar_grid);
+        grid = (FamiliarRecyclerView) findViewById(R.id.calendar_grid);
+
         timelineRecyclerView = (RecyclerView) findViewById(R.id.timelineRecyclerView);
         timelineLayout = (LinearLayout) findViewById(R.id.timelineLayout);
         blankView = findViewById(R.id.blankView);
+        btnDay = (TfButton) findViewById(R.id.btnDay);
+        btnMonth = (TfButton) findViewById(R.id.btnMonth);
     }
 
     private void assignClickHandlers() {
@@ -203,6 +213,24 @@ public class CalendarView extends LinearLayout {
                 updateCalendar(events);
             }
         });
+
+        btnDay.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnDay.setBackgroundResource(R.drawable.selected_left_shape);
+                btnMonth.setBackgroundResource(R.drawable.unselected_right_shape);
+                setMode(MODE.DAY);
+            }
+        });
+
+        btnMonth.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnMonth.setBackgroundResource(R.drawable.selected_right_shape);
+                btnDay.setBackgroundResource(R.drawable.unselected_left_shape);
+                setMode(MODE.MONTH);
+            }
+        });
     }
 
     /**
@@ -222,10 +250,19 @@ public class CalendarView extends LinearLayout {
                 // update title
                 txtDate.setText(ConstantFormats.sdf_day.format(currentDate.getTime()));
 
-                DayPlanAdapter adapter = new DayPlanAdapter(getEvents());
+                eventList = getEvents();
+                adapter = new DayPlanAdapter(eventList);
                 grid.setLayoutManager(linearLayoutManager);
                 grid.setNestedScrollingEnabled(false);
                 grid.setAdapter(adapter);
+                grid.setOnItemClickListener(new FamiliarRecyclerView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
+                        Event event = eventList.get(position);
+                        event.setVisible(true);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
                 grid.setHasFixedSize(true);
 
                 break;
@@ -243,7 +280,7 @@ public class CalendarView extends LinearLayout {
                 // For month we set 7 columns for displaying 7 days in a row
                 GridLayoutManager manager = new GridLayoutManager(_ctx, 7);
                 grid.setLayoutManager(manager);
-
+                grid.setOnItemClickListener(null);
                 MonthAdapter monthAdapter = new MonthAdapter(getContext(), cells, events);
                 monthAdapter.setCurrentDate(currentDate);
                 monthAdapter.setOnDateSelectListener(new MonthAdapter.onDateSelectListener() {
@@ -252,6 +289,8 @@ public class CalendarView extends LinearLayout {
                         currentDate = currentCalendar;
                         timelineLayout.setVisibility(VISIBLE);
                         setMode(MODE.DAY);
+                        btnDay.setBackgroundResource(R.drawable.selected_left_shape);
+                        btnMonth.setBackgroundResource(R.drawable.unselected_right_shape);
                         if (onGridSelectListener != null) {
                             onGridSelectListener.onGridSelect(currentCalendar);
                         }
