@@ -6,7 +6,6 @@ package com.webmne.salestracker.api.model;
 
 public class Plan {
 
-
     /**
      * PlanId : 197
      * AgentName : Masum Chauhan
@@ -24,6 +23,20 @@ public class Plan {
     private String EndTime;
     private String Remark;
     private String Status;
+
+    public Plan(){
+
+    }
+
+    public Plan(String planId, String agentName, String agentId, String startTime, String endTime, String remark, String status) {
+        PlanId = planId;
+        AgentName = agentName;
+        AgentId = agentId;
+        StartTime = startTime;
+        EndTime = endTime;
+        Remark = remark;
+        Status = status;
+    }
 
     public String getPlanId() {
         return PlanId;
@@ -80,4 +93,23 @@ public class Plan {
     public void setStatus(String Status) {
         this.Status = Status;
     }
+
+    String[] timeArray = {"08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00",
+            "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00",
+            "17:30", "18:00", "18:30", "19:00", "19:30"};
+
+    public int getPosition() {
+        int pos = 0;
+        try {
+            for (int i = 0; i < timeArray.length; i++) {
+                if (getStartTime().substring(0, getStartTime().length() - 3).equals(timeArray[i])) {
+                    pos = i;
+                }
+            }
+        }catch (Exception e){
+             pos = 0;
+        }
+        return pos;
+    }
+
 }

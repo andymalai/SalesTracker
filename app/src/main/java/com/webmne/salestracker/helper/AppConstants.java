@@ -30,8 +30,7 @@ public class AppConstants {
     public static String APPROVE = "A";
 
     // Calendar Mode
-    public static int DAY_VIEW = 0;
-    public static int WEEK_VIEW = 1;
+    public static int DAY_VIEW = 1;
     public static int MONTH_VIEW = 2;
 
     // Response Code

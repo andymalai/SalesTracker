@@ -1,14 +1,11 @@
 package com.webmne.salestracker.visitplan;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TimePicker;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
@@ -16,6 +13,7 @@ import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.custom.LineDividerItemDecoration;
 import com.webmne.salestracker.helper.AppConstants;
+import com.webmne.salestracker.helper.ConstantFormats;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
@@ -25,7 +23,6 @@ import com.webmne.salestracker.visitplan.adapter.CustomDialogVisitPlanAgentListA
 import com.webmne.salestracker.visitplan.model.AgentListModel;
 import com.webmne.salestracker.visitplan.model.VisitPlanAgentListResponse;
 import com.webmne.salestracker.widget.TfButton;
-import com.webmne.salestracker.widget.TfEditText;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 
 import org.json.JSONObject;
@@ -86,6 +83,11 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
         edtEndTime.setTypeface(Functions.getRegularFont(context));
 
         agentModelList = new ArrayList<>();
+
+        if (PrefUtils.getPlanAgents(context) != null) {
+            VisitPlanAgentListResponse prefData = PrefUtils.getPlanAgents(context);
+            agentModelList = prefData.getData();
+        }
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         familiarRecyclerView.setLayoutManager(layoutManager);
@@ -157,21 +159,17 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
         edtStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 showTimePickerDialog("s");
-
             }
         });
 
         edtEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 showTimePickerDialog("e");
 
             }
         });
-
 
         getAgentList();
 
@@ -184,7 +182,7 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
             public void timePickerCallBack(String hour, String minute) {
 
                 Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault());
-                String timeZone = new SimpleDateFormat("Z").format(calendar.getTime());
+                String timeZone = ConstantFormats.zoneFormat.format(calendar.getTime());
 //                Log.e("full time", "2016-10-04T" + hour + ":" + minute + ":00" + timeZone);
 
                 if (str_flag.equals("s")) {
@@ -309,6 +307,7 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
                 if (visitPlanAgentListResponse != null) {
 
                     if (visitPlanAgentListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        PrefUtils.setPlanAgents(context, visitPlanAgentListResponse);
                         agentModelList = visitPlanAgentListResponse.getData();
                         customDialogVisitPlanAgentListAdapter.setAgentList(agentModelList);
 

@@ -1,12 +1,14 @@
 package com.webmne.salestracker.widget.calendar;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.api.model.Plan;
 import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
@@ -17,10 +19,16 @@ import java.util.ArrayList;
 
 class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
 
-    private ArrayList<Event> events;
+    private ArrayList<Plan> plans;
+    private int MAX_COUNT=24;
 
-    DayPlanAdapter(ArrayList<Event> events) {
-        this.events = events;
+    DayPlanAdapter(ArrayList<Plan> plan) {
+        this.plans = plan;
+        for(int i=plans.size();i<MAX_COUNT;i++){
+            plans.add(new Plan());
+        }
+
+        Log.e("##POS>>>",""+plans.size());
     }
 
     @Override
@@ -30,14 +38,41 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
     }
 
     @Override
-    public void onBindViewHolder(EventHolder holder, int position) {
-        Event event = events.get(position);
-        holder.setEvent(event);
+    public void onBindViewHolder(EventHolder holder, int pos) {
+
+            for(int i=0;i<plans.size();i++){
+                if(pos==plans.get(i).getPosition()){
+                    Plan plan = plans.get(i);
+                    holder.setEvent(plan);
+                }else {
+                    holder.subView.setVisibility(View.INVISIBLE);
+                }
+            }
+
+        //try {
+           // if (pos == plans.get(pos).getPosition()) {
+             //   Plan plan = plans.get(pos);
+              //  holder.setEvent(plan);
+        //  }else{
+         //       holder.setEvent(new Plan());
+
+          //  }
+      //  }catch (Exception e){
+      //    holder.setEvent(new Plan());
+     //  }
+
+
     }
 
     @Override
     public int getItemCount() {
-        return events.size();
+        return MAX_COUNT;
+    }
+
+    void setDayPlan(ArrayList<Plan> plans) {
+        this.plans = new ArrayList<>();
+        this.plans = plans;
+        notifyDataSetChanged();
     }
 
     class EventHolder extends RecyclerView.ViewHolder {
@@ -52,16 +87,16 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
             subView = (LinearLayout) itemView.findViewById(R.id.subView);
         }
 
-        public void setEvent(Event event) {
-            name.setText(event.getName());
-            remark.setText(event.getRemark());
-
-            if (event.isVisible()) {
-                subView.setVisibility(View.VISIBLE);
-
-            } else {
-                subView.setVisibility(View.INVISIBLE);
-            }
+        public void setEvent(Plan plan) {
+            subView.setVisibility(View.VISIBLE);
+            name.setText(plan.getAgentName());
+            remark.setText(plan.getRemark());
+            Log.e("pos", plan.getPosition() + "");
         }
+
+        public void hide() {
+            subView.setVisibility(View.INVISIBLE);
+        }
+
     }
 }

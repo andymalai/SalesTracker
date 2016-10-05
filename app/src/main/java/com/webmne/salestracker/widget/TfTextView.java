@@ -28,6 +28,7 @@ public class TfTextView extends TextView {
 
     public TfTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         if (!isInEditMode()) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TfTextView, 0, 0);
             try {
@@ -39,7 +40,15 @@ public class TfTextView extends TextView {
             this._ctx = context;
             init();
         }
+    }
 
+    public void setBold(boolean isBold) {
+        this.isBold = isBold;
+        if (isBold) {
+            setTypeface(Functions.getBoldFont(_ctx));
+        } else {
+            setTypeface(Functions.getRegularFont(_ctx));
+        }
     }
 
     private void init() {

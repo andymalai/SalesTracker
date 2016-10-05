@@ -23,6 +23,7 @@ public class CustomDialogVisitPlanAgentListAdapter extends RecyclerView.Adapter<
     private ArrayList<AgentListModel> agentModelList;
 
     public void setAgentList(ArrayList<AgentListModel> agentModelList) {
+        this.agentModelList = new ArrayList<>();
         this.agentModelList = agentModelList;
         notifyDataSetChanged();
     }

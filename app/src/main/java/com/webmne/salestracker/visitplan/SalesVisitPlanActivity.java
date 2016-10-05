@@ -1,22 +1,13 @@
 package com.webmne.salestracker.visitplan;
 
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -58,6 +49,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     private ArrayList<AgentListModel> agentModelList;
     private TfButton btnCancel, btnOk;
     private CustomDialogAddVisitPlan customDialogAddVisitPlan;
+    private SalesPlanResponse planResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,23 +77,18 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
         initCalendarView();
 
-        // call fetch plan WS with current month and year
-        Calendar calendar = Calendar.getInstance();
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int year = calendar.get(Calendar.YEAR);
-
-        fetchPlan(month, year);
+        fetchPlan();
     }
 
-    private void fetchPlan(int month, int year) {
+    private void fetchPlan() {
 
         showProgress(getString(R.string.loading));
 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("UserId", PrefUtils.getUserId(SalesVisitPlanActivity.this));
-            jsonObject.put("Month", month);
-            jsonObject.put("Year", year);
+            jsonObject.put("Month", binding.cv.getCurrentCalendar().get(Calendar.MONTH) + 1);
+            jsonObject.put("Year", binding.cv.getCurrentCalendar().get(Calendar.YEAR));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -113,7 +100,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
             public void response(String response) {
                 dismissProgress();
 
-                SalesPlanResponse planResponse = MyApplication.getGson().fromJson(response, SalesPlanResponse.class);
+                planResponse = MyApplication.getGson().fromJson(response, SalesPlanResponse.class);
                 if (planResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                     Log.e("plan_res", response);
                     setPlanDetails(planResponse.getData());
@@ -135,13 +122,15 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     }
 
     private void setPlanDetails(PlanDataResponse data) {
+
         binding.txtProgress.setText(String.format("Actual Progress: %s/%s", data.getProgress(), data.getTarget()));
 
         float variance = (Float.parseFloat(data.getProgress()) * 100) / Float.parseFloat(data.getTarget());
         binding.txtVariance.setText(Html.fromHtml("<u>" + String.format(Locale.US, "(%.2f%s)", variance, "%") + "</u>"));
 
-    }
+        binding.cv.setMonthPlans(data.getPlans());
 
+    }
 
     private void initCalendarView() {
         HashSet<Date> events = new HashSet<>();
@@ -154,30 +143,43 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
         binding.cv.setMode(CalendarView.MODE.MONTH);
         binding.cv.updateCalendar(events);
-        binding.cv.setOnGridSelectListener(new CalendarView.onGridSelectListener() {
+        binding.cv.setOnCalendarChangeListener(new CalendarView.onCalendarChangeListener() {
             @Override
-            public void onGridSelect(Calendar c) {
-                Toast.makeText(SalesVisitPlanActivity.this, "Select " + ConstantFormats.dateFormat.format(c.getTime()), Toast.LENGTH_SHORT).show();
+            public void onChange(int type) {
+                if (type == AppConstants.DAY_VIEW) {
+
+                } else {
+                    fetchPlan();
+                }
             }
         });
+
+        binding.cv.setOnViewChangeListener(new CalendarView.onViewChangeListener() {
+            @Override
+            public void onChange() {
+                fetchPlan();
+            }
+        });
+
+        /*binding.cv.setOnGridSelectListener(new CalendarView.onGridSelectListener() {
+            @Override
+            public void onGridSelect(Calendar c) {
+                String d = ConstantFormats.ymdFormat.format(c.getTime());
+                Toast.makeText(SalesVisitPlanActivity.this, "Select " + d, Toast.LENGTH_SHORT).show();
+
+               *//* for (int i = 0; i < planResponse.getData().getPlans().size(); i++) {
+                    if (d.equals(planResponse.getData().getPlans().get(i).getDate())) {
+                        binding.cv.setDayPlan(planResponse.getData().getPlans().get(i));
+                    }
+                }*//*
+            }
+        });*/
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-    }
-
-    public void dayClicked(View view) {
-        binding.cv.setMode(CalendarView.MODE.DAY);
-    }
-
-    public void weekClicked(View view) {
-        binding.cv.setMode(CalendarView.MODE.WEEK);
-    }
-
-    public void monthClicked(View view) {
-        binding.cv.setMode(CalendarView.MODE.MONTH);
     }
 
     @Override

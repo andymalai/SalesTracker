@@ -6,14 +6,17 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.api.model.DatePlan;
+import com.webmne.salestracker.api.model.Plan;
 import com.webmne.salestracker.custom.WhiteLineDividerItemDecoration;
+import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.ConstantFormats;
 import com.webmne.salestracker.widget.TfButton;
 import com.webmne.salestracker.widget.TfTextView;
@@ -65,8 +68,26 @@ public class CalendarView extends LinearLayout {
     private View blankView;
     private TfButton btnDay, btnMonth;
     private ArrayList<TimeLineHour> timeArray;
-    private DayPlanAdapter adapter;
+
+    private ArrayList<Plan> dayPlans;
+    private DayPlanAdapter dayAdapter;
+
     private ArrayList<Event> eventList;
+
+    private ArrayList<DatePlan> monthPlans;
+    private MonthAdapter monthAdapter;
+
+    private onCalendarChangeListener onCalendarChangeListener;
+
+    private onViewChangeListener onViewChangeListener;
+
+    public void setOnViewChangeListener(CalendarView.onViewChangeListener onViewChangeListener) {
+        this.onViewChangeListener = onViewChangeListener;
+    }
+
+    public void setOnCalendarChangeListener(CalendarView.onCalendarChangeListener onCalendarChangeListener) {
+        this.onCalendarChangeListener = onCalendarChangeListener;
+    }
 
     // seasons' rainbow
     int[] rainbow = new int[]{
@@ -81,6 +102,16 @@ public class CalendarView extends LinearLayout {
 
     public Calendar getCurrentCalendar() {
         return currentDate;
+    }
+
+    public void setMonthPlans(ArrayList<DatePlan> monthPlans) {
+        this.monthPlans = new ArrayList<>();
+        this.monthPlans = monthPlans;
+        monthAdapter.setPlans(monthPlans);
+    }
+
+    public void setDayPlan(ArrayList<Plan> datePlan) {
+        dayAdapter.setDayPlan(datePlan);
     }
 
     public enum MODE {
@@ -187,9 +218,15 @@ public class CalendarView extends LinearLayout {
                 switch (mode) {
                     case DAY:
                         currentDate.add(Calendar.DAY_OF_YEAR, 1);
+                        if (onCalendarChangeListener != null) {
+                            onCalendarChangeListener.onChange(AppConstants.DAY_VIEW);
+                        }
                         break;
                     case MONTH:
                         currentDate.add(Calendar.MONTH, 1);
+                        if (onCalendarChangeListener != null) {
+                            onCalendarChangeListener.onChange(AppConstants.MONTH_VIEW);
+                        }
                         break;
                 }
                 updateCalendar(events);
@@ -204,9 +241,15 @@ public class CalendarView extends LinearLayout {
                 switch (mode) {
                     case DAY:
                         currentDate.add(Calendar.DAY_OF_YEAR, -1);
+                        if (onCalendarChangeListener != null) {
+                            onCalendarChangeListener.onChange(AppConstants.DAY_VIEW);
+                        }
                         break;
                     case MONTH:
                         currentDate.add(Calendar.MONTH, -1);
+                        if (onCalendarChangeListener != null) {
+                            onCalendarChangeListener.onChange(AppConstants.MONTH_VIEW);
+                        }
                         break;
 
                 }
@@ -229,8 +272,19 @@ public class CalendarView extends LinearLayout {
                 btnMonth.setBackgroundResource(R.drawable.selected_right_shape);
                 btnDay.setBackgroundResource(R.drawable.unselected_left_shape);
                 setMode(MODE.MONTH);
+                if (onViewChangeListener != null) {
+                    onViewChangeListener.onChange();
+                }
             }
         });
+    }
+
+    public interface onViewChangeListener {
+        void onChange();
+    }
+
+    public interface onCalendarChangeListener {
+        void onChange(int type);
     }
 
     /**
@@ -250,19 +304,12 @@ public class CalendarView extends LinearLayout {
                 // update title
                 txtDate.setText(ConstantFormats.sdf_day.format(currentDate.getTime()));
 
-                eventList = getEvents();
-                adapter = new DayPlanAdapter(eventList);
+                dayPlans = new ArrayList<>();
+                dayAdapter = new DayPlanAdapter(dayPlans);
+
                 grid.setLayoutManager(linearLayoutManager);
                 grid.setNestedScrollingEnabled(false);
-                grid.setAdapter(adapter);
-                grid.setOnItemClickListener(new FamiliarRecyclerView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
-                        Event event = eventList.get(position);
-                        event.setVisible(true);
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                grid.setAdapter(dayAdapter);
                 grid.setHasFixedSize(true);
 
                 break;
@@ -281,7 +328,9 @@ public class CalendarView extends LinearLayout {
                 GridLayoutManager manager = new GridLayoutManager(_ctx, 7);
                 grid.setLayoutManager(manager);
                 grid.setOnItemClickListener(null);
-                MonthAdapter monthAdapter = new MonthAdapter(getContext(), cells, events);
+
+                monthAdapter = new MonthAdapter(getContext(), cells, events, currentDate);
+
                 monthAdapter.setCurrentDate(currentDate);
                 monthAdapter.setOnDateSelectListener(new MonthAdapter.onDateSelectListener() {
                     @Override
@@ -291,6 +340,16 @@ public class CalendarView extends LinearLayout {
                         setMode(MODE.DAY);
                         btnDay.setBackgroundResource(R.drawable.selected_left_shape);
                         btnMonth.setBackgroundResource(R.drawable.unselected_right_shape);
+                        String d = ConstantFormats.ymdFormat.format(currentCalendar.getTime());
+
+                        for (int i = 0; i < monthPlans.size(); i++) {
+                            DatePlan datePlan = monthPlans.get(i);
+                            if (datePlan.getDate().equals(d)) {
+                                Log.e("select", datePlan.getDate() + " -- " + datePlan.getPlan().size());
+                                setDayPlan(datePlan.getPlan());
+                            }
+                        }
+
                         if (onGridSelectListener != null) {
                             onGridSelectListener.onGridSelect(currentCalendar);
                         }
@@ -310,18 +369,6 @@ public class CalendarView extends LinearLayout {
 
     }
 
-    private ArrayList<Event> getEvents() {
-
-        ArrayList<Event> events = new ArrayList<>();
-        for (int i = 0; i < 24; i++) {
-            Event event = new Event();
-            event.setName("Name " + i);
-            event.setRemark("Remark " + i);
-            events.add(event);
-        }
-        return events;
-    }
-
     public interface onGridSelectListener {
         void onGridSelect(Calendar calendar);
     }
@@ -330,7 +377,7 @@ public class CalendarView extends LinearLayout {
 
         // temp set calender...
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2016, Calendar.JANUARY, 1, 0, 0, 0);
+        calendar.set(2016, Calendar.JANUARY, 1, 8, 0, 0);
 
         // initial array to hold 24
         ArrayList<TimeLineHour> hours = new ArrayList<>();

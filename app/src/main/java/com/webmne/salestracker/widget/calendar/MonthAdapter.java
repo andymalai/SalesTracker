@@ -2,13 +2,14 @@ package com.webmne.salestracker.widget.calendar;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.api.model.DatePlan;
 import com.webmne.salestracker.widget.TfTextView;
 
 import java.util.ArrayList;
@@ -24,8 +25,14 @@ class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder> {
 
     //Context
     private Context _ctx;
+
     // days
     private ArrayList<Date> days;
+
+    private ArrayList<DatePlan> plans;
+
+    Calendar currentCalendar;
+
     // days with events
     private HashSet<Date> eventDays;
 
@@ -38,10 +45,11 @@ class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder> {
     // current displayed month
     private Calendar currentDate = Calendar.getInstance();
 
-    MonthAdapter(Context _ctx, ArrayList<Date> days, HashSet<Date> eventDays) {
+    MonthAdapter(Context _ctx, ArrayList<Date> days, HashSet<Date> eventDays, Calendar currentCalendar) {
         this._ctx = _ctx;
         this.days = days;
         this.eventDays = eventDays;
+        this.currentCalendar = currentCalendar;
     }
 
     @Override
@@ -56,25 +64,37 @@ class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder> {
 
         // day in question
         Date date = days.get(position);
-        int day = date.getDate();
-        int month = date.getMonth();
-        int year = date.getYear();
 
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int year = cal.get(Calendar.YEAR);
 
         // today
-        Date today = new Date();
+        Calendar todayCalendar = Calendar.getInstance();
 
-        // if this day has an event, specify event image
-        holder.txtDate.setBackgroundResource(0);
-        if (eventDays != null) {
-            for (Date eventDate : eventDays) {
+        if (plans != null) {
 
-                if (eventDate.getDate() == day &&
-                        eventDate.getMonth() == month &&
-                        eventDate.getYear() == year) {
-                    // mark this day for event
-                    holder.txtDate.setBackgroundResource(R.drawable.reminder);
-                    break;
+            for (DatePlan eventDate : plans) {
+
+                if (eventDate == null || eventDate.getDate() == null) {
+
+                } else {
+                    String[] fullDate = eventDate.getDate().split("-");
+
+                    int y = Integer.parseInt(fullDate[0]);
+                    int m = Integer.parseInt(fullDate[1]);
+                    int d = Integer.parseInt(fullDate[2]);
+
+                    if (d == day
+                            && m == month
+                            && y == year) {
+                        // mark this day for event
+                        holder.markView.setVisibility(View.VISIBLE);
+                        break;
+                    }
                 }
             }
         }
@@ -83,14 +103,16 @@ class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder> {
         holder.txtDate.setTextColor(Color.BLACK);
 
         //display grey if not in selected month
-        if (month != currentDate.get(Calendar.MONTH)) {
+        if (month != currentCalendar.get(Calendar.MONTH) + 1) {
             holder.txtDate.setTextColor(_ctx.getResources().getColor(R.color.greyed_out));
         }
 
         //display only today
-        if (day == today.getDate() && month == today.getMonth() && year == today.getYear()) {
-            holder.txtDate.setTypeface(null, Typeface.BOLD);
-            holder.txtDate.setTextColor(_ctx.getResources().getColor(R.color.today));
+        if (day == todayCalendar.get(Calendar.DAY_OF_MONTH)
+                && month == todayCalendar.get(Calendar.MONTH) + 1
+                && year == todayCalendar.get(Calendar.YEAR)) {
+            holder.txtDate.setBold(true);
+            holder.txtDate.setTextColor(ContextCompat.getColor(_ctx, R.color.today));
         }
 
         holder.txtDate.setText(String.valueOf(date.getDate()));
@@ -105,12 +127,21 @@ class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder> {
         this.currentDate = currentDate;
     }
 
+    public void setPlans(ArrayList<DatePlan> plans) {
+        this.plans = new ArrayList<>();
+        this.plans = plans;
+        notifyDataSetChanged();
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
         TfTextView txtDate;
+        View markView;
 
         MyViewHolder(View view) {
             super(view);
             txtDate = (TfTextView) view.findViewById(R.id.txtItemDayMonth);
+            markView = view.findViewById(R.id.markView);
+
             txtDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

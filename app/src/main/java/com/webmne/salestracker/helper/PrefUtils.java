@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.webmne.salestracker.api.model.AgentModel;
 import com.webmne.salestracker.api.model.UserProfile;
+import com.webmne.salestracker.visitplan.model.VisitPlanAgentListResponse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import java.util.List;
 public class PrefUtils {
 
     private static final String USER_PROFILE = "USER_PROFILE";
+    private static final String PLAN_AGENTS = "PLAN_AGENTS";
     private static final String BRANCH_ID = "BRANCH_ID";
     private static final String USER_ID = "USER_ID";
     private static final String IS_LOGGED_IN = "IS_LOGGED_IN";
@@ -38,6 +40,23 @@ public class PrefUtils {
         Prefs.with(context).save(USER_PROFILE, toJson);
 
         setLoggedIn(context, true);
+    }
+
+    public static void setPlanAgents(Context context, VisitPlanAgentListResponse response) {
+        String toJson = MyApplication.getGson().toJson(response);
+        Prefs.with(context).save(PLAN_AGENTS, toJson);
+    }
+
+    public static VisitPlanAgentListResponse getPlanAgents(Context context) {
+
+        VisitPlanAgentListResponse response = null;
+        String myString = Prefs.with(context).getString(PLAN_AGENTS, "");
+        try {
+            response = MyApplication.getGson().fromJson(myString, VisitPlanAgentListResponse.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 
     public static void clearUserProfile(Context context, UserProfile response) {
