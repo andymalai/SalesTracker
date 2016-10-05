@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TimePicker;
 
@@ -49,7 +50,7 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
     private CustomDialogVisitPlanAgentListAdapter customDialogVisitPlanAgentListAdapter;
     private ArrayList<AgentListModel> agentModelList;
     private TfButton btnCancel, btnOk;
-    private TfEditText edtStartTime, edtEndTime;
+    private EditText edtStartTime, edtEndTime;
     private ProgressBar progressBar;
     private CustomTimePickerDialog customTimePickerDialog;
 
@@ -79,8 +80,10 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
         btnCancel = (TfButton) view.findViewById(R.id.btnCancel);
         btnOk = (TfButton) view.findViewById(R.id.btnOk);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        edtStartTime = (TfEditText) view.findViewById(R.id.edtStartTime);
-        edtEndTime = (TfEditText) view.findViewById(R.id.edtEndTime);
+        edtStartTime = (EditText) view.findViewById(R.id.edtStartTime);
+        edtStartTime.setTypeface(Functions.getRegularFont(context));
+        edtEndTime = (EditText) view.findViewById(R.id.edtEndTime);
+        edtEndTime.setTypeface(Functions.getRegularFont(context));
 
         agentModelList = new ArrayList<>();
 
@@ -187,6 +190,7 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
                 if (str_flag.equals("s")) {
                     strStartTime = "2016-10-04T" + hour + ":" + minute + ":00" + timeZone;
                     edtStartTime.setText(hour + ":" + minute);
+
                 } else if (str_flag.equals("e")) {
                     strEndTime = "2016-10-04T" + hour + ":" + minute + ":00" + timeZone;
                     edtEndTime.setText(hour + ":" + minute);
