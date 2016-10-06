@@ -1,8 +1,10 @@
 package com.webmne.salestracker.visitplan;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -12,6 +14,7 @@ import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.custom.LineDividerItemDecoration;
+import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.ConstantFormats;
 import com.webmne.salestracker.helper.Functions;
@@ -39,9 +42,9 @@ import java.util.TimeZone;
 
 public class CustomDialogAddVisitPlan extends MaterialDialog {
 
-    private CustomDialogAddVisitPlanCallBack customDialogAddVisitPlanCallBack;
     private Context context;
     private MaterialDialog materialDialog;
+    private LoadingIndicatorDialog dialog;
 
     private FamiliarRecyclerView familiarRecyclerView;
     private CustomDialogVisitPlanAgentListAdapter customDialogVisitPlanAgentListAdapter;
@@ -51,13 +54,16 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
     private ProgressBar progressBar;
     private CustomTimePickerDialog customTimePickerDialog;
 
-    private String strStartTime, strEndTime, strAgentId;
+    private String strStartTime, strEndTime, strAgentId, time, strSelectedStartTime, strSelectedEndTime;
+    private int startHour, startminute, endHour, endminute;
 
-    public CustomDialogAddVisitPlan(Builder builder, Context context, CustomDialogAddVisitPlanCallBack customDialogAddVisitPlanCallBack) {
+    private Calendar currentDate;
+
+    public CustomDialogAddVisitPlan(Calendar currentDate, String time, Builder builder, Context context) {
         super(builder);
-
+        this.currentDate = currentDate;
+        this.time = time;
         this.context = context;
-        this.customDialogAddVisitPlanCallBack = customDialogAddVisitPlanCallBack;
 
         init(builder);
     }
@@ -81,6 +87,12 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
         edtStartTime.setTypeface(Functions.getRegularFont(context));
         edtEndTime = (EditText) view.findViewById(R.id.edtEndTime);
         edtEndTime.setTypeface(Functions.getRegularFont(context));
+
+        String[] newTime = time.split(":");
+        edtStartTime.setText(String.format("%s:%s", newTime[0], newTime[1]));
+        strSelectedStartTime = newTime[0] + ":" + newTime[1];
+        strSelectedEndTime = "00:00";
+        setFullDateTime("s", newTime[0], newTime[1]);
 
         agentModelList = new ArrayList<>();
 
@@ -126,14 +138,26 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
             @Override
             public void onClick(View v) {
 
-                if (TextUtils.isEmpty(strStartTime)) {
+//                if (TextUtils.isEmpty(strStartTime)) {
+                if (TextUtils.isEmpty(Functions.toStr(edtStartTime))) {
                     SimpleToast.error(context, context.getString(R.string.pls_select_start_time), context.getString(R.string.fa_error));
                     return;
                 }
 
-                if (TextUtils.isEmpty(strEndTime)) {
+//                if (TextUtils.isEmpty(strEndTime)) {
+                if (TextUtils.isEmpty(Functions.toStr(edtEndTime))) {
                     SimpleToast.error(context, context.getString(R.string.pls_select_end_time), context.getString(R.string.fa_error));
                     return;
+                }
+
+                if (startHour > endHour) {
+                    SimpleToast.error(context, context.getString(R.string.select_between_time), context.getString(R.string.fa_error));
+                    return;
+                } else if (startHour == endHour) {
+                    if (startminute == endminute) {
+                        SimpleToast.error(context, context.getString(R.string.select_between_time), context.getString(R.string.fa_error));
+                        return;
+                    }
                 }
 
                 if (TextUtils.isEmpty(strAgentId)) {
@@ -152,7 +176,7 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
                     e.printStackTrace();
                 }
 
-                customDialogAddVisitPlanCallBack.addCallBack(json);
+                addPlan(json);
             }
         });
 
@@ -175,24 +199,62 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
 
     }
 
+    private void addPlan(JSONObject json) {
+
+        showProgress(context.getString(R.string.loading));
+
+        Log.e("json", String.valueOf(json));
+
+        new CallWebService(context, AppConstants.AddPlan, CallWebService.TYPE_POST, json) {
+
+            @Override
+            public void response(String response) {
+                dismissProgress();
+
+                Log.e("response", response);
+
+                com.webmne.salestracker.api.model.Response addResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
+
+                if (addResponse != null) {
+                    if (addResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+
+                        SimpleToast.ok(context, context.getString(R.string.add_visit_plan_success));
+
+                        dismissDialog();
+
+                        ((SalesVisitPlanActivity) context).onResume();
+
+                    } else {
+                        SimpleToast.error(context, addResponse.getResponse().getResponseMsg(), context.getString(R.string.fa_error));
+                    }
+                } else {
+                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
+                }
+
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, context);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(context, context.getString(R.string.no_internet_connection), context.getString(R.string.fa_error));
+            }
+        }.call();
+
+    }
+
     private void showTimePickerDialog(final String str_flag) {
 
-        customTimePickerDialog = new CustomTimePickerDialog(new MaterialDialog.Builder(context), context, new CustomTimePickerCallBack() {
+        customTimePickerDialog = new CustomTimePickerDialog(new MaterialDialog.Builder(context), context, str_flag, strSelectedStartTime, strSelectedEndTime, new CustomTimePickerCallBack() {
             @Override
             public void timePickerCallBack(String hour, String minute) {
 
-                Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault());
-                String timeZone = ConstantFormats.zoneFormat.format(calendar.getTime());
-//                Log.e("full time", "2016-10-04T" + hour + ":" + minute + ":00" + timeZone);
-
-                if (str_flag.equals("s")) {
-                    strStartTime = "2016-10-04T" + hour + ":" + minute + ":00" + timeZone;
-                    edtStartTime.setText(hour + ":" + minute);
-
-                } else if (str_flag.equals("e")) {
-                    strEndTime = "2016-10-04T" + hour + ":" + minute + ":00" + timeZone;
-                    edtEndTime.setText(hour + ":" + minute);
-                }
+                setFullDateTime(str_flag, hour, minute);
 
             }
         });
@@ -289,6 +351,37 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
 
     }
 
+    private void setFullDateTime(String str_flag, String hour, String minute) {
+
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault());
+        String timeZone = ConstantFormats.zoneFormat.format(calendar.getTime());
+        boolean isContain = timeZone.contains(":");
+        String newTimeZone;
+        if (isContain) {
+            newTimeZone = timeZone;
+        } else {
+            newTimeZone = new StringBuilder(timeZone).insert(timeZone.length() - 2, ":").toString();
+        }
+
+        String d = ConstantFormats.ymdFormat.format(currentDate.getTime());
+
+        if (str_flag.equals("s")) {
+            startHour = Integer.parseInt(hour);
+            startminute = Integer.parseInt(minute);
+            strSelectedStartTime = hour + ":" + minute;
+            strStartTime = d + "T" + hour + ":" + minute + ":00" + newTimeZone;
+            edtStartTime.setText(hour + ":" + minute);
+
+        } else if (str_flag.equals("e")) {
+            endHour = Integer.parseInt(hour);
+            endminute = Integer.parseInt(minute);
+            strSelectedEndTime = hour + ":" + minute;
+            strEndTime = d + "T" + hour + ":" + minute + ":00" + newTimeZone;
+            edtEndTime.setText(hour + ":" + minute);
+        }
+
+    }
+
     private void getAgentList() {
 
         progressBar.setVisibility(View.VISIBLE);
@@ -342,5 +435,18 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
             }
         }
     }
+
+    public void showProgress(String str) {
+        if (dialog == null) {
+            dialog = new LoadingIndicatorDialog(context, str, android.R.style.Theme_Translucent_NoTitleBar);
+        }
+        dialog.show();
+    }
+
+    public void dismissProgress() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+    }
+
 
 }

@@ -31,13 +31,18 @@ public class CustomTimePickerDialog extends MaterialDialog {
     private ArrayList<String> hourList;
     private ArrayList<String> minuteList;
 
-    private String strHour, strMinute;
+    private int hourNo;
 
-    protected CustomTimePickerDialog(Builder builder, Context context, CustomTimePickerCallBack customTimePickerCallBack) {
+    private String strHour, strMinute, str_flag, strSelectedStartTime, strSelectedEndTime;
+
+    protected CustomTimePickerDialog(Builder builder, Context context, String str_flag, String strSelectedStartTime, String strSelectedEndTime, CustomTimePickerCallBack customTimePickerCallBack) {
         super(builder);
 
         this.context = context;
         this.customTimePickerCallBack = customTimePickerCallBack;
+        this.str_flag = str_flag;
+        this.strSelectedStartTime = strSelectedStartTime;
+        this.strSelectedEndTime = strSelectedEndTime;
 
         init(builder);
     }
@@ -111,7 +116,25 @@ public class CustomTimePickerDialog extends MaterialDialog {
         hourList = new ArrayList<>();
 
         for (int i = 0; i < 24; i++) {
+
             hourList.add(String.format("%02d", i));
+
+            if (str_flag.equals("s")) {
+                String[] newStartTime = strSelectedStartTime.split(":");
+
+                if (newStartTime[0].equals(hourList.get(i))) {
+                    hourNo = i;
+                    strHour = hourList.get(i);
+                }
+            } else if (str_flag.equals("e")) {
+                String[] newEndTime = strSelectedEndTime.split(":");
+
+                if (newEndTime[0].equals(hourList.get(i))) {
+                    hourNo = i;
+                    strHour = hourList.get(i);
+                }
+            }
+
         }
 
         np_hour.setMinValue(0);
@@ -123,14 +146,12 @@ public class CustomTimePickerDialog extends MaterialDialog {
 
         np_hour.setDisplayedValues(hourStringArray);
 
-        strHour = hourList.get(0);
+        np_hour.setValue(hourNo);
     }
 
     private void setMinutePickerData() {
         minuteList = new ArrayList<>();
 
-        minuteList.add("00");
-        minuteList.add("30");
         minuteList.add("00");
         minuteList.add("30");
 
@@ -143,7 +164,30 @@ public class CustomTimePickerDialog extends MaterialDialog {
 
         np_minute.setDisplayedValues(minuteStringArray);
 
-        strMinute = minuteList.get(0);
+        if (str_flag.equals("s")) {
+            String[] newEndTime = strSelectedStartTime.split(":");
+
+            if (newEndTime[1].equals("00")) {
+                np_minute.setValue(0);
+                strMinute = hourList.get(0);
+            }
+            if (newEndTime[1].equals("30")) {
+                np_minute.setValue(1);
+                strMinute = hourList.get(1);
+            }
+        } else if (str_flag.equals("e")) {
+            String[] newEndTime = strSelectedEndTime.split(":");
+
+            if (newEndTime[1].equals("00")) {
+                np_minute.setValue(0);
+                strMinute = hourList.get(0);
+            }
+            if (newEndTime[1].equals("30")) {
+                np_minute.setValue(1);
+                strMinute = hourList.get(1);
+            }
+        }
+
     }
 
 

@@ -13,10 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.model.Plan;
 import com.webmne.salestracker.visitplan.CustomDialogAddVisitPlan;
-import com.webmne.salestracker.visitplan.CustomDialogAddVisitPlanCallBack;
 import com.webmne.salestracker.widget.TfTextView;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -91,13 +88,8 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
                     if (parentView.getChildAt(0).getVisibility() == View.VISIBLE) {
 
                     } else {
-                        new CustomDialogAddVisitPlan(new MaterialDialog.Builder(context), context, new CustomDialogAddVisitPlanCallBack() {
-                            @Override
-                            public void addCallBack(JSONObject json) {
-                                Log.e("json", json.toString());
-
-                            }
-                        });
+                        new CustomDialogAddVisitPlan(currentDate, timeLineHours.get(getAdapterPosition()).getTime(),
+                                new MaterialDialog.Builder(context), context);
                     }
                 }
             });

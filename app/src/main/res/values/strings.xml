@@ -233,6 +233,7 @@
     <string name="pls_select_start_time">Please Select Start Time</string>
     <string name="pls_select_end_time">Please Select End Time</string>
     <string name="pls_select_agent">Please Select Agent</string>
+    <string name="select_between_time">From time should be lessthan To</string>
 
     <!--SalesVisitPlanACtivity.java-->
     <string name="add_visit_plan_success">Visit plan added successfully.</string>
@@ -242,6 +243,14 @@
 
     <!--CustomTimePickerDialog.java-->
     <string name="time_picker_dialog_title">Select Time</string>
+
+    <!--CustomDialogActualProduction.java-->
+    <string name="actual_production_dialog_title">Actual Production</string>
+    <string name="progress">Progress</string>
+
+    <!--custom_dialog_actual_production.xml-->
+    <string name="enter_progress">Please Enter Progress</string>
+
 
     <!-- Mapping Dialog -> SalesVisitPlanActivity.java -->
     <string name="mapping_hint">Mapping</string>

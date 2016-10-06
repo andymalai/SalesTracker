@@ -26,7 +26,6 @@ import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
-import com.webmne.salestracker.ui.profile.UserProfileActivity;
 import com.webmne.salestracker.visitplan.adapter.CustomDialogVisitPlanAgentListAdapter;
 import com.webmne.salestracker.visitplan.dialogs.MappingDialog;
 import com.webmne.salestracker.visitplan.dialogs.RecruitmentDialog;
@@ -59,6 +58,8 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     private CustomDialogAddVisitPlan customDialogAddVisitPlan;
     private SalesPlanResponse planResponse;
 
+    private CustomDialogActualProduction customDialogActualProduction;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +86,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
         initCalendarView();
 
-        fetchPlan();
+//        fetchPlan();
     }
 
     private void fetchPlan() {
@@ -129,8 +130,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void setPlanDetails(PlanDataResponse data) {
-
+    private void setPlanDetails(final PlanDataResponse data) {
         binding.txtProgress.setText(String.format("Actual Progress: %s/%s", data.getProgress(), data.getTarget()));
 
         float variance = (Float.parseFloat(data.getProgress()) * 100) / Float.parseFloat(data.getTarget());
@@ -138,7 +138,18 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
         binding.cv.setMonthPlans(data.getPlans());
 
+        binding.progressLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                customDialogActualProduction = new CustomDialogActualProduction(new MaterialDialog.Builder(SalesVisitPlanActivity.this), SalesVisitPlanActivity.this, data.getProgress(), binding.cv.getCurrentCalendar());
+
+            }
+        });
+
+
     }
+
 
     private void initCalendarView() {
         HashSet<Date> events = new HashSet<>();
@@ -213,7 +224,6 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -234,7 +244,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
 //                sampleMarquee();
 
-                new CustomDialogAddVisitPlan(new MaterialDialog.Builder(this), this, new CustomDialogAddVisitPlanCallBack() {
+               /* new CustomDialogAddVisitPlan(currentDate, timeLineHours.get(getAdapterPosition()).getTime(), new MaterialDialog.Builder(this), this, new CustomDialogAddVisitPlanCallBack() {
                     @Override
                     public void addCallBack(JSONObject json) {
 
@@ -243,7 +253,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
                         addSalesVisitData(json);
 
                     }
-                });
+                });*/
 
 //                initAddVisitPlanCustomDialog();
 
@@ -252,6 +262,12 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("onResume", "Call");
+        fetchPlan();
+    }
 
     private void addSalesVisitData(JSONObject json) {
 
@@ -381,7 +397,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
                     Response wsResponse = MyApplication.getGson().fromJson(response, Response.class);
                     if (wsResponse != null) {
                         if (wsResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                           // SimpleToast.ok(SalesVisitPlanActivity.this, getString(R.string.mapping_submit_success));
+                            // SimpleToast.ok(SalesVisitPlanActivity.this, getString(R.string.mapping_submit_success));
                             // TODO: 06-10-2016 inflate dialog
 
                         } else {
@@ -434,7 +450,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
                 @Override
                 public void response(String response) {
-                    mappingDialog. dismissProgress();
+                    mappingDialog.dismissProgress();
                     Log.e("MAPPING_RESP", new Gson().toJson(response).toString());
                     com.webmne.salestracker.api.model.Response wsResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
                     if (wsResponse != null) {
@@ -460,7 +476,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
             }.call();
 
         } catch (JSONException e) {
-           Log.e("MAPPING_SUBMIT_EXP", e.getMessage());
+            Log.e("MAPPING_SUBMIT_EXP", e.getMessage());
         }
     }
 }
