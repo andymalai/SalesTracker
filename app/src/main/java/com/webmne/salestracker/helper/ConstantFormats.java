@@ -10,6 +10,7 @@ import java.util.Locale;
 public class ConstantFormats {
 
     public static final SimpleDateFormat hourMinuteFormat = new SimpleDateFormat("hh.mm", Locale.US);
+    public static final SimpleDateFormat hourMinuteSecFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
     public static final SimpleDateFormat ampmFormat = new SimpleDateFormat("a", Locale.US);
 
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);

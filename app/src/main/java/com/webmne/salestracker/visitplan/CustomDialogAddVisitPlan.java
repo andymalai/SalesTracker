@@ -53,7 +53,7 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
 
     private String strStartTime, strEndTime, strAgentId;
 
-    protected CustomDialogAddVisitPlan(Builder builder, Context context, CustomDialogAddVisitPlanCallBack customDialogAddVisitPlanCallBack) {
+    public CustomDialogAddVisitPlan(Builder builder, Context context, CustomDialogAddVisitPlanCallBack customDialogAddVisitPlanCallBack) {
         super(builder);
 
         this.context = context;

@@ -24,7 +24,7 @@ public class Plan {
     private String Remark;
     private String Status;
 
-    public Plan(){
+    public Plan() {
 
     }
 
@@ -106,8 +106,8 @@ public class Plan {
                     pos = i;
                 }
             }
-        }catch (Exception e){
-             pos = 0;
+        } catch (Exception e) {
+            pos = 0;
         }
         return pos;
     }

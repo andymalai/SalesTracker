@@ -305,7 +305,7 @@ public class CalendarView extends LinearLayout {
                 txtDate.setText(ConstantFormats.sdf_day.format(currentDate.getTime()));
 
                 dayPlans = new ArrayList<>();
-                dayAdapter = new DayPlanAdapter(dayPlans);
+                dayAdapter = new DayPlanAdapter(_ctx, dayPlans, getTimeLineHoursSimple(), currentDate);
 
                 grid.setLayoutManager(linearLayoutManager);
                 grid.setNestedScrollingEnabled(false);
@@ -388,6 +388,30 @@ public class CalendarView extends LinearLayout {
             TimeLineHour hour = new TimeLineHour();
             hour.setTime(ConstantFormats.hourMinuteFormat.format(date));
             hour.setFormat(ConstantFormats.ampmFormat.format(date));
+
+            hours.add(hour);
+            calendar.add(Calendar.MINUTE, 30);
+        }
+
+        return hours;
+
+    }
+
+    private ArrayList<TimeLineHour> getTimeLineHoursSimple() {
+
+        // temp set calender...
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2016, Calendar.JANUARY, 1, 8, 0, 0);
+
+        // initial array to hold 24
+        ArrayList<TimeLineHour> hours = new ArrayList<>();
+        for (int i = 0; i < 24; i++) {
+
+            Date date = calendar.getTime();
+
+            TimeLineHour hour = new TimeLineHour();
+            hour.setTime(ConstantFormats.hourMinuteSecFormat.format(date));
+            hour.setFormat("");
 
             hours.add(hour);
             calendar.add(Calendar.MINUTE, 30);
