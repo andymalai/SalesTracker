@@ -95,6 +95,12 @@ public class AppConstants {
     // http://demo.webmynehost.com/amgsales/services/fetch_agent_list.php?format=json&user_id=699
     public static final String AddPlan = WEB_SERVICE_URL + "add_plan.php?format=json";
 
+    // http://demo.webmynehost.com/amgsales/services/add_mapping.php?format=json
+    public static final String SubmitMapping = WEB_SERVICE_URL + "add_mapping.php?format=json";
+
+    //http://demo.webmynehost.com/amgsales/services/mapping.php?format=json
+    public static final String FetchMapping = WEB_SERVICE_URL + "mapping.php?format=json";
+
 
     // FTP details Local
     public static final String FTP_HOST = "ws-srv-php";

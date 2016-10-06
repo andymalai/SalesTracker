@@ -19,7 +19,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -277,5 +279,13 @@ public class Functions {
         context.startActivity(intent);
         ((Activity) context).overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
+    }
+
+    public static DisplayMetrics getDeviceMetrics(Activity context) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        display.getMetrics(metrics);
+        return metrics;
     }
 }

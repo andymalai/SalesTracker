@@ -44,10 +44,15 @@ public class CalendarView extends LinearLayout {
 
     private onGridSelectListener onGridSelectListener;
 
+    private OnCalendarActionClickListener onCalendarActionClickListener;
+
     public void setOnGridSelectListener(CalendarView.onGridSelectListener onGridSelectListener) {
         this.onGridSelectListener = onGridSelectListener;
     }
 
+    public void setOnCalendarActionClickListener(CalendarView.OnCalendarActionClickListener onCalendarActionClickListener) {
+        this.onCalendarActionClickListener = onCalendarActionClickListener;
+    }
 
     // default date format
     private static final String DATE_FORMAT = "dd-MMM yyyy";
@@ -58,15 +63,15 @@ public class CalendarView extends LinearLayout {
     private Context _ctx;
 
     // internal components
-    private LinearLayout header;
+    private LinearLayout header, linearCalenderViewHeader;
     private ImageView btnPrev;
     private ImageView btnNext;
     private TfTextView txtDate;
     private FamiliarRecyclerView grid;
     private RecyclerView timelineRecyclerView;
     private LinearLayout timelineLayout;
-    private View blankView;
-    private TfButton btnDay, btnMonth;
+    //private View blankView;
+    private TfButton btnDay, btnMonth, btnDeleteAll, btnRecruitment, btnMapping;
     private ArrayList<TimeLineHour> timeArray;
 
     private ArrayList<Plan> dayPlans;
@@ -204,9 +209,14 @@ public class CalendarView extends LinearLayout {
 
         timelineRecyclerView = (RecyclerView) findViewById(R.id.timelineRecyclerView);
         timelineLayout = (LinearLayout) findViewById(R.id.timelineLayout);
-        blankView = findViewById(R.id.blankView);
+        linearCalenderViewHeader = (LinearLayout) findViewById(R.id.linearCalenderViewHeader);
+        //blankView = findViewById(R.id.blankView);
         btnDay = (TfButton) findViewById(R.id.btnDay);
         btnMonth = (TfButton) findViewById(R.id.btnMonth);
+
+        btnMapping = (TfButton) findViewById(R.id.btnMapping);
+        btnRecruitment = (TfButton) findViewById(R.id.btnRecruitment);
+        btnDeleteAll = (TfButton) findViewById(R.id.btnDeleteAll);
     }
 
     private void assignClickHandlers() {
@@ -260,6 +270,7 @@ public class CalendarView extends LinearLayout {
         btnDay.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                linearCalenderViewHeader.setVisibility(VISIBLE);
                 btnDay.setBackgroundResource(R.drawable.selected_left_shape);
                 btnMonth.setBackgroundResource(R.drawable.unselected_right_shape);
                 setMode(MODE.DAY);
@@ -269,6 +280,7 @@ public class CalendarView extends LinearLayout {
         btnMonth.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                linearCalenderViewHeader.setVisibility(GONE);
                 btnMonth.setBackgroundResource(R.drawable.selected_right_shape);
                 btnDay.setBackgroundResource(R.drawable.unselected_left_shape);
                 setMode(MODE.MONTH);
@@ -277,14 +289,27 @@ public class CalendarView extends LinearLayout {
                 }
             }
         });
-    }
 
-    public interface onViewChangeListener {
-        void onChange();
-    }
+        btnMapping.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCalendarActionClickListener.onCalendarActionCalled(CalendarOptions.MAPPPING.ordinal());
+            }
+        });
 
-    public interface onCalendarChangeListener {
-        void onChange(int type);
+        btnRecruitment.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCalendarActionClickListener.onCalendarActionCalled(CalendarOptions.RECRUITMENT.ordinal());
+            }
+        });
+
+        btnDeleteAll.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCalendarActionClickListener.onCalendarActionCalled(CalendarOptions.DELETEALL.ordinal());
+            }
+        });
     }
 
     /**
@@ -298,7 +323,7 @@ public class CalendarView extends LinearLayout {
             case DAY:
 
                 header.setVisibility(View.GONE);
-                blankView.setVisibility(View.VISIBLE);
+                //blankView.setVisibility(View.VISIBLE);
                 timelineLayout.setVisibility(View.VISIBLE);
 
                 // update title
@@ -321,7 +346,7 @@ public class CalendarView extends LinearLayout {
 
                 header.setVisibility(View.VISIBLE);
                 timelineLayout.setVisibility(View.GONE);
-                blankView.setVisibility(View.GONE);
+                //blankView.setVisibility(View.GONE);
 
                 ArrayList<Date> cells = getMonthDates();
                 // For month we set 7 columns for displaying 7 days in a row
@@ -367,10 +392,6 @@ public class CalendarView extends LinearLayout {
                 break;
         }
 
-    }
-
-    public interface onGridSelectListener {
-        void onGridSelect(Calendar calendar);
     }
 
     private ArrayList<TimeLineHour> getTimeLineHours() {
@@ -459,4 +480,23 @@ public class CalendarView extends LinearLayout {
         header.setBackgroundColor(getResources().getColor(color));
     }
 
+    public interface onViewChangeListener {
+        void onChange();
+    }
+
+    public interface onCalendarChangeListener {
+        void onChange(int type);
+    }
+
+    public interface onGridSelectListener {
+        void onGridSelect(Calendar calendar);
+    }
+
+    public enum CalendarOptions {
+        MAPPPING, RECRUITMENT, DELETEALL;
+    }
+
+    public interface OnCalendarActionClickListener {
+        void onCalendarActionCalled(int optionType);
+    }
 }

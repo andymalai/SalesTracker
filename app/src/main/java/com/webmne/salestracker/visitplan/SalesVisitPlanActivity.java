@@ -13,8 +13,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
+import com.google.gson.Gson;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.model.PlanDataResponse;
+import com.webmne.salestracker.api.model.Response;
 import com.webmne.salestracker.api.model.SalesPlanResponse;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivitySalesVisitPlanBinding;
@@ -24,12 +26,18 @@ import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
+import com.webmne.salestracker.ui.profile.UserProfileActivity;
 import com.webmne.salestracker.visitplan.adapter.CustomDialogVisitPlanAgentListAdapter;
+import com.webmne.salestracker.visitplan.dialogs.MappingDialog;
+import com.webmne.salestracker.visitplan.dialogs.RecruitmentDialog;
 import com.webmne.salestracker.visitplan.model.AgentListModel;
+import com.webmne.salestracker.visitplan.model.MappingDataModel;
 import com.webmne.salestracker.widget.TfButton;
 import com.webmne.salestracker.widget.calendar.CalendarView;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -174,7 +182,37 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
                 }*//*
             }
         });*/
+
+        binding.cv.setOnCalendarActionClickListener(new CalendarView.OnCalendarActionClickListener() {
+            @Override
+            public void onCalendarActionCalled(int optionType) {
+                if (optionType == CalendarView.CalendarOptions.MAPPPING.ordinal()) {
+
+                    // TODO: 06-10-2016 fetch mapping data
+                    fetchMappingData();
+
+                    /*final MappingDialog mappingDialog = new MappingDialog(new MaterialDialog.Builder(SalesVisitPlanActivity.this), SalesVisitPlanActivity.this);
+                    mappingDialog.show();
+                    mappingDialog.setOnMappingDataSubmitListener(new MappingDialog.OnMappingDataSubmitListener() {
+                        @Override
+                        public void onSubmit(ArrayList<MappingDataModel> mappingDataModelList) {
+                            Log.e("MAPPING_LIST", new Gson().toJson(mappingDataModelList).toString());
+                            submitMappingData(mappingDialog, mappingDataModelList);
+                        }
+                    });*/
+                } else if (optionType == CalendarView.CalendarOptions.RECRUITMENT.ordinal()) {
+                    RecruitmentDialog recruitmentDialog = new RecruitmentDialog(new MaterialDialog.Builder(SalesVisitPlanActivity.this), SalesVisitPlanActivity.this);
+                    recruitmentDialog.show();
+//                    Toast.makeText(SalesVisitPlanActivity.this, "Recruitment", Toast.LENGTH_SHORT).show();
+                } else if (optionType == CalendarView.CalendarOptions.DELETEALL.ordinal()) {
+                    Toast.makeText(SalesVisitPlanActivity.this, "Delete All", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -323,5 +361,106 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         binding.unbind();
     }
 
+    private void fetchMappingData() {
+        showProgress(getString(R.string.fetching_data));
 
+        final JSONObject requestObject = new JSONObject();
+        try {
+
+            requestObject.put("UserId", PrefUtils.getUserId(SalesVisitPlanActivity.this));
+            requestObject.put("Date", ConstantFormats.ymdFormat.format(binding.cv.getCurrentCalendar().getTime()));
+
+            Log.e("FETCH_MAPPING_REQ", new Gson().toJson(requestObject).toString());
+
+            new CallWebService(this, AppConstants.FetchMapping, CallWebService.TYPE_POST, requestObject) {
+
+                @Override
+                public void response(String response) {
+                    dismissProgress();
+                    Log.e("FETCH_MAPPING_RESP", new Gson().toJson(response).toString());
+                    Response wsResponse = MyApplication.getGson().fromJson(response, Response.class);
+                    if (wsResponse != null) {
+                        if (wsResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                           // SimpleToast.ok(SalesVisitPlanActivity.this, getString(R.string.mapping_submit_success));
+                            // TODO: 06-10-2016 inflate dialog
+
+                        } else {
+                            SimpleToast.error(SalesVisitPlanActivity.this, wsResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                        }
+                    }
+                }
+
+                @Override
+                public void error(VolleyError error) {
+                    dismissProgress();
+                    VolleyErrorHelper.showErrorMsg(error, SalesVisitPlanActivity.this);
+                }
+
+                @Override
+                public void noInternet() {
+                    dismissProgress();
+                    SimpleToast.error(SalesVisitPlanActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                }
+            }.call();
+
+        } catch (JSONException e) {
+            Log.e("MAPPING_SUBMIT_EXP", e.getMessage());
+        }
+    }
+
+    private void submitMappingData(final MappingDialog mappingDialog, ArrayList<MappingDataModel> mappingDataModelList) {
+        mappingDialog.showProgress(getString(R.string.submitting));
+
+        final JSONObject mainMappingRequestObject = new JSONObject();
+        JSONObject mappingDataObject = new JSONObject();
+        JSONObject mappingDataItem = new JSONObject();
+        JSONArray mappingDataItemArray = new JSONArray();
+        try {
+            for (int i = 0; i < mappingDataModelList.size(); i++) {
+                mappingDataItem.put("Mapping", mappingDataModelList.get(i).Mapping);
+                mappingDataItem.put("MappingVisit", mappingDataModelList.get(i).MappingVisit);
+                mappingDataItemArray.put(mappingDataItem);
+            }
+
+            mappingDataObject.put("UserId", PrefUtils.getUserId(SalesVisitPlanActivity.this));
+            mappingDataObject.put("CreatedDate", ConstantFormats.ymdFormat.format(binding.cv.getCurrentCalendar().getTime()));
+            mappingDataObject.put("Data", mappingDataItemArray);
+
+            mainMappingRequestObject.put("MappingData", mappingDataObject);
+
+            Log.e("MAPPING_REQ", new Gson().toJson(mainMappingRequestObject).toString());
+
+            new CallWebService(this, AppConstants.SubmitMapping, CallWebService.TYPE_POST, mainMappingRequestObject) {
+
+                @Override
+                public void response(String response) {
+                    mappingDialog. dismissProgress();
+                    Log.e("MAPPING_RESP", new Gson().toJson(response).toString());
+                    com.webmne.salestracker.api.model.Response wsResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
+                    if (wsResponse != null) {
+                        if (wsResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                            SimpleToast.ok(SalesVisitPlanActivity.this, getString(R.string.mapping_submit_success));
+                        } else {
+                            SimpleToast.error(SalesVisitPlanActivity.this, wsResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                        }
+                    }
+                }
+
+                @Override
+                public void error(VolleyError error) {
+                    mappingDialog.dismissProgress();
+                    VolleyErrorHelper.showErrorMsg(error, SalesVisitPlanActivity.this);
+                }
+
+                @Override
+                public void noInternet() {
+                    mappingDialog.dismissProgress();
+                    SimpleToast.error(SalesVisitPlanActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                }
+            }.call();
+
+        } catch (JSONException e) {
+           Log.e("MAPPING_SUBMIT_EXP", e.getMessage());
+        }
+    }
 }

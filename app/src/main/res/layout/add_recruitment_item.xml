@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.webmne.salestracker.widget.TfTextView
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:layout_height="@dimen/dimen_32dp"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:text="Existing(L2 to P3)"
+                android:textAppearance="@android:style/TextAppearance.Small" />
+
+            <ImageView
+                android:id="@+id/imgDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tint="@color/button_color"
+                android:src="@drawable/ic_action_delete" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.webmne.salestracker.widget.TfEditText
+                android:id="@+id/edtAgentName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:layout_weight="1"
+                android:hint="@string/agent_name"
+                android:inputType="text" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/spinnerStatus"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:overScrollMode="never"
+                android:overlapAnchor="false"
+                android:paddingBottom="@dimen/dimen_16dp"
+                android:spinnerMode="dropdown" />
+
+        </LinearLayout>
+
+        <com.webmne.salestracker.widget.TfEditText
+            android:id="@+id/edtRemarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_8dp"
+            android:layout_weight="1"
+            android:hint="@string/remark"
+            android:inputType="text" />
+
+    </LinearLayout>
+</layout>
