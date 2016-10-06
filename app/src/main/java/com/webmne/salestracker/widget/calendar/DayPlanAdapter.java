@@ -103,7 +103,7 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
             });
         }
 
-        public void setEvent(Plan plan) {
+        void setEvent(Plan plan) {
             subView.setVisibility(View.VISIBLE);
             name.setText(plan.getAgentName());
             remark.setText(plan.getRemark());
