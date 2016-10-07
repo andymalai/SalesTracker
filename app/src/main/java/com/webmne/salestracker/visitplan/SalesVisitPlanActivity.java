@@ -16,11 +16,7 @@ import com.github.pierry.simpletoast.SimpleToast;
 import com.google.gson.Gson;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.APIListener;
-import com.webmne.salestracker.api.FetchMappingApi;
 import com.webmne.salestracker.api.FetchRecruitmentApi;
-import com.webmne.salestracker.api.model.FetchMappingData;
-import com.webmne.salestracker.api.model.FetchMappingRequest;
-import com.webmne.salestracker.api.model.FetchMappingResponse;
 import com.webmne.salestracker.api.model.FetchRecruitmentData;
 import com.webmne.salestracker.api.model.FetchRecruitmentRequest;
 import com.webmne.salestracker.api.model.FetchRecruitmentResponse;
@@ -35,7 +31,6 @@ import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
-import com.webmne.salestracker.ui.profile.UserProfileActivity;
 import com.webmne.salestracker.visitplan.adapter.CustomDialogVisitPlanAgentListAdapter;
 import com.webmne.salestracker.visitplan.dialogs.MappingDialog;
 import com.webmne.salestracker.visitplan.dialogs.RecruitmentDialog;
@@ -98,7 +93,23 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
         initCalendarView();
 
-        fetchPlan();
+        clickListener();
+    }
+
+    private void clickListener() {
+        binding.progressLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String progress = "";
+                if (planResponse != null && planResponse.getData() != null) {
+                    progress = planResponse.getData().getProgress();
+                }
+                customDialogActualProduction = new CustomDialogActualProduction(new MaterialDialog.Builder(SalesVisitPlanActivity.this), SalesVisitPlanActivity.this,
+                        progress, binding.cv.getCurrentCalendar());
+
+            }
+        });
+
     }
 
     private void fetchPlan() {
@@ -150,17 +161,6 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         binding.txtVariance.setText(Html.fromHtml("<u>" + String.format(Locale.US, "(%.2f%s)", variance, "%") + "</u>"));
 
         binding.cv.setMonthPlans(data.getPlans());
-
-        binding.progressLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                customDialogActualProduction = new CustomDialogActualProduction(new MaterialDialog.Builder(SalesVisitPlanActivity.this), SalesVisitPlanActivity.this, data.getProgress(), binding.cv.getCurrentCalendar());
-
-            }
-        });
-
-
     }
 
 
@@ -237,7 +237,6 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -255,22 +254,6 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_plan:
-
-//                sampleMarquee();
-
-                new CustomDialogAddVisitPlan(new MaterialDialog.Builder(this), this, new CustomDialogAddVisitPlanCallBack() {
-                    @Override
-                    public void addCallBack(JSONObject json) {
-
-                        Log.e("json", json.toString());
-
-                        addSalesVisitData(json);
-
-                    }
-                });
-
-//                initAddVisitPlanCustomDialog();
-
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -279,99 +262,8 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("onResume", "Call");
         fetchPlan();
     }
-
-    private void addSalesVisitData(JSONObject json) {
-
-//        new CallWebService(this, AppConstants.AddAgent, CallWebService.TYPE_POST, json) {
-//
-//            @Override
-//            public void response(String response) {
-//                dismissProgress();
-//
-//                AddAgentResponse addAgentResponse = MyApplication.getGson().fromJson(response, AddAgentResponse.class);
-//
-//                if (addAgentResponse != null) {
-//                    Log.e("add_res", MyApplication.getGson().toJson(addAgentResponse));
-//
-//                    if (addAgentResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-//                        SimpleToast.ok(AddAgentActivity.this, getString(R.string.add_agent_success));
-//                        finish();
-//                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-//
-//                    } else {
-//                        SimpleToast.error(AddAgentActivity.this, addAgentResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void error(VolleyError error) {
-//                dismissProgress();
-//                VolleyErrorHelper.showErrorMsg(error, AddAgentActivity.this);
-//            }
-//
-//            @Override
-//            public void noInternet() {
-//                dismissProgress();
-//                SimpleToast.error(AddAgentActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-//            }
-//        }.call();
-
-    }
-
-
-//    private void initAddVisitPlanCustomDialog() {
-//        final MaterialDialog dialog = new MaterialDialog.Builder(SalesVisitPlanActivity.this)
-//                .title(R.string.add_agent_dialog_title)
-//                .typeface(Functions.getBoldFont(this), Functions.getRegularFont(this))
-//                .customView(R.layout.custom_dialog_add_visit_plan, false)
-//                .canceledOnTouchOutside(false)
-//                .show();
-//
-//        View view = dialog.getCustomView();
-//
-//        familiarRecyclerView = (FamiliarRecyclerView) view.findViewById(R.id.agentListRecyclerView);
-//        btnCancel = (TfButton) view.findViewById(R.id.btnCancel);
-//        btnOk = (TfButton) view.findViewById(R.id.btnOk);
-//
-//        agentModelList = new ArrayList<>();
-//
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-//        familiarRecyclerView.setLayoutManager(layoutManager);
-//        familiarRecyclerView.addItemDecoration(new LineDividerItemDecoration(this));
-//
-//        customDialogVisitPlanAgentListAdapter = new CustomDialogVisitPlanAgentListAdapter(this, agentModelList);
-//
-//        familiarRecyclerView.setAdapter(customDialogVisitPlanAgentListAdapter);
-//        familiarRecyclerView.setHasFixedSize(true);
-//
-//        btnCancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//            }
-//        });
-//
-//
-//        getAgentList();
-//
-//    }
-//
-//    private void getAgentList() {
-//
-//        for (int i = 0; i < 10; i++) {
-//            agentModelList.add(new AgentListModel("" + i, "Agent " + i, "Star", "1", "0", "0"));
-//
-//        }
-//
-//
-//        customDialogVisitPlanAgentListAdapter.setAgentList(agentModelList);
-//
-//    }
-
 
     public void showProgress(String str) {
         if (dialog == null) {
@@ -396,8 +288,12 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
         final JSONObject requestObject = new JSONObject();
         try {
-            Log.e("TAG", new  Gson().toJson(mappingDataModelList));
-            for (int i = 0; i < mappingDataModelList.size(); i++) {
+            requestObject.put("UserId", PrefUtils.getUserId(this));
+            requestObject.put("Date", ConstantFormats.ymdFormat.format(binding.cv.getCurrentCalendar().getTime()));
+
+            Log.e("TAG", requestObject.toString());
+
+           /* for (int i = 0; i < mappingDataModelList.size(); i++) {
                 JSONObject mappingDataItem = new JSONObject();
                 mappingDataItem.put("Mapping", mappingDataModelList.get(i).Mapping);
                 mappingDataItem.put("MappingVisit", mappingDataModelList.get(i).MappingVisit);
@@ -407,7 +303,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
             requestObject.put("UserId", PrefUtils.getUserId(SalesVisitPlanActivity.this));
             requestObject.put("Date", ConstantFormats.ymdFormat.format(binding.cv.getCurrentCalendar().getTime()));
 
-            Log.e("FETCH_MAPPING_REQ", new Gson().toJson(requestObject).toString());
+            Log.e("FETCH_MAPPING_REQ", new Gson().toJson(requestObject).toString());*/
 
             new CallWebService(this, AppConstants.FetchMapping, CallWebService.TYPE_POST, requestObject) {
 
@@ -455,7 +351,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         JSONArray mappingDataItemArray = new JSONArray();
         try {
             for (int i = 0; i < mappingDataModelList.size(); i++) {
-                mappingDataItem.put("Id", mappingDataModelList.get(i).MappingId);
+               // mappingDataItem.put("Id", mappingDataModelList.get(i).MappingId);
                 mappingDataItem.put("Mapping", mappingDataModelList.get(i).Mapping);
                 mappingDataItem.put("MappingVisit", mappingDataModelList.get(i).MappingVisit);
                 mappingDataItemArray.put(mappingDataItem);
@@ -478,7 +374,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
                     com.webmne.salestracker.api.model.Response wsResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
                     if (wsResponse != null) {
                         if (wsResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                            SimpleToast.ok(SalesVisitPlanActivity.this, getString(R.string.mapping_submit_success));
+                            //SimpleToast.ok(SalesVisitPlanActivity.this, getString(R.string.mapping_submit_success));
                         } else {
                             SimpleToast.error(SalesVisitPlanActivity.this, wsResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                         }
@@ -512,7 +408,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
             @Override
             public void onResponse(retrofit2.Response<FetchRecruitmentResponse> response) {
                 dismissProgress();
-                if(response.body() != null) {
+                if (response.body() != null) {
                     Log.e("FETCH_RECRUITMENT_RESP", new Gson().toJson(response.body()));
                     final RecruitmentDialog recruitmentDialog = new RecruitmentDialog(new MaterialDialog.Builder(SalesVisitPlanActivity.this), SalesVisitPlanActivity.this, response.body().data);
                     recruitmentDialog.show();
@@ -548,7 +444,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
         JSONArray recruitmentDataItemArray = new JSONArray();
         try {
-            Log.e("TAG", new  Gson().toJson(recruitmentDataArrayList));
+            Log.e("TAG", new Gson().toJson(recruitmentDataArrayList));
             for (int i = 0; i < recruitmentDataArrayList.size(); i++) {
                 JSONObject recruitmentDataItem = new JSONObject();
                 recruitmentDataItem.put("ExistingName", recruitmentDataArrayList.get(i).Existing);
@@ -569,7 +465,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
                 @Override
                 public void response(String response) {
-                    recruitmentDialog. dismissProgress();
+                    recruitmentDialog.dismissProgress();
                     Log.e("RECRUITMENT_RESP", new Gson().toJson(response).toString());
                     com.webmne.salestracker.api.model.Response wsResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
                     if (wsResponse != null) {
@@ -629,7 +525,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
                 @Override
                 public void response(String response) {
-                    recruitmentDialog. dismissProgress();
+                    recruitmentDialog.dismissProgress();
                     Log.e("UPDATE_RECRUITMENT_RESP", new Gson().toJson(response).toString());
                     com.webmne.salestracker.api.model.Response wsResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
                     if (wsResponse != null) {
