@@ -115,9 +115,10 @@ public class CustomTimePickerDialog extends MaterialDialog {
     private void setHourPickerData() {
         hourList = new ArrayList<>();
 
-        for (int i = 0; i < 24; i++) {
+        int hourCount = 8;
+        for (int i = 0; i < 13; i++) {
 
-            hourList.add(String.format("%02d", i));
+            hourList.add(String.format("%02d", hourCount));
 
             if (str_flag.equals("s")) {
                 String[] newStartTime = strSelectedStartTime.split(":");
@@ -135,6 +136,7 @@ public class CustomTimePickerDialog extends MaterialDialog {
                 }
             }
 
+            hourCount++;
         }
 
         np_hour.setMinValue(0);
@@ -169,22 +171,22 @@ public class CustomTimePickerDialog extends MaterialDialog {
 
             if (newEndTime[1].equals("00")) {
                 np_minute.setValue(0);
-                strMinute = hourList.get(0);
+                strMinute = minuteList.get(0);
             }
             if (newEndTime[1].equals("30")) {
                 np_minute.setValue(1);
-                strMinute = hourList.get(1);
+                strMinute = minuteList.get(1);
             }
         } else if (str_flag.equals("e")) {
             String[] newEndTime = strSelectedEndTime.split(":");
 
             if (newEndTime[1].equals("00")) {
                 np_minute.setValue(0);
-                strMinute = hourList.get(0);
+                strMinute = minuteList.get(0);
             }
             if (newEndTime[1].equals("30")) {
                 np_minute.setValue(1);
-                strMinute = hourList.get(1);
+                strMinute = minuteList.get(1);
             }
         }
 

@@ -91,7 +91,7 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
         String[] newTime = time.split(":");
         edtStartTime.setText(String.format("%s:%s", newTime[0], newTime[1]));
         strSelectedStartTime = newTime[0] + ":" + newTime[1];
-        strSelectedEndTime = "00:00";
+        strSelectedEndTime = "08:00";
         setFullDateTime("s", newTime[0], newTime[1]);
 
         agentModelList = new ArrayList<>();
@@ -138,13 +138,11 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
             @Override
             public void onClick(View v) {
 
-//                if (TextUtils.isEmpty(strStartTime)) {
                 if (TextUtils.isEmpty(Functions.toStr(edtStartTime))) {
                     SimpleToast.error(context, context.getString(R.string.pls_select_start_time), context.getString(R.string.fa_error));
                     return;
                 }
 
-//                if (TextUtils.isEmpty(strEndTime)) {
                 if (TextUtils.isEmpty(Functions.toStr(edtEndTime))) {
                     SimpleToast.error(context, context.getString(R.string.pls_select_end_time), context.getString(R.string.fa_error));
                     return;
@@ -254,6 +252,7 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
             @Override
             public void timePickerCallBack(String hour, String minute) {
 
+                Log.e("tag", str_flag+","+ hour+","+ minute);
                 setFullDateTime(str_flag, hour, minute);
 
             }
