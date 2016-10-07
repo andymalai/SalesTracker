@@ -258,8 +258,13 @@
     <string name="close">Close</string>
     <string name="submit">Submit</string>
     <string name="add_more">Add More</string>
-    <string name="mapping_submit_success">Mapping Submitted Successfully</string>
+    <string name="submit_success">Submitted Successfully</string>
+    <string name="update_success">Updated Successfully</string>
     <string name="submitting">Submitting...</string>
+    <string name="updating">Updating...</string>
     <string name="fetching_data">Fetching Data...</string>
+    <string name="deleting_data">Deleting Data...</string>
+    <string name="fetch_error">Error While Fetching Data. Please Try Again.</string>
+    <string name="delete_error">Error While Deleting Data. Please Try Again.</string>
 
 </resources>

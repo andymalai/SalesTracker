@@ -15,6 +15,15 @@ import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.google.gson.Gson;
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.api.APIListener;
+import com.webmne.salestracker.api.FetchMappingApi;
+import com.webmne.salestracker.api.FetchRecruitmentApi;
+import com.webmne.salestracker.api.model.FetchMappingData;
+import com.webmne.salestracker.api.model.FetchMappingRequest;
+import com.webmne.salestracker.api.model.FetchMappingResponse;
+import com.webmne.salestracker.api.model.FetchRecruitmentData;
+import com.webmne.salestracker.api.model.FetchRecruitmentRequest;
+import com.webmne.salestracker.api.model.FetchRecruitmentResponse;
 import com.webmne.salestracker.api.model.PlanDataResponse;
 import com.webmne.salestracker.api.model.Response;
 import com.webmne.salestracker.api.model.SalesPlanResponse;
@@ -26,6 +35,7 @@ import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
+import com.webmne.salestracker.ui.profile.UserProfileActivity;
 import com.webmne.salestracker.visitplan.adapter.CustomDialogVisitPlanAgentListAdapter;
 import com.webmne.salestracker.visitplan.dialogs.MappingDialog;
 import com.webmne.salestracker.visitplan.dialogs.RecruitmentDialog;
@@ -44,6 +54,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
+
+import retrofit2.Call;
 
 public class SalesVisitPlanActivity extends AppCompatActivity {
 
@@ -86,7 +98,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
         initCalendarView();
 
-//        fetchPlan();
+        fetchPlan();
     }
 
     private void fetchPlan() {
@@ -130,7 +142,8 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void setPlanDetails(final PlanDataResponse data) {
+    private void setPlanDetails(PlanDataResponse data) {
+
         binding.txtProgress.setText(String.format("Actual Progress: %s/%s", data.getProgress(), data.getTarget()));
 
         float variance = (Float.parseFloat(data.getProgress()) * 100) / Float.parseFloat(data.getTarget());
@@ -212,8 +225,8 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
                         }
                     });*/
                 } else if (optionType == CalendarView.CalendarOptions.RECRUITMENT.ordinal()) {
-                    RecruitmentDialog recruitmentDialog = new RecruitmentDialog(new MaterialDialog.Builder(SalesVisitPlanActivity.this), SalesVisitPlanActivity.this);
-                    recruitmentDialog.show();
+                    // TODO: 06-10-2016 fetch recruitment
+                    fetchRecruitmentData();
 //                    Toast.makeText(SalesVisitPlanActivity.this, "Recruitment", Toast.LENGTH_SHORT).show();
                 } else if (optionType == CalendarView.CalendarOptions.DELETEALL.ordinal()) {
                     Toast.makeText(SalesVisitPlanActivity.this, "Delete All", Toast.LENGTH_SHORT).show();
@@ -222,6 +235,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
     @Override
@@ -244,7 +258,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
 //                sampleMarquee();
 
-               /* new CustomDialogAddVisitPlan(currentDate, timeLineHours.get(getAdapterPosition()).getTime(), new MaterialDialog.Builder(this), this, new CustomDialogAddVisitPlanCallBack() {
+                new CustomDialogAddVisitPlan(new MaterialDialog.Builder(this), this, new CustomDialogAddVisitPlanCallBack() {
                     @Override
                     public void addCallBack(JSONObject json) {
 
@@ -253,7 +267,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
                         addSalesVisitData(json);
 
                     }
-                });*/
+                });
 
 //                initAddVisitPlanCustomDialog();
 
@@ -382,6 +396,13 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
         final JSONObject requestObject = new JSONObject();
         try {
+            Log.e("TAG", new  Gson().toJson(mappingDataModelList));
+            for (int i = 0; i < mappingDataModelList.size(); i++) {
+                JSONObject mappingDataItem = new JSONObject();
+                mappingDataItem.put("Mapping", mappingDataModelList.get(i).Mapping);
+                mappingDataItem.put("MappingVisit", mappingDataModelList.get(i).MappingVisit);
+                mappingDataItemArray.put(mappingDataItem);
+            }
 
             requestObject.put("UserId", PrefUtils.getUserId(SalesVisitPlanActivity.this));
             requestObject.put("Date", ConstantFormats.ymdFormat.format(binding.cv.getCurrentCalendar().getTime()));
@@ -405,6 +426,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
                         }
                     }
                 }
+
 
                 @Override
                 public void error(VolleyError error) {
@@ -433,6 +455,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         JSONArray mappingDataItemArray = new JSONArray();
         try {
             for (int i = 0; i < mappingDataModelList.size(); i++) {
+                mappingDataItem.put("Id", mappingDataModelList.get(i).MappingId);
                 mappingDataItem.put("Mapping", mappingDataModelList.get(i).Mapping);
                 mappingDataItem.put("MappingVisit", mappingDataModelList.get(i).MappingVisit);
                 mappingDataItemArray.put(mappingDataItem);
@@ -477,6 +500,162 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
         } catch (JSONException e) {
             Log.e("MAPPING_SUBMIT_EXP", e.getMessage());
+            Log.e("UPDATE_MAPPING_EXP", e.getMessage());
+        }
+    }
+
+    private void fetchRecruitmentData() {
+        showProgress(getString(R.string.fetching_data));
+
+        FetchRecruitmentApi fetchRecruitmentApi = new FetchRecruitmentApi();
+        fetchRecruitmentApi.fetchRecruitmentData(new FetchRecruitmentRequest(PrefUtils.getUserId(SalesVisitPlanActivity.this), ConstantFormats.ymdFormat.format(binding.cv.getCurrentCalendar().getTime())), new APIListener<FetchRecruitmentResponse>() {
+            @Override
+            public void onResponse(retrofit2.Response<FetchRecruitmentResponse> response) {
+                dismissProgress();
+                if(response.body() != null) {
+                    Log.e("FETCH_RECRUITMENT_RESP", new Gson().toJson(response.body()));
+                    final RecruitmentDialog recruitmentDialog = new RecruitmentDialog(new MaterialDialog.Builder(SalesVisitPlanActivity.this), SalesVisitPlanActivity.this, response.body().data);
+                    recruitmentDialog.show();
+
+                    recruitmentDialog.setOnRecruitmentDataSubmitListener(new RecruitmentDialog.OnRecruitmentDataSubmitListener() {
+                        @Override
+                        public void onSubmit(ArrayList<FetchRecruitmentData> recruitmentDataModelList) {
+                            submitRecruitmentData(recruitmentDialog, recruitmentDataModelList);
+                        }
+
+                        @Override
+                        public void onUpdate(ArrayList<FetchRecruitmentData> recruitmentDataModelList) {
+                            updateRecruitmentData(recruitmentDialog, recruitmentDataModelList);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FetchRecruitmentResponse> call, Throwable t) {
+                dismissProgress();
+                Log.e("FETCH_RECRUITMENT_EXP", t.getMessage());
+                SimpleToast.error(SalesVisitPlanActivity.this, getString(R.string.fetch_error), getString(R.string.fa_error));
+            }
+        });
+    }
+
+    private void submitRecruitmentData(final RecruitmentDialog recruitmentDialog, ArrayList<FetchRecruitmentData> recruitmentDataArrayList) {
+        recruitmentDialog.showProgress(getString(R.string.submitting));
+
+        final JSONObject mainRecruitmentRequestObject = new JSONObject();
+        JSONObject recruitmentDataObject = new JSONObject();
+
+        JSONArray recruitmentDataItemArray = new JSONArray();
+        try {
+            Log.e("TAG", new  Gson().toJson(recruitmentDataArrayList));
+            for (int i = 0; i < recruitmentDataArrayList.size(); i++) {
+                JSONObject recruitmentDataItem = new JSONObject();
+                recruitmentDataItem.put("ExistingName", recruitmentDataArrayList.get(i).Existing);
+                recruitmentDataItem.put("ExistingLevel", recruitmentDataArrayList.get(i).ExistingVisit);
+                recruitmentDataItem.put("TimeVisit", recruitmentDataArrayList.get(i).TimeVisit);
+                recruitmentDataItemArray.put(recruitmentDataItem);
+            }
+
+            recruitmentDataObject.put("UserId", PrefUtils.getUserId(SalesVisitPlanActivity.this));
+            recruitmentDataObject.put("CreatedDate", ConstantFormats.ymdFormat.format(binding.cv.getCurrentCalendar().getTime()));
+            recruitmentDataObject.put("Data", recruitmentDataItemArray);
+
+            mainRecruitmentRequestObject.put("Recruitment", recruitmentDataObject);
+
+            Log.e("RECRUITMENT_REQ", new Gson().toJson(mainRecruitmentRequestObject).toString());
+
+            new CallWebService(this, AppConstants.SubmitRecruitment, CallWebService.TYPE_POST, mainRecruitmentRequestObject) {
+
+                @Override
+                public void response(String response) {
+                    recruitmentDialog. dismissProgress();
+                    Log.e("RECRUITMENT_RESP", new Gson().toJson(response).toString());
+                    com.webmne.salestracker.api.model.Response wsResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
+                    if (wsResponse != null) {
+                        if (wsResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                            SimpleToast.ok(SalesVisitPlanActivity.this, getString(R.string.submit_success));
+                        } else {
+                            SimpleToast.error(SalesVisitPlanActivity.this, wsResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                        }
+                    }
+                }
+
+
+                @Override
+                public void error(VolleyError error) {
+                    recruitmentDialog.dismissProgress();
+                    VolleyErrorHelper.showErrorMsg(error, SalesVisitPlanActivity.this);
+                }
+
+                @Override
+                public void noInternet() {
+                    recruitmentDialog.dismissProgress();
+                    SimpleToast.error(SalesVisitPlanActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                }
+            }.call();
+
+        } catch (JSONException e) {
+            Log.e("RECRUITMENT_SUBMIT_EXP", e.getMessage());
+        }
+    }
+
+    private void updateRecruitmentData(final RecruitmentDialog recruitmentDialog, ArrayList<FetchRecruitmentData> recruitmentDataArrayList) {
+        recruitmentDialog.showProgress(getString(R.string.updating));
+
+        final JSONObject mainRecruitmentRequestObject = new JSONObject();
+        JSONObject recruitmentDataObject = new JSONObject();
+
+        JSONArray recruitmentDataItemArray = new JSONArray();
+        try {
+            for (int i = 0; i < recruitmentDataArrayList.size(); i++) {
+                JSONObject recruitmentDataItem = new JSONObject();
+                recruitmentDataItem.put("Id", recruitmentDataArrayList.get(i).RecId);
+                recruitmentDataItem.put("Existing", recruitmentDataArrayList.get(i).Existing);
+                recruitmentDataItem.put("ExistingVisit", recruitmentDataArrayList.get(i).ExistingVisit);
+                recruitmentDataItem.put("TimeVisit", recruitmentDataArrayList.get(i).TimeVisit);
+                recruitmentDataItemArray.put(recruitmentDataItem);
+            }
+
+            recruitmentDataObject.put("UserId", PrefUtils.getUserId(SalesVisitPlanActivity.this));
+            recruitmentDataObject.put("CreatedDate", ConstantFormats.ymdFormat.format(binding.cv.getCurrentCalendar().getTime()));
+            recruitmentDataObject.put("Data", recruitmentDataItemArray);
+
+            mainRecruitmentRequestObject.put("RecruitmentData", recruitmentDataObject);
+
+            Log.e("UPDATE_RECRUITMENT_REQ", new Gson().toJson(mainRecruitmentRequestObject).toString());
+
+            new CallWebService(this, AppConstants.UpdateMapping, CallWebService.TYPE_POST, mainRecruitmentRequestObject) {
+
+                @Override
+                public void response(String response) {
+                    recruitmentDialog. dismissProgress();
+                    Log.e("UPDATE_RECRUITMENT_RESP", new Gson().toJson(response).toString());
+                    com.webmne.salestracker.api.model.Response wsResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
+                    if (wsResponse != null) {
+                        if (wsResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                            SimpleToast.ok(SalesVisitPlanActivity.this, getString(R.string.update_success));
+                        } else {
+                            SimpleToast.error(SalesVisitPlanActivity.this, wsResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                        }
+                    }
+                }
+
+                @Override
+                public void error(VolleyError error) {
+                    recruitmentDialog.dismissProgress();
+                    VolleyErrorHelper.showErrorMsg(error, SalesVisitPlanActivity.this);
+                }
+
+                @Override
+                public void noInternet() {
+                    recruitmentDialog.dismissProgress();
+                    SimpleToast.error(SalesVisitPlanActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+                }
+            }.call();
+
+        } catch (JSONException e) {
+            Log.e("UPDATE_RECRUITMENT_EXP", e.getMessage());
         }
     }
 }

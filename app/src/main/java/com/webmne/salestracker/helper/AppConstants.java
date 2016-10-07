@@ -106,6 +106,21 @@ public class AppConstants {
     //http://demo.webmynehost.com/amgsales/services/mapping.php?format=json
     public static final String FetchMapping = WEB_SERVICE_URL + "mapping.php?format=json";
 
+    // http://demo.webmynehost.com/amgsales/services/delete_mapping.php?format=json
+    public static final String DeleteMapping = WEB_SERVICE_URL + "delete_mapping.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/update_mapping.php?format=json
+    public static final String UpdateMapping = WEB_SERVICE_URL + "update_mapping.php?format=json";
+
+    //http://demo.webmynehost.com/amgsales/services/recruitment.php?format=json
+    public static final String FetchRecruitment = WEB_SERVICE_URL + "recruitment.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/add_mapping.php?format=json
+    public static final String SubmitRecruitment = WEB_SERVICE_URL + "add_recuriment.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/delete_recruiment.php?format=json
+    public static final String DeleteRecruitment = WEB_SERVICE_URL + "delete_recruiment.php?format=json";
+
 
     // FTP details Local
     public static final String FTP_HOST = "ws-srv-php";

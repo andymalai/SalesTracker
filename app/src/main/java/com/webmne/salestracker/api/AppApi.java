@@ -4,8 +4,16 @@ import com.webmne.salestracker.api.model.AddAgentRequest;
 import com.webmne.salestracker.api.model.AddAgentResponse;
 import com.webmne.salestracker.api.model.AgentListResponse;
 import com.webmne.salestracker.api.model.BranchListResponse;
+import com.webmne.salestracker.api.model.DeleteMappingRequest;
+import com.webmne.salestracker.api.model.DeleteMappingResponse;
+import com.webmne.salestracker.api.model.DeleteRecruitmentRequest;
+import com.webmne.salestracker.api.model.DeleteRecruitmentResponse;
+import com.webmne.salestracker.api.model.FetchMappingRequest;
+import com.webmne.salestracker.api.model.FetchMappingResponse;
+import com.webmne.salestracker.api.model.FetchRecruitmentData;
+import com.webmne.salestracker.api.model.FetchRecruitmentRequest;
+import com.webmne.salestracker.api.model.FetchRecruitmentResponse;
 import com.webmne.salestracker.api.model.LoginResponse;
-import com.webmne.salestracker.api.model.Response;
 import com.webmne.salestracker.api.model.TierListResponse;
 import com.webmne.salestracker.contacts.model.BranchContactModel;
 import com.webmne.salestracker.contacts.model.DepartmentContactModel;
@@ -42,5 +50,17 @@ public interface AppApi {
 
     @POST(AppConstants.AddAgent)
     Call<AddAgentResponse> addAgent(@Body AddAgentRequest request);
+
+    @POST(AppConstants.FetchMapping)
+    Call<FetchMappingResponse> fetchMappingData(@Body FetchMappingRequest request);
+
+    @POST(AppConstants.DeleteMapping)
+    Call<DeleteMappingResponse> deleteMapping(@Body DeleteMappingRequest request);
+
+    @POST(AppConstants.FetchRecruitment)
+    Call<FetchRecruitmentResponse> fetchRecruitmentData(@Body FetchRecruitmentRequest request);
+
+    @POST(AppConstants.DeleteRecruitment)
+    Call<DeleteRecruitmentResponse> deleteRecruitment(@Body DeleteRecruitmentRequest request);
 
 }
