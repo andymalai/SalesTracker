@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 
 public class FetchMappingResponse extends Response {
+
     public ArrayList<FetchMappingData> data;
 
 }

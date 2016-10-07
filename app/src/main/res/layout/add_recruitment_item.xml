@@ -12,7 +12,7 @@
             android:orientation="horizontal">
 
             <com.webmne.salestracker.widget.TfTextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/dimen_32dp"
                 android:layout_margin="@dimen/dimen_8dp"
                 android:layout_weight="1"
@@ -70,6 +70,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="@dimen/dimen_4dp"
-            android:background="@color/button_color" />
+            android:background="@color/half_black" />
     </LinearLayout>
 </layout>

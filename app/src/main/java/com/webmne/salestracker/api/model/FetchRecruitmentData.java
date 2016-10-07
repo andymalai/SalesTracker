@@ -5,5 +5,12 @@ package com.webmne.salestracker.api.model;
  */
 
 public class FetchRecruitmentData {
+
     public String RecId, UserId, Date, Existing, ExistingVisit, TimeVisit;
+
+    public FetchRecruitmentData() {
+        Existing = "";
+        ExistingVisit = "";
+        TimeVisit = "";
+    }
 }

@@ -8,7 +8,7 @@ public class AppConstants {
     // Common
     // public static final String BASE_URL = "http://ws-srv-php/projects/drupal/amgsales2/";
     public static final String BASE_URL = "http://demo.webmynehost.com/amgsales/";
-//    public static final String ATTACHMENT_PREFIX = BASE_URL;
+    //    public static final String ATTACHMENT_PREFIX = BASE_URL;
     public static final String ATTACHMENT_PREFIX = "http://ws-srv-php/projects/drupal/amgsales2/";
     public static final String WEB_SERVICE_URL = BASE_URL + "services/";
     public static final String ACTION_LOG_DIRECTORY = "/SalesTracker/ActionLog/";
@@ -32,6 +32,11 @@ public class AppConstants {
     // Calendar Mode
     public static int DAY_VIEW = 1;
     public static int MONTH_VIEW = 2;
+
+    // Plan status Constants
+    public static String B = "B";
+    public static String O = "O";
+    public static String X = "X";
 
     // Response Code
     public static final String SUCCESS = "1";
@@ -96,6 +101,14 @@ public class AppConstants {
     // http://demo.webmynehost.com/amgsales/services/fetch_agent_list.php?format=json&user_id=699
     public static final String AddPlan = WEB_SERVICE_URL + "add_plan.php?format=json";
 
+    // http://demo.webmynehost.com/amgsales/services/update_box.php?format=json
+    public static final String BOXUpdate = WEB_SERVICE_URL + "update_box.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/update_remark.php?format=json
+    public static final String UpdateRemarkPlan = WEB_SERVICE_URL + "update_remark.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/delete_plan.php?format=json
+    public static final String DeletePlan = WEB_SERVICE_URL + "delete_plan.php?format=json";
     // http://demo.webmynehost.com/amgsales/services/update_production.php?format=json
     public static final String UpdateProduction = WEB_SERVICE_URL + "update_production.php?format=json";
 

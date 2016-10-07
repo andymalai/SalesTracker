@@ -18,6 +18,7 @@
     <string name="msg">Your Message</string>
     <string name="str_true">True</string>
     <string name="str_false">False</string>
+    <string name="update_status">Plan Status Updated Successfully</string>
 
     <!--font_awesome icons string-->
     <string name="fa_error">{fa-exclamation-triangle}</string>
@@ -266,5 +267,8 @@
     <string name="deleting_data">Deleting Data...</string>
     <string name="fetch_error">Error While Fetching Data. Please Try Again.</string>
     <string name="delete_error">Error While Deleting Data. Please Try Again.</string>
+    <string name="mapping_submit_success">Submit</string>
+    <string name="enter_all">Enter All Details</string>
+
 
 </resources>

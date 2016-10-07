@@ -1,10 +1,12 @@
 package com.webmne.salestracker.api.model;
 
+import java.io.Serializable;
+
 /**
  * Created by sagartahelyani on 04-10-2016.
  */
 
-public class Plan {
+public class Plan implements Serializable {
 
     /**
      * PlanId : 197
@@ -23,20 +25,6 @@ public class Plan {
     private String EndTime;
     private String Remark;
     private String Status;
-
-    public Plan() {
-
-    }
-
-    public Plan(String planId, String agentName, String agentId, String startTime, String endTime, String remark, String status) {
-        PlanId = planId;
-        AgentName = agentName;
-        AgentId = agentId;
-        StartTime = startTime;
-        EndTime = endTime;
-        Remark = remark;
-        Status = status;
-    }
 
     public String getPlanId() {
         return PlanId;

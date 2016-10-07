@@ -2,9 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ScrollView
-        android:overScrollMode="never"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,21 +41,25 @@
 
                 <com.webmne.salestracker.widget.TfButton
                     android:id="@+id/btnClose"
-                    style="@style/MyButtonStyle"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimen_8dp"
                     android:layout_marginTop="@dimen/dimen_16dp"
                     android:text="@string/close" />
 
                 <com.webmne.salestracker.widget.TfButton
                     android:id="@+id/btnSubmit"
-                    style="@style/MyButtonStyle"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimen_8dp"
                     android:layout_marginTop="@dimen/dimen_16dp"
                     android:text="@string/submit" />
             </LinearLayout>
 
         </LinearLayout>
+
     </ScrollView>
+
 </layout>

@@ -3,12 +3,12 @@ package com.webmne.salestracker.visitplan.dialogs;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.AppCompatSpinner;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.pierry.simpletoast.SimpleToast;
@@ -21,6 +21,8 @@ import com.webmne.salestracker.api.model.DeleteRecruitmentResponse;
 import com.webmne.salestracker.api.model.FetchRecruitmentData;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.DialogRecruitmentCalendarViewBinding;
+import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.visitplan.adapter.AgentStatusAdapter;
 import com.webmne.salestracker.widget.TfEditText;
 
@@ -33,6 +35,7 @@ import retrofit2.Call;
  */
 
 public class RecruitmentDialog extends MaterialDialog {
+
     private Context context;
     private MaterialDialog materialDialog;
     private DialogRecruitmentCalendarViewBinding dialogRecruitmentCalendarViewBinding;
@@ -42,21 +45,26 @@ public class RecruitmentDialog extends MaterialDialog {
     private LoadingIndicatorDialog loadingIndicatorDialog;
     private boolean isUpdate = false;
 
-    public RecruitmentDialog(Builder builder, Context context, ArrayList<FetchRecruitmentData> recruitmentDataModelList) {
-        super(builder);
+    public RecruitmentDialog(Context context, ArrayList<FetchRecruitmentData> recruitmentDataModelList) {
+        super(new MaterialDialog.Builder(context));
         this.context = context;
-        this.recruitmentDataModelList = recruitmentDataModelList;
-        if (this.recruitmentDataModelList == null)
+        if (this.recruitmentDataModelList == null) {
             this.recruitmentDataModelList = new ArrayList<>();
-        init(builder);
+        } else {
+            this.recruitmentDataModelList = recruitmentDataModelList;
+        }
+        init();
     }
 
-    private void init(final Builder builder) {
+    private void init() {
+        Builder builder = new Builder(context);
         dialogRecruitmentCalendarViewBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_recruitment_calendar_view, null, false);
         materialDialog = builder.customView(dialogRecruitmentCalendarViewBinding.getRoot(), true)
+                .typeface(Functions.getBoldFont(context), Functions.getRegularFont(context))
                 .title("Recruitment")
                 .cancelable(true)
                 .build();
+        materialDialog.show();
 
         dialogRecruitmentCalendarViewBinding.defaultAddRecruitmentItem.imgDelete.setVisibility(View.GONE);
 
@@ -74,8 +82,10 @@ public class RecruitmentDialog extends MaterialDialog {
         dialogRecruitmentCalendarViewBinding.defaultAddRecruitmentItem.spinnerStatus.setAdapter(adapter);
 
         if (recruitmentDataModelList != null && !recruitmentDataModelList.isEmpty()) {
+
             isUpdate = true;
             dialogRecruitmentCalendarViewBinding.btnSubmit.setText("Update");
+
             dialogRecruitmentCalendarViewBinding.linearAddRecruitmentItems.removeAllViews();
             for (final FetchRecruitmentData recruitmentData : recruitmentDataModelList) {
                 final View view = addNewRecruitmentItem();
@@ -111,25 +121,49 @@ public class RecruitmentDialog extends MaterialDialog {
         dialogRecruitmentCalendarViewBinding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if( !isUpdate) recruitmentDataModelList = new ArrayList<FetchRecruitmentData>();
+
+                boolean canSubmit = false;
+
+                ArrayList<FetchRecruitmentData> newRecruitmentData = new ArrayList<FetchRecruitmentData>();
+
                 for (int i = 0; i < dialogRecruitmentCalendarViewBinding.linearAddRecruitmentItems.getChildCount(); i++) {
+
                     TfEditText edtAgentName = (TfEditText) dialogRecruitmentCalendarViewBinding.linearAddRecruitmentItems.getChildAt(i).findViewById(R.id.edtAgentName);
                     TfEditText edtRemarks = (TfEditText) dialogRecruitmentCalendarViewBinding.linearAddRecruitmentItems.getChildAt(i).findViewById(R.id.edtRemarks);
                     AppCompatSpinner agentStatusSpinner = (AppCompatSpinner) dialogRecruitmentCalendarViewBinding.linearAddRecruitmentItems.getChildAt(i).findViewById(R.id.spinnerStatus);
 
-                    FetchRecruitmentData fetchRecruitmentData = new FetchRecruitmentData();
-                    fetchRecruitmentData.Existing = edtAgentName.getText().toString();
-                    fetchRecruitmentData.ExistingVisit = agentStatusSpinner.getSelectedItem().toString();
-                    fetchRecruitmentData.TimeVisit = edtRemarks.getText().toString();
-                    if (isUpdate)
-                        fetchRecruitmentData.RecId = recruitmentDataModelList.get(i).RecId;
-                    recruitmentDataModelList.add(fetchRecruitmentData);
+                    if (TextUtils.isEmpty(Functions.toStr(edtAgentName)) || TextUtils.isEmpty(Functions.toStr(edtRemarks))) {
+                        SimpleToast.error(context, context.getString(R.string.enter_all));
+                        canSubmit = false;
+
+                    } else {
+                        if (isUpdate) {
+                            FetchRecruitmentData recruitmentDataItem = new FetchRecruitmentData();
+                            recruitmentDataItem.Existing = Functions.toStr(edtAgentName);
+                            recruitmentDataItem.ExistingVisit = agentStatusSpinner.getSelectedItem().toString();
+                            recruitmentDataItem.TimeVisit = Functions.toStr(edtRemarks);
+                            recruitmentDataItem.RecId = recruitmentDataModelList.get(i).RecId;
+                            newRecruitmentData.add(recruitmentDataItem);
+
+                        } else {
+                            FetchRecruitmentData recruitmentDataItem = new FetchRecruitmentData();
+                            recruitmentDataItem.Existing = Functions.toStr(edtAgentName);
+                            recruitmentDataItem.ExistingVisit = agentStatusSpinner.getSelectedItem().toString();
+                            recruitmentDataItem.TimeVisit = Functions.toStr(edtRemarks);
+                            recruitmentDataItem.RecId = null;
+                            newRecruitmentData.add(recruitmentDataItem);
+                        }
+                        canSubmit = true;
+                    }
                 }
 
-                if (isUpdate)
-                    onRecruitmentDataSubmitListener.onUpdate(recruitmentDataModelList);
-                else
-                    onRecruitmentDataSubmitListener.onSubmit(recruitmentDataModelList);
+                if (canSubmit) {
+
+                    Log.e("dialog_rec_req", MyApplication.getGson().toJson(newRecruitmentData));
+
+                    if (onRecruitmentDataSubmitListener != null)
+                        onRecruitmentDataSubmitListener.onSubmit(newRecruitmentData);
+                }
             }
         });
 
@@ -160,7 +194,6 @@ public class RecruitmentDialog extends MaterialDialog {
     public interface OnRecruitmentDataSubmitListener {
         void onSubmit(ArrayList<FetchRecruitmentData> recruitmentDataModelList);
 
-        void onUpdate(ArrayList<FetchRecruitmentData> recruitmentDataModelList);
     }
 
     public void setOnRecruitmentDataSubmitListener(RecruitmentDialog.OnRecruitmentDataSubmitListener onRecruitmentDataSubmitListener) {

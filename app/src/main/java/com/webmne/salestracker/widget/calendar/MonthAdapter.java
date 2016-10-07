@@ -33,9 +33,6 @@ class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder> {
 
     Calendar currentCalendar;
 
-    // days with events
-    private HashSet<Date> eventDays;
-
     void setOnDateSelectListener(MonthAdapter.onDateSelectListener onDateSelectListener) {
         this.onDateSelectListener = onDateSelectListener;
     }
@@ -45,10 +42,9 @@ class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder> {
     // current displayed month
     private Calendar currentDate = Calendar.getInstance();
 
-    MonthAdapter(Context _ctx, ArrayList<Date> days, HashSet<Date> eventDays, Calendar currentCalendar) {
+    MonthAdapter(Context _ctx, ArrayList<Date> days, Calendar currentCalendar) {
         this._ctx = _ctx;
         this.days = days;
-        this.eventDays = eventDays;
         this.currentCalendar = currentCalendar;
     }
 
@@ -127,7 +123,7 @@ class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MyViewHolder> {
         this.currentDate = currentDate;
     }
 
-    public void setPlans(ArrayList<DatePlan> plans) {
+    void setPlans(ArrayList<DatePlan> plans) {
         this.plans = new ArrayList<>();
         this.plans = plans;
         notifyDataSetChanged();

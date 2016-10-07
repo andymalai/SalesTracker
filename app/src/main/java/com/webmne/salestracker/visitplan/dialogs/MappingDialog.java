@@ -2,6 +2,7 @@ package com.webmne.salestracker.visitplan.dialogs;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +17,10 @@ import com.webmne.salestracker.api.DeleteMappingApi;
 import com.webmne.salestracker.api.model.DeleteMappingRequest;
 import com.webmne.salestracker.api.model.DeleteMappingResponse;
 import com.webmne.salestracker.api.model.FetchMappingData;
-import com.webmne.salestracker.api.model.FetchRecruitmentData;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.DialogMappingCalendarViewBinding;
+import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.widget.TfEditText;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import retrofit2.Call;
  */
 
 public class MappingDialog extends MaterialDialog {
+
     private Context context;
     private MaterialDialog materialDialog;
     private DialogMappingCalendarViewBinding dialogMappingCalendarViewBinding;
@@ -38,26 +41,26 @@ public class MappingDialog extends MaterialDialog {
     private LoadingIndicatorDialog loadingIndicatorDialog;
     private boolean isUpdate = false;
 
-    public MappingDialog(Builder builder, Context context) {
-        super(builder);
+    public MappingDialog(Context context, ArrayList<FetchMappingData> mappingDataModelList) {
+        super(new MaterialDialog.Builder(context));
         this.context = context;
-        init(builder);
+        if (mappingDataModelList == null) {
+            this.mappingDataModelList = new ArrayList<>();
+        } else {
+            this.mappingDataModelList = mappingDataModelList;
+        }
+        init();
     }
 
-    public MappingDialog(Builder builder, Context context, ArrayList<FetchMappingData> mappingDataModelList) {
-        super(builder);
-        this.context = context;
-        this.mappingDataModelList = mappingDataModelList;
-        if (this.mappingDataModelList == null) this.mappingDataModelList = new ArrayList<>();
-        init(builder);
-    }
-
-    private void init(final Builder builder) {
+    private void init() {
+        Builder builder = new Builder(context);
         dialogMappingCalendarViewBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_mapping_calendar_view, null, false);
         materialDialog = builder.customView(dialogMappingCalendarViewBinding.getRoot(), true)
+                .typeface(Functions.getBoldFont(context), Functions.getRegularFont(context))
                 .title("Mapping")
                 .cancelable(true)
                 .build();
+        materialDialog.show();
 
         dialogMappingCalendarViewBinding.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +74,9 @@ public class MappingDialog extends MaterialDialog {
         if (mappingDataModelList != null && !mappingDataModelList.isEmpty()) {
             isUpdate = true;
             dialogMappingCalendarViewBinding.btnSubmit.setText("Update");
+
             dialogMappingCalendarViewBinding.linearAddMappingItems.removeAllViews();
+
             for (final FetchMappingData mappingData : mappingDataModelList) {
                 final View view = addNewMappingItem();
                 ((TfEditText) view.findViewById(R.id.edtMapping)).setText(mappingData.Mapping);
@@ -85,6 +90,7 @@ public class MappingDialog extends MaterialDialog {
                 });
             }
             dialogMappingCalendarViewBinding.txtAddMore.setVisibility(View.GONE);
+
         } else {
             isUpdate = false;
         }
@@ -92,21 +98,45 @@ public class MappingDialog extends MaterialDialog {
         dialogMappingCalendarViewBinding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if( !isUpdate) mappingDataModelList = new ArrayList<FetchMappingData>();
+                boolean canSubmit = false;
+
+                ArrayList<FetchMappingData> newMappingData = new ArrayList<FetchMappingData>();
+
                 for (int i = 0; i < dialogMappingCalendarViewBinding.linearAddMappingItems.getChildCount(); i++) {
+
                     TfEditText edtMapping = (TfEditText) (dialogMappingCalendarViewBinding.linearAddMappingItems.getChildAt(i)).findViewById(R.id.edtMapping);
                     TfEditText edtMappingVisit = (TfEditText) (dialogMappingCalendarViewBinding.linearAddMappingItems.getChildAt(i)).findViewById(R.id.edtMappingVisit);
-                    FetchMappingData mappingData = new FetchMappingData();
-                    mappingData.Mapping = edtMapping.getText().toString();
-                    mappingData.MappingVisit = edtMappingVisit.getText().toString();
-                    if (isUpdate)
-                        mappingData.MappingId = mappingDataModelList.get(i).MappingId;
-                    mappingDataModelList.add(mappingData);
+
+                    if (TextUtils.isEmpty(Functions.toStr(edtMapping)) || TextUtils.isEmpty(Functions.toStr(edtMappingVisit))) {
+                        SimpleToast.error(context, context.getString(R.string.enter_all));
+                        canSubmit = false;
+
+                    } else {
+                        if (isUpdate) {
+                            FetchMappingData mappingData = new FetchMappingData();
+                            mappingData.Mapping = Functions.toStr(edtMapping);
+                            mappingData.MappingVisit = Functions.toStr(edtMappingVisit);
+                            mappingData.MappingId = mappingDataModelList.get(i).MappingId;
+                            newMappingData.add(mappingData);
+
+                        } else {
+                            FetchMappingData mappingData = new FetchMappingData();
+                            mappingData.Mapping = Functions.toStr(edtMapping);
+                            mappingData.MappingVisit = Functions.toStr(edtMappingVisit);
+                            mappingData.MappingId = null;
+                            newMappingData.add(mappingData);
+                        }
+                        canSubmit = true;
+                    }
                 }
-                if (isUpdate)
-                    onMappingDataSubmitListener.onUpdate(mappingDataModelList);
-                else
-                    onMappingDataSubmitListener.onSubmit(mappingDataModelList);
+
+                if (canSubmit) {
+
+                    Log.e("dialog_map_req", MyApplication.getGson().toJson(newMappingData));
+
+                    if (onMappingDataSubmitListener != null)
+                        onMappingDataSubmitListener.onSubmit(newMappingData);
+                }
             }
         });
 
@@ -141,8 +171,6 @@ public class MappingDialog extends MaterialDialog {
 
     public interface OnMappingDataSubmitListener {
         void onSubmit(ArrayList<FetchMappingData> mappingDataModelList);
-
-        void onUpdate(ArrayList<FetchMappingData> mappingDataModelList);
     }
 
     public void setOnMappingDataSubmitListener(OnMappingDataSubmitListener onMappingDataSubmitListener) {

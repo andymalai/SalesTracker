@@ -90,51 +90,47 @@
     <LinearLayout
         android:id="@+id/linearCalenderViewHeader"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <com.webmne.salestracker.widget.TfTextView
-            android:layout_width="match_parent"
+            android:id="@+id/tfTextView"
+            android:layout_width="@dimen/dimen_64dp"
             android:layout_height="@dimen/dimen_32dp"
             android:layout_margin="@dimen/dimen_8dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:text="Time"
-            android:textAppearance="@android:style/TextAppearance.Medium" />
+            android:textSize="@dimen/M_TEXT" />
 
         <com.webmne.salestracker.widget.TfButton
             android:id="@+id/btnMapping"
             style="@style/MyButtonStyle"
             android:layout_width="wrap_content"
-            android:padding="@dimen/dimen_4dp"
             android:layout_height="@dimen/dimen_32dp"
             android:layout_margin="@dimen/dimen_8dp"
+            android:padding="@dimen/dimen_4dp"
             android:text="Mapping"
-            android:textAppearance="@android:style/TextAppearance.Medium"
-            android:textSize="@dimen/S_TEXT" />
+            android:textSize="@dimen/VS_TEXT" />
 
         <com.webmne.salestracker.widget.TfButton
             android:id="@+id/btnRecruitment"
             style="@style/MyButtonStyle"
-            android:padding="@dimen/dimen_4dp"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dimen_32dp"
             android:layout_margin="@dimen/dimen_8dp"
+            android:padding="@dimen/dimen_4dp"
             android:text="Recruitment"
-            android:textAppearance="@android:style/TextAppearance.Medium"
-            android:textSize="@dimen/S_TEXT" />
+            android:textSize="@dimen/VS_TEXT" />
 
         <com.webmne.salestracker.widget.TfButton
             android:id="@+id/btnDeleteAll"
             style="@style/MyButtonStyle"
-            android:padding="@dimen/dimen_4dp"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dimen_32dp"
             android:layout_margin="@dimen/dimen_8dp"
+            android:padding="@dimen/dimen_4dp"
             android:text="Delete All"
-            android:textAppearance="@android:style/TextAppearance.Medium"
-            android:textSize="@dimen/S_TEXT" />
+            android:textSize="@dimen/VS_TEXT" />
     </LinearLayout>
 
     <ScrollView
@@ -149,16 +145,16 @@
 
             <LinearLayout
                 android:id="@+id/timelineLayout"
-                android:layout_width="72dp"
+                android:layout_width="@dimen/dimen_64dp"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:visibility="visible">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/timelineRecyclerView"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center" />
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 

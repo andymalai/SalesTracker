@@ -1,12 +1,13 @@
 package com.webmne.salestracker.api.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by sagartahelyani on 04-10-2016.
  */
 
-public class DatePlan {
+public class DatePlan implements Serializable {
 
     private String Date;
 
