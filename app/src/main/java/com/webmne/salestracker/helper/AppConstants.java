@@ -92,8 +92,8 @@ public class AppConstants {
     // http://ws-srv-php/projects/drupal/amgsales2/services/update_action.php
     public static final String UpdateActionLog = WEB_SERVICE_URL + "update_action.php";
 
-    // http://demo.webmynehost.com/amgsales/services/fetch_agent_list.php?format=json&user_id=699
-    public static final String EmployeeList = WEB_SERVICE_URL + "fetch_agent_list.php?format=json&user_id=";
+    //
+    public static final String EmployeeList = WEB_SERVICE_URL + "";
 
     // http://demo.webmynehost.com/amgsales/services/fetch_visit_paln.php?format=json
     public static final String PlanList = WEB_SERVICE_URL + "fetch_visit_paln.php?format=json";
@@ -109,9 +109,9 @@ public class AppConstants {
 
     // http://demo.webmynehost.com/amgsales/services/delete_plan.php?format=json
     public static final String DeletePlan = WEB_SERVICE_URL + "delete_plan.php?format=json";
+
     // http://demo.webmynehost.com/amgsales/services/update_production.php?format=json
     public static final String UpdateProduction = WEB_SERVICE_URL + "update_production.php?format=json";
-
 
     // http://demo.webmynehost.com/amgsales/services/add_mapping.php?format=json
     public static final String SubmitMapping = WEB_SERVICE_URL + "add_mapping.php?format=json";
@@ -133,6 +133,13 @@ public class AppConstants {
 
     // http://demo.webmynehost.com/amgsales/services/delete_recruiment.php?format=json
     public static final String DeleteRecruitment = WEB_SERVICE_URL + "delete_recruiment.php?format=json";
+
+    //
+    public static final String CommunicationList = WEB_SERVICE_URL + "";
+
+    //
+    public static final String EventList = WEB_SERVICE_URL + "";
+
 
 
     // FTP details Local

@@ -17,7 +17,13 @@ public enum TileId {
 
     MANAGE_VISIT_PLAN(6),
 
-    TARGET(7);
+    TARGET(7),
+
+    CHART(8),
+
+    EVENT(9),
+
+    COMMUNICATION(10);
 
     TileId(int id) {
         this.id = id;

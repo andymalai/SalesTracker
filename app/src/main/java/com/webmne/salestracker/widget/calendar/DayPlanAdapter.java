@@ -132,23 +132,23 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
                 @Override
                 public void onClick(View v) {
                     new MaterialDialog.Builder(context)
-                            .title("Delete Plan")
+                            .title(context.getString(R.string.delete_plan))
                             .typeface(Functions.getBoldFont(context), Functions.getRegularFont(context))
-                            .positiveText("Yes")
+                            .positiveText(context.getString(R.string.yes))
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     deletePlan(plan);
                                 }
                             })
-                            .negativeText("No")
+                            .negativeText(context.getString(R.string.no))
                             .onNegative(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     dialog.dismiss();
                                 }
                             })
-                            .content("Are you sure want to delete this plan?")
+                            .content(context.getString(R.string.ask_for_delete_plan))
                             .show();
                 }
             });
@@ -236,7 +236,8 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
     }
 
     private void deletePlan(final Plan plan) {
-        showProgress(context.getString(R.string.loading));
+
+        showProgress(context.getString(R.string.delete));
 
         JSONObject json = new JSONObject();
         try {
@@ -257,7 +258,7 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
                 com.webmne.salestracker.api.model.Response wsResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
                 if (wsResponse != null) {
                     if (wsResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                        SimpleToast.ok(context, context.getString(R.string.update_status));
+                        SimpleToast.ok(context, context.getString(R.string.plan_deleted));
                         plans.remove(plan);
                         notifyDataSetChanged();
 

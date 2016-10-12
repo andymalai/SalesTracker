@@ -12,26 +12,26 @@ import java.util.ArrayList;
 public class HomeTileConfiguration {
 
     // marketer grid options
-    private String[] marketNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan"};
-    private int[] marketIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId()};
-    private int[] marketIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan};
+    private String[] marketNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Event", "Communication"};
+    private int[] marketIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EVENT.getId(), TileId.COMMUNICATION.getId()};
+    private int[] marketIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_action_event, R.drawable.ic_communication_chat};
 
     // HOS grid options
-    private String[] hosNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee"};
-    private int[] hosIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId()};
-    private int[] hosIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee};
+    private String[] hosNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee", "Event", "Communication"};
+    private int[] hosIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId(), TileId.EVENT.getId(), TileId.COMMUNICATION.getId()};
+    private int[] hosIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee, R.drawable.ic_action_event, R.drawable.ic_communication_chat};
 
     // BM grid options
-    private String[] bmNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee"};
-    private int[] bmIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId()};
-    private int[] bmIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee};
+    private String[] bmNames = {"Agents", "Contacts", "Action Log", "Sales Visit Plan", "Employee", "Charts", "Event", "Communication"};
+    private int[] bmIds = {TileId.AGENTS.getId(), TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId(), TileId.CHART.getId(), TileId.EVENT.getId(), TileId.COMMUNICATION.getId()};
+    private int[] bmIcons = {R.drawable.ic_agent, R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee, R.drawable.ic_editor_insert_chart, R.drawable.ic_action_event, R.drawable.ic_communication_chat};
 
     // RM grid options
-    private String[] rmNames = {"Contacts", "Action Log", "Sales Visit Plan", "Employee"};
-    private int[] rmIds = {TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId()};
-    private int[] rmIcons = {R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee};
+    private String[] rmNames = {"Contacts", "Action Log", "Sales Visit Plan", "Employee", "Charts", "Event", "Communication"};
+    private int[] rmIds = {TileId.CONTACTS.getId(), TileId.ACTION_LOG.getId(), TileId.SALES_VISIT_PLAN.getId(), TileId.EMPLOYEE.getId(), TileId.CHART.getId(), TileId.EVENT.getId(), TileId.COMMUNICATION.getId()};
+    private int[] rmIcons = {R.drawable.ic_pick_contact, R.drawable.ic_action_log, R.drawable.ic_plan, R.drawable.ic_employee, R.drawable.ic_editor_insert_chart, R.drawable.ic_action_event, R.drawable.ic_communication_chat};
 
-    private String[] bgColors = {"#ffffff", "#f1f1f1", "#f1f1f1", "#ffffff", "#ffffff", "#f1f1f1", "#f1f1f1"};
+    private String[] bgColors = {"#ffffff", "#f1f1f1", "#f1f1f1", "#ffffff", "#ffffff", "#f1f1f1", "#f1f1f1", "#ffffff"};
 
     public ArrayList<HomeTileBean> getDashboardOptions(String position) {
 
@@ -112,7 +112,7 @@ public class HomeTileConfiguration {
 
 MARKETER: Agents, Contacts, Action Log, Sales Visit Plan
 
-Head of Sales(HOS): MARKETER ++ {Employee, Manage Visit Plan}
+Head of Sales(HOS): MARKETER ++ {Employee, Events, Communication}
 
 Branch Manager(BM): HOS ++ {Target}
 

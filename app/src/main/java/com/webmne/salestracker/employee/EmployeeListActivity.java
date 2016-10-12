@@ -236,9 +236,9 @@ public class EmployeeListActivity extends AppCompatActivity {
 
     private void getAgents() {
 
-        showProgress(getString(R.string.loading));
-
-        viewBinding.contentLayout.setVisibility(View.GONE);
+//        showProgress(getString(R.string.loading));
+//
+//        viewBinding.contentLayout.setVisibility(View.GONE);
 
         employeeList = new ArrayList<>();
         adapter.setEmployeeList(employeeList);
@@ -260,46 +260,46 @@ public class EmployeeListActivity extends AppCompatActivity {
         ////////////////////////////////////////////////////////
 
 
-        new CallWebService(this, AppConstants.EmployeeList, CallWebService.TYPE_GET) {
-
-            @Override
-            public void response(String response) {
-
-                dismissProgress();
-
-                viewBinding.contentLayout.setVisibility(View.VISIBLE);
-
-//                ActionLogListResponse getActionLogListResponse = MyApplication.getGson().fromJson(response, EmployeeListActivity.class);
+//        new CallWebService(this, AppConstants.EmployeeList, CallWebService.TYPE_GET) {
 //
-//                if (getActionLogListResponse != null) {
+//            @Override
+//            public void response(String response) {
 //
-//                    if (getActionLogListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-//                        actionLogList = getActionLogListResponse.getData().getAction();
-//                        adapter.setActionList(actionLogList);
+//                dismissProgress();
 //
-//                    } else {
-//                        SimpleToast.error(EmployeeListActivity.this, getActionLogListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-//                    }
+//                viewBinding.contentLayout.setVisibility(View.VISIBLE);
 //
-//                } else {
-//                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
-//                }
-
-            }
-
-            @Override
-            public void error(VolleyError error) {
-                dismissProgress();
-                viewBinding.contentLayout.setVisibility(View.VISIBLE);
-                VolleyErrorHelper.showErrorMsg(error, EmployeeListActivity.this);
-            }
-
-            @Override
-            public void noInternet() {
-                dismissProgress();
-                SimpleToast.error(EmployeeListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-            }
-        }.call();
+////                ActionLogListResponse getActionLogListResponse = MyApplication.getGson().fromJson(response, EmployeeListActivity.class);
+////
+////                if (getActionLogListResponse != null) {
+////
+////                    if (getActionLogListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+////                        actionLogList = getActionLogListResponse.getData().getAction();
+////                        adapter.setActionList(actionLogList);
+////
+////                    } else {
+////                        SimpleToast.error(EmployeeListActivity.this, getActionLogListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+////                    }
+////
+////                } else {
+////                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
+////                }
+//
+//            }
+//
+//            @Override
+//            public void error(VolleyError error) {
+//                dismissProgress();
+//                viewBinding.contentLayout.setVisibility(View.VISIBLE);
+//                VolleyErrorHelper.showErrorMsg(error, EmployeeListActivity.this);
+//            }
+//
+//            @Override
+//            public void noInternet() {
+//                dismissProgress();
+//                SimpleToast.error(EmployeeListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+//            }
+//        }.call();
 
     }
 

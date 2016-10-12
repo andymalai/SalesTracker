@@ -6,6 +6,8 @@
 
     <!--progress bar text-->
     <string name="loading">Loading..</string>
+    <string name="delete">Deleting plan..</string>
+    <string name="delete_all">Deleting plans..</string>
     <string name="loading_agents">Loading Agents..</string>
     <string name="delete_agents">Deleting Agents..</string>
     <string name="update_user">Updating profile..</string>
@@ -19,6 +21,7 @@
     <string name="str_true">True</string>
     <string name="str_false">False</string>
     <string name="update_status">Plan Status Updated Successfully</string>
+    <string name="plan_deleted">Plan Deleted Successfully</string>
 
     <!--font_awesome icons string-->
     <string name="fa_error">{fa-exclamation-triangle}</string>
@@ -238,6 +241,8 @@
 
     <!--SalesVisitPlanACtivity.java-->
     <string name="add_visit_plan_success">Visit plan added successfully.</string>
+    <string name="delete_all_plan">Delete All Plan</string>
+    <string name="ask_for_delete_all_plan">Are you sure want to delete all plan of</string>
 
     <!--custom_time_picker_dialog.xml-->
     <string name="set">Set</string>
@@ -269,6 +274,35 @@
     <string name="delete_error">Error While Deleting Data. Please Try Again.</string>
     <string name="mapping_submit_success">Submit</string>
     <string name="enter_all">Enter All Details</string>
+
+    <!--DayPlanAdapter.java-->
+    <string name="delete_plan">Delete Plan</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ask_for_delete_plan">Are you sure want to delete this plan?</string>
+
+    <!--ChartActivity.class-->
+    <string name="chart_title">Chart</string>
+
+    <!--CommunicationListActivity.class-->
+    <string name="communication_list_title">Communication</string>
+
+    <!--EventListActivity.class-->
+    <string name="event_list_title">Event</string>
+
+    <!--activity_add_event.xml-->
+    <string name="add_event_title">Add Event</string>
+    <string name="date">Date</string>
+    <string name="event_name">Event Name</string>
+
+    <!--AddEventActivity.class-->
+    <string name="enter_event_name">Enter Event Name</string>
+    <string name="enter_date">Enter Date</string>
+
+    <!--EventDetailActivity.class-->
+    <string name="event_detail_title">Event Detail</string>
+    <string name="event_delete_dialog">Are you sure want to delete this event?</string>
+
 
 
 </resources>

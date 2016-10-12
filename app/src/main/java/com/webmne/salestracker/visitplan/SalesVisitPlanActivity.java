@@ -2,6 +2,7 @@ package com.webmne.salestracker.visitplan;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
@@ -26,6 +28,7 @@ import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivitySalesVisitPlanBinding;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.ConstantFormats;
+import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.helper.volley.CallWebService;
@@ -224,13 +227,80 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
                     fetchRecruitmentData();
 
                 } else if (optionType == CalendarView.CalendarOptions.DELETEALL.ordinal()) {
-                    Toast.makeText(SalesVisitPlanActivity.this, "Delete All", Toast.LENGTH_SHORT).show();
+
+                    new MaterialDialog.Builder(SalesVisitPlanActivity.this)
+                            .title(getString(R.string.delete_all_plan))
+                            .typeface(Functions.getBoldFont(SalesVisitPlanActivity.this), Functions.getRegularFont(SalesVisitPlanActivity.this))
+                            .positiveText(getString(R.string.yes))
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    deleteAllPlan();
+                                }
+                            })
+                            .negativeText(getString(R.string.no))
+                            .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .content(String.format("%s  %s",getString(R.string.ask_for_delete_all_plan), ConstantFormats.sdf_day.format(binding.cv.getCurrentCalendar().getTime())))
+                            .show();
+
                 }
 
             }
         });
     }
 
+    private void deleteAllPlan() {
+
+        showProgress(getString(R.string.delete_all));
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("PlanId", "");
+            json.put("Date", ConstantFormats.ymdFormat.format(binding.cv.getCurrentCalendar().getTime()));
+            Log.e("delete_all_plan", json.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        new CallWebService(this, AppConstants.DeletePlan, CallWebService.TYPE_POST, json) {
+
+            @Override
+            public void response(String response) {
+                dismissProgress();
+
+                com.webmne.salestracker.api.model.Response wsResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
+                if (wsResponse != null) {
+                    if (wsResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        SimpleToast.ok(SalesVisitPlanActivity.this, getString(R.string.plan_deleted));
+                        onResume();
+
+                    } else {
+                        SimpleToast.error(context, wsResponse.getResponse().getResponseMsg(), context.getString(R.string.fa_error));
+                    }
+                } else {
+                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, context);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(context, context.getString(R.string.no_internet_connection), context.getString(R.string.fa_error));
+            }
+        }.call();
+    }
 
     @Override
     public void onBackPressed() {

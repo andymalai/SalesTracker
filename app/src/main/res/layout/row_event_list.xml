@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:padding="@dimen/dimen_16dp">
+
+    <LinearLayout
+        android:id="@+id/dateLayout"
+        android:layout_width="@dimen/dimen_42dp"
+        android:layout_height="wrap_content"
+        android:background="@color/tile2"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.webmne.salestracker.widget.TfTextView
+            android:id="@+id/txtMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/half_black"
+            android:gravity="center"
+            android:padding="@dimen/dimen_2dp"
+            android:text="AUG"
+            android:textColor="@color/white"
+            android:textSize="@dimen/N_TEXT" />
+
+        <com.webmne.salestracker.widget.TfTextView
+            android:id="@+id/txtDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/silver"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen_4dp"
+            android:paddingTop="@dimen/dimen_4dp"
+            android:text="22"
+            android:textColor="@color/half_black"
+            android:textSize="@dimen/XXL_TEXT" />
+
+        <com.webmne.salestracker.widget.TfTextView
+            android:id="@+id/txtYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2016"
+            android:textColor="@color/white"
+            android:textSize="@dimen/M_TEXT"
+            android:visibility="gone"
+            app:isBold="true" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_16dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_4dp"
+            android:gravity="center_vertical">
+
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Name"
+                android:textSize="@dimen/XL_TEXT" />
+
+        </LinearLayout>
+
+        <com.webmne.salestracker.widget.TfTextView
+            android:id="@+id/txtDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@string/dummy"
+            android:textSize="@dimen/N_TEXT" />
+
+    </LinearLayout>
+
+</LinearLayout>
