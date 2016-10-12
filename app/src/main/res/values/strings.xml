@@ -160,11 +160,13 @@
 
     <!--activity_action_log_details.xml-->
     <string name="btn_remark">Add Remark</string>
-    <string name="btn_reopen">Reopen Action</string>
+    <string name="btn_reopen">Reopen</string>
     <string name="edit">Add Remark</string>
     <string name="action_log_details_title">Details</string>
     <string name="reopen_success">Your request for reopen Action Log has been sent successfully</string>
     <string name="no_attachment">No Attachment</string>
+    <string name="empty_remark">You cannot send empty remark</string>
+    <string name="your_remark">Type your remark</string>
 
     <!--item_action_log.xml-->
     <string name="remark">Remark</string>

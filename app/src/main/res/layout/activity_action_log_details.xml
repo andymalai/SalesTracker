@@ -3,65 +3,107 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         tools:context="com.webmne.salestracker.actionlog.ActionLogDetailsActivity">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottomBar"
+            android:orientation="vertical">
 
             <include
                 android:id="@+id/toolbarLayout"
                 layout="@layout/app_bar" />
 
-            <com.webmne.salestracker.widget.TfTextView
-                android:id="@+id/txtEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="?actionBarSize"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/dimen_12dp"
-                android:gravity="center"
-                android:text="@string/edit"
-                android:textColor="@color/white"
-                android:textSize="@dimen/toolbar_textsize"
-                app:isBold="true" />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-        <com.webmne.salestracker.widget.ActionLogDetails
-            android:id="@+id/actionLog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                    <com.webmne.salestracker.widget.ActionLogDetails
+                        android:id="@+id/actionLog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-        </com.webmne.salestracker.widget.ActionLogDetails>
+                    </com.webmne.salestracker.widget.ActionLogDetails>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen_8dp"
-            android:orientation="horizontal">
+                    <com.webmne.salestracker.widget.TfTextView
+                        android:id="@+id/btnReopen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginBottom="@dimen/dimen_16dp"
+                        android:layout_marginRight="@dimen/dimen_16dp"
+                        android:layout_marginTop="@dimen/dimen_8dp"
+                        android:text="@string/btn_reopen"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/M_TEXT" />
 
-            <com.webmne.salestracker.widget.TfButton
-                android:id="@+id/btnRemark"
-                style="@style/MyButtonStyle"
-                android:layout_width="0dp"
-                android:layout_marginRight="@dimen/dimen_8dp"
-                android:layout_weight="1"
-                android:text="@string/btn_remark" />
+                    <com.webmne.salestracker.widget.TfTextView
+                        android:id="@+id/txtRemarkCount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/off_white"
+                        android:padding="@dimen/dimen_8dp"
+                        android:text="@string/remark_title"
+                        app:isBold="true" />
 
-            <com.webmne.salestracker.widget.TfButton
-                android:id="@+id/btnReopen"
-                style="@style/MyButtonStyle"
-                android:layout_width="0dp"
-                android:layout_marginLeft="@dimen/dimen_8dp"
-                android:layout_weight="1"
-                android:text="@string/btn_reopen" />
+                    <com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView
+                        android:id="@+id/agentRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/dimen_8dp"
+                        app:frv_isEmptyViewKeepShowHeadOrFooter="false" />
+
+                </LinearLayout>
+
+            </ScrollView>
 
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/bottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_.5dp"
+                android:layout_marginLeft="@dimen/dimen_8dp"
+                android:layout_marginRight="@dimen/dimen_8dp"
+                android:background="@color/silver" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/dimen_4dp">
+
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtRamark"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/your_remark" />
+
+                <ImageView
+                    android:id="@+id/btnSend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_send"
+                    android:tint="@color/button_selected_color" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
 
 </layout>

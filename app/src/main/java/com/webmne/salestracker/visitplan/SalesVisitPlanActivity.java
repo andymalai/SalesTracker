@@ -17,7 +17,6 @@ import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.google.gson.Gson;
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.api.model.DatePlan;
 import com.webmne.salestracker.api.model.FetchMappingData;
 import com.webmne.salestracker.api.model.FetchMappingResponse;
 import com.webmne.salestracker.api.model.FetchRecruitmentData;
@@ -47,8 +46,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Locale;
 
 public class SalesVisitPlanActivity extends AppCompatActivity {
@@ -160,60 +157,25 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         binding.txtVariance.setText(Html.fromHtml("<u>" + String.format(Locale.US, "(%.2f%s)", variance, "%") + "</u>"));
 
         binding.cv.setMonthPlans(data.getPlans());
-
+        binding.cv.notifyAdapter();
     }
 
-
     private void initCalendarView() {
-        HashSet<Date> events = new HashSet<>();
-
-        // add events
-        Calendar calendar = Calendar.getInstance();
-        events.add(calendar.getTime());
-        calendar.add(Calendar.DAY_OF_MONTH, 3);
-        events.add(calendar.getTime());
-
         binding.cv.setMode(CalendarView.MODE.MONTH);
-        binding.cv.updateCalendar(events);
-        binding.cv.setOnCalendarChangeListener(new CalendarView.onCalendarChangeListener() {
+        binding.cv.updateCalendar();
+        binding.cv.setOnCalendarChangeListener(new CalendarView.onMonthChangeListener() {
             @Override
-            public void onChange(int type) {
-                if (type == AppConstants.DAY_VIEW) {
-                    String d = ConstantFormats.ymdFormat.format(binding.cv.getCurrentCalendar().getTime());
-                    for (int i = 0; i < planResponse.getData().getPlans().size(); i++) {
-                        DatePlan datePlan = planResponse.getData().getPlans().get(i);
-                        if (datePlan != null)
-                            if (datePlan.getDate().equals(d)) {
-                                Log.e("select", datePlan.getDate() + " -- " + datePlan.getPlan().size());
-                                binding.cv.setDayPlan(datePlan.getPlan());
-                            }
-                    }
-                } else {
-                    fetchPlan();
-                }
+            public void onMonthChange() {
+                fetchPlan();
             }
         });
 
         binding.cv.setOnViewChangeListener(new CalendarView.onViewChangeListener() {
             @Override
-            public void onChange() {
+            public void onViewChange() {
                 fetchPlan();
             }
         });
-
-        /*binding.cv.setOnGridSelectListener(new CalendarView.onGridSelectListener() {
-            @Override
-            public void onGridSelect(Calendar c) {
-                String d = ConstantFormats.ymdFormat.format(c.getTime());
-                Toast.makeText(SalesVisitPlanActivity.this, "Select " + d, Toast.LENGTH_SHORT).show();
-
-               *//* for (int i = 0; i < planResponse.getData().getPlans().size(); i++) {
-                    if (d.equals(planResponse.getData().getPlans().get(i).getDate())) {
-                        binding.cv.setDayPlan(planResponse.getData().getPlans().get(i));
-                    }
-                }*//*
-            }
-        });*/
 
         binding.cv.setOnCalendarActionClickListener(new CalendarView.OnCalendarActionClickListener() {
             @Override
@@ -347,7 +309,8 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         super.onResume();
         Log.e("onResume", "Call");
         fetchPlan();
-        binding.cv.setMode(CalendarView.MODE.MONTH);
+
+        // binding.cv.setMode(CalendarView.MODE.MONTH);
     }
 
     public void showProgress(String str) {

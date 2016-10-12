@@ -1,93 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/parentView"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/dimen_56dp"
-    android:clickable="true"
-    android:paddingTop="@dimen/dimen_1dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
-        android:id="@+id/subView"
+        android:id="@+id/parentView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:padding="@dimen/dimen_4dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:layout_height="@dimen/dimen_plan_height">
 
-        <LinearLayout
-            android:id="@+id/planView"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+        <HorizontalScrollView
+            android:id="@+id/contentView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_plan_height"
             android:clickable="false"
-            android:orientation="vertical">
+            android:paddingBottom="@dimen/dimen_8dp"
+            android:paddingTop="@dimen/dimen_8dp"
+            android:scrollbars="none">
 
-            <com.webmne.salestracker.widget.TfTextView
-                android:id="@+id/name"
+            <LinearLayout
+                android:id="@+id/subView"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:textSize="@dimen/M_TEXT"
-                android:textStyle="bold" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="@dimen/dimen_4dp">
 
-            <com.webmne.salestracker.widget.TfTextView
-                android:id="@+id/remark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Remark"
-                android:textSize="@dimen/S_TEXT" />
+            </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/actionLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/dimen_2dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/bView"
-                android:layout_width="@dimen/dimen_28dp"
-                android:layout_height="@dimen/dimen_28dp"
-                android:background="@color/off_white"
-                android:scaleType="centerInside"
-                android:tint="@color/half_black" />
-
-            <ImageButton
-                android:id="@+id/oView"
-                android:layout_width="@dimen/dimen_28dp"
-                android:layout_height="@dimen/dimen_28dp"
-                android:layout_marginLeft="@dimen/dimen_4dp"
-                android:layout_marginRight="@dimen/dimen_4dp"
-                android:background="@color/off_white"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_circle"
-                android:tint="@color/half_black" />
-
-            <ImageButton
-                android:id="@+id/xView"
-                android:layout_width="@dimen/dimen_28dp"
-                android:layout_height="@dimen/dimen_28dp"
-                android:background="@color/off_white"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_checked"
-                android:tint="@color/half_black" />
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/imgDelete"
-            android:layout_width="@dimen/dimen_42dp"
-            android:layout_height="@dimen/dimen_42dp"
-            android:layout_marginLeft="@dimen/dimen_6dp"
-            android:src="@drawable/ic_action_delete"
-            android:tint="@color/half_black" />
+        </HorizontalScrollView>
 
     </LinearLayout>
-
-</RelativeLayout>
+</layout>

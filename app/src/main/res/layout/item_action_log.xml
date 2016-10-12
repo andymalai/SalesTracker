@@ -71,11 +71,12 @@
                 android:text="Agent Name"
                 android:textSize="@dimen/XL_TEXT" />
 
-            <View
-                android:id="@+id/viewIndicate"
-                android:layout_width="@dimen/dimen_10dp"
-                android:layout_height="@dimen/dimen_10dp"
-                android:background="@drawable/pending_shape" />
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status"
+                android:textColor="@color/half_black" />
 
         </LinearLayout>
 
@@ -101,33 +102,15 @@
                 android:text="Last Update 21st Aug, 2016"
                 android:textSize="@dimen/N_TEXT" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtRemark"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_4dp"
-                android:orientation="horizontal">
-
-                <com.webmne.salestracker.widget.TfTextView
-                    android:id="@+id/txtStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:layout_alignParentLeft="true"
-                    android:text="Pending"
-                    android:textColor="@color/tile2"
-                    android:textSize="@dimen/N_TEXT" />
-
-                <com.webmne.salestracker.widget.TfTextView
-                    android:id="@+id/txtRemark"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_gravity="right"
-                    android:text="3 remark"
-                    android:textColor="@color/tile2"
-                    android:textSize="@dimen/N_TEXT" />
-            </RelativeLayout>
-
+                android:layout_gravity="right"
+                android:layout_marginTop="@dimen/dimen_2dp"
+                android:text="3 remark"
+                android:textColor="@color/tile2"
+                android:textSize="@dimen/N_TEXT" />
 
         </LinearLayout>
 

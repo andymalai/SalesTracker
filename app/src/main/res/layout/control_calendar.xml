@@ -64,18 +64,27 @@
                 android:layout_height="@dimen/dimen_32dp"
                 android:background="@drawable/unselected_left_shape"
                 android:text="D"
+                android:layout_marginRight="@dimen/dimen_1dp"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
-            <View
-                android:layout_width="@dimen/dimen_1dp"
-                android:layout_height="match_parent"
-                android:background="@color/white" />
+            <com.webmne.salestracker.widget.TfButton
+                android:id="@+id/btnWeek"
+                android:layout_width="@dimen/dimen_42dp"
+                android:layout_height="@dimen/dimen_32dp"
+                android:layout_marginLeft="@dimen/dimen_1dp"
+                android:layout_marginRight="@dimen/dimen_1dp"
+                android:background="@color/un_selected"
+                android:visibility="gone"
+                android:text="W"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
             <com.webmne.salestracker.widget.TfButton
                 android:id="@+id/btnMonth"
                 android:layout_width="@dimen/dimen_42dp"
                 android:layout_height="@dimen/dimen_32dp"
+                android:layout_marginLeft="@dimen/dimen_1dp"
                 android:background="@drawable/selected_right_shape"
                 android:text="M"
                 android:textColor="@color/white"

@@ -125,6 +125,7 @@ public class ActionLogListActivity extends AppCompatActivity {
     }
 
     private void getActionLogList() {
+
         showProgress(getString(R.string.loading));
 
         actionLogList = new ArrayList<>();

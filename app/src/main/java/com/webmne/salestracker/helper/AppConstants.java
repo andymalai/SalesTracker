@@ -29,6 +29,11 @@ public class AppConstants {
     public static String ONGOING = "OG";
     public static String APPROVE = "A";
 
+    // Plan Item click listener
+    public static final int DELETE_PLAN = 1;
+    public static final int OPEN_REMARK = 2;
+    public static final int UPDATE_BOX = 3;
+
     // Calendar Mode
     public static int DAY_VIEW = 1;
     public static int MONTH_VIEW = 2;

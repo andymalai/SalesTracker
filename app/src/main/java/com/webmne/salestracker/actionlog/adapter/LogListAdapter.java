@@ -8,7 +8,6 @@ import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +64,6 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
 
         LinearLayout dateLayout;
         TfTextView txtDate, txtMonth, txtYear, txtStatus, txtDescription, txtAgentName, txtLastUpdate, txtRemark;
-        private View viewIndicate;
 
         public LogHolder(View itemView) {
             super(itemView);
@@ -78,7 +76,6 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
             txtAgentName = (TfTextView) itemView.findViewById(R.id.txtAgentName);
             txtLastUpdate = (TfTextView) itemView.findViewById(R.id.txtLastUpdate);
             txtRemark = (TfTextView) itemView.findViewById(R.id.txtRemark);
-            viewIndicate = itemView.findViewById(R.id.viewIndicate);
         }
 
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -97,26 +94,6 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
 
             txtStatus.setText(Functions.getStatus(context, model.getStatus()));
 
-            if (TextUtils.isEmpty(model.getStatus())) {
-                viewIndicate.setBackgroundResource(R.drawable.pending_shape);
-
-            } else if (model.getStatus().equals(AppConstants.PENDING)) {
-                viewIndicate.setBackgroundResource(R.drawable.pending_shape);
-
-            } else if (model.getStatus().equals(AppConstants.REJECTED)) {
-                viewIndicate.setBackgroundResource(R.drawable.reject_shape);
-
-            } else if (model.getStatus().equals(AppConstants.PROCESSING)) {
-                viewIndicate.setBackgroundResource(R.drawable.processing_shape);
-
-            } else if (model.getStatus().equals(AppConstants.COMPLETE)) {
-                viewIndicate.setBackgroundResource(R.drawable.completed_shape);
-
-            } else {
-                viewIndicate.setBackgroundResource(R.drawable.pending_shape);
-            }
-
-            Log.e("tag", "model.getCreatedDatetime():-"+model.getCreatedDatetime());
             // Created Date-Time
             txtMonth.setText(Functions.parseDate(model.getCreatedDatetime(), "MMM"));
             txtDate.setText(Functions.parseDate(model.getCreatedDatetime(), "dd"));
@@ -130,22 +107,6 @@ public class LogListAdapter extends RecyclerView.Adapter<LogListAdapter.LogHolde
                 txtRemark.setVisibility(View.VISIBLE);
                 txtRemark.setText(Html.fromHtml(String.format("<u>%s %s</u>", model.getRemarkCount(), context.getString(R.string.remark))));
             }
-
-            txtRemark.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (model.getRemarkCount().equals("0")) {
-                        SimpleToast.info(context, context.getString(R.string.no_remark));
-
-                    } else {
-                        Intent intent = new Intent(context, RemarkListActivity.class);
-                        intent.putExtra("actionlog", model.getId());
-                        context.startActivity(intent);
-                        ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    }
-
-                }
-            });
 
         }
     }
