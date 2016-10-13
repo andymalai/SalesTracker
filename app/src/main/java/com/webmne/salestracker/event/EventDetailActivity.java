@@ -5,27 +5,23 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.DatePicker;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.agent.adapter.BranchAdapter;
-import com.webmne.salestracker.api.APIListener;
-import com.webmne.salestracker.api.AppApi;
-import com.webmne.salestracker.api.BranchApi;
 import com.webmne.salestracker.api.model.Branch;
 import com.webmne.salestracker.api.model.BranchListResponse;
+import com.webmne.salestracker.api.model.Response;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
-import com.webmne.salestracker.databinding.ActivityAddEmployeeBinding;
 import com.webmne.salestracker.databinding.ActivityAddEventBinding;
-import com.webmne.salestracker.employee.adapter.PositionAdapter;
-import com.webmne.salestracker.employee.model.EmployeeModel;
 import com.webmne.salestracker.employee.model.PositionModel;
-import com.webmne.salestracker.event.model.EventModel;
+import com.webmne.salestracker.event.model.Event;
+import com.webmne.salestracker.event.model.Region;
+import com.webmne.salestracker.event.model.RegionListResponse;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
@@ -35,13 +31,9 @@ import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 
 import org.json.JSONObject;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.concurrent.TimeoutException;
-
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * Created by vatsaldesai on 27-09-2016.
@@ -52,29 +44,28 @@ public class EventDetailActivity extends AppCompatActivity {
     private boolean isEditMode = false;
 
     private ActivityAddEventBinding viewBinding;
-    private BranchApi branchApi;
-    private PositionAdapter positionAdapter;
-    private BranchAdapter branchAdapter;
     private LoadingIndicatorDialog dialog;
-    private int branchId = 0, regionId = 0;
-    private AppApi appApi;
-    private String positionName, event;
-    private EventModel eventModel;
     private DatePickerDialog datePickerDialog;
 
-    //  private ArrayList<TierModel> tierModels;
-    private ArrayList<Branch> branchModels;
-    private AdapterView.OnItemSelectedListener branchSelectListener;
-    private AdapterView.OnItemSelectedListener positionSelectListener;
+    private ArrayList<Branch> branchArrayList = new ArrayList<>();
+    private Integer[] branchWhich;
+    private StringBuilder stringBuilderBranch;
+
+    private ArrayList<Region> regionArrayList;
+    private int regionWhich = 0;
+
+    private ArrayList<PositionModel> positionArrayList;
+    private Integer[] positionWhich;
+    private StringBuilder stringBuilderPosition;
+
+    private String strRegion = "0", event;
+    private Event eventModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_event);
-
-        branchApi = new BranchApi();
-        appApi = MyApplication.getRetrofit().create(AppApi.class);
 
         init();
     }
@@ -97,16 +88,14 @@ public class EventDetailActivity extends AppCompatActivity {
         viewBinding.txtCancel.setVisibility(View.VISIBLE);
         viewBinding.btnAdd.setText(getString(R.string.btn_edit));
 
-//        disableFields();
+        // disableFields();
 
         event = getIntent().getStringExtra("event");
-        eventModel = MyApplication.getGson().fromJson(event, EventModel.class);
+        eventModel = MyApplication.getGson().fromJson(event, Event.class);
 
-        viewBinding.edtEventName.setText(String.format("%s", eventModel.getName()));
-        viewBinding.edtDate.setText(String.format("%s", eventModel.getCreateDate()));
-        viewBinding.edtDescription.setText(String.format("%s", eventModel.getDesc()));
-
-        getPositions();
+        viewBinding.edtEventName.setText(String.format("%s", eventModel.getTitle()));
+        viewBinding.edtDate.setText(String.format("%s", eventModel.getEventDate()));
+        viewBinding.edtDescription.setText(String.format("%s", eventModel.getDescription()));
 
         if (Functions.isConnected(this)) {
 
@@ -120,26 +109,107 @@ public class EventDetailActivity extends AppCompatActivity {
         actionListener();
     }
 
-    private void getPositions() {
-        ArrayList<PositionModel> positionModelList = new ArrayList<>();
-
-        if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.HOS)) {
-            positionModelList.add(new PositionModel(null, AppConstants.MARKETER));
-        } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.BM)) {
-            positionModelList.add(new PositionModel(null, AppConstants.MARKETER));
-            positionModelList.add(new PositionModel(null, AppConstants.HOS));
-        } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.HOS)) {
-            positionModelList.add(new PositionModel(null, AppConstants.MARKETER));
-            positionModelList.add(new PositionModel(null, AppConstants.HOS));
-            positionModelList.add(new PositionModel(null, AppConstants.BM));
-        }
-
-        positionAdapter = new PositionAdapter(this, R.layout.item_adapter, positionModelList);
-        viewBinding.spinnerPosition.setAdapter(positionAdapter);
-        viewBinding.spinnerPosition.setOnItemSelectedListener(positionSelectListener);
-    }
 
     private void actionListener() {
+
+        viewBinding.edtRegion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new MaterialDialog.Builder(EventDetailActivity.this)
+                        .title(getString(R.string.select_region))
+                        .items(regionArrayList)
+                        .typeface(Functions.getBoldFont(EventDetailActivity.this), Functions.getRegularFont(EventDetailActivity.this))
+                        .itemsCallbackSingleChoice(regionWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+
+                                regionWhich = which;
+
+                                viewBinding.edtRegion.setText(text.toString().replace("[", "").replace("]", ""));
+
+                                strRegion = regionArrayList.get(which).getRegion();
+
+                                viewBinding.edtBranch.setText("");
+                                branchWhich = null;
+
+                                fetchBranches();
+
+                                return false;
+                            }
+                        })
+                        .positiveText(getString(R.string.btn_ok))
+                        .show();
+
+            }
+        });
+
+
+        viewBinding.edtBranch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new MaterialDialog.Builder(EventDetailActivity.this)
+                        .title(getString(R.string.select_branch))
+                        .items(branchArrayList)
+                        .typeface(Functions.getBoldFont(EventDetailActivity.this), Functions.getRegularFont(EventDetailActivity.this))
+                        .itemsCallbackMultiChoice(branchWhich, new MaterialDialog.ListCallbackMultiChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+
+                                branchWhich = which;
+
+                                stringBuilderBranch = new StringBuilder();
+
+                                for (int i = 0; i < which.length; i++) {
+
+                                    stringBuilderBranch.append(branchArrayList.get(which[i]).getBranchId());
+                                    stringBuilderBranch.append(",");
+                                }
+
+                                viewBinding.edtBranch.setText(Arrays.toString(text).replace("[", "").replace("]", ""));
+
+                                return true;
+                            }
+                        })
+                        .positiveText(getString(R.string.btn_ok))
+                        .show();
+
+            }
+        });
+
+        viewBinding.edtPosition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new MaterialDialog.Builder(EventDetailActivity.this)
+                        .title(getString(R.string.select_position))
+                        .items(positionArrayList)
+                        .typeface(Functions.getBoldFont(EventDetailActivity.this), Functions.getRegularFont(EventDetailActivity.this))
+                        .itemsCallbackMultiChoice(positionWhich, new MaterialDialog.ListCallbackMultiChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+
+                                positionWhich = which;
+
+                                stringBuilderPosition = new StringBuilder();
+
+                                for (int i = 0; i < which.length; i++) {
+
+                                    stringBuilderPosition.append(positionArrayList.get(which[i]).getPositionId());
+                                    stringBuilderPosition.append(",");
+                                }
+
+                                viewBinding.edtPosition.setText(Arrays.toString(text).replace("[", "").replace("]", ""));
+
+                                return true;
+                            }
+                        })
+                        .positiveText(getString(R.string.btn_ok))
+                        .show();
+
+            }
+        });
 
         viewBinding.edtDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,7 +221,7 @@ public class EventDetailActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        viewBinding.edtDate.setText(String.format("%d-%d-%d", dayOfMonth, monthOfYear, year));
+                        viewBinding.edtDate.setText(String.format("%d-%d-%d", year, monthOfYear, dayOfMonth));
 
                     }
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -178,51 +248,30 @@ public class EventDetailActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (regionId == 0) {
+                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtRegion))) {
                     SimpleToast.error(EventDetailActivity.this, getString(R.string.select_region), getString(R.string.fa_error));
                     return;
                 }
 
-                if (branchId == 0) {
+                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtBranch))) {
                     SimpleToast.error(EventDetailActivity.this, getString(R.string.select_branch), getString(R.string.fa_error));
                     return;
                 }
 
-                if (!TextUtils.isEmpty(Functions.toStr(viewBinding.edtDescription))) {
+                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtPosition))) {
+                    SimpleToast.error(EventDetailActivity.this, getString(R.string.select_position), getString(R.string.fa_error));
+                    return;
+                }
+
+                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtDescription))) {
                     SimpleToast.error(EventDetailActivity.this, getString(R.string.enter_description), getString(R.string.fa_error));
                     return;
                 }
 
-//                doAddAgent();
+                addEvent();
 
             }
         });
-
-        positionSelectListener = new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                PositionModel positionModel = positionAdapter.getItem(position);
-                positionName = positionModel.getName();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        };
-
-        branchSelectListener = new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Branch branch = branchAdapter.getItem(position);
-                branchId = Integer.parseInt(branch.getBranchId());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        };
 
         viewBinding.txtCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -237,7 +286,7 @@ public class EventDetailActivity extends AppCompatActivity {
                         @Override
                         public void onClickYes(MaterialDialog dialog) {
 
-//                            deleteAgent();
+                            deleteEvent();
 
                         }
 
@@ -270,115 +319,46 @@ public class EventDetailActivity extends AppCompatActivity {
 
     }
 
-    private void fetchRegion() {
-        showProgress();
-        branchApi.getBranchList(new APIListener<BranchListResponse>() {
-            @Override
-            public void onResponse(Response<BranchListResponse> response) {
-                dismissProgress();
-                if (response.isSuccessful()) {
-                    BranchListResponse branchListResponse = response.body();
-                    if (branchListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                        branchAdapter = new BranchAdapter(EventDetailActivity.this, R.layout.item_adapter, branchListResponse.getData().getBranches());
-                        viewBinding.spinnerBranch.setAdapter(branchAdapter);
-                        viewBinding.spinnerBranch.setOnItemSelectedListener(branchSelectListener);
+    private void addEvent() {
 
-                        fetchBranches();
-
-                    } else {
-                        SimpleToast.error(EventDetailActivity.this, branchListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-                    }
-                } else {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BranchListResponse> call, Throwable t) {
-                dismissProgress();
-                if (t instanceof TimeoutException) {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
-                } else if (t instanceof UnknownHostException) {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-                } else {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
-                }
-            }
-        });
-    }
-
-    private void enableFields() {
-        viewBinding.txtCancel.setText(getString(R.string.btn_cancel));
-        viewBinding.btnAdd.setText(getString(R.string.btn_save));
-
-        viewBinding.edtEventName.setFocusableInTouchMode(true);
-        viewBinding.edtDate.setClickable(true);
-        viewBinding.edtDescription.setFocusableInTouchMode(true);
-
-        branchAdapter.setCanOpen(true);
-        positionAdapter.setCanOpen(true);
-    }
-
-    private void disableFields() {
-        viewBinding.txtCancel.setText(getString(R.string.btn_delete));
-        viewBinding.btnAdd.setText(getString(R.string.btn_edit));
-
-        viewBinding.edtEventName.setFocusableInTouchMode(false);
-        viewBinding.spinnerBranch.setFocusableInTouchMode(false);
-        viewBinding.edtDescription.setFocusableInTouchMode(false);
-
-        viewBinding.edtEventName.setFocusable(false);
-        viewBinding.spinnerBranch.setFocusable(false);
-        viewBinding.edtDescription.setFocusable(false);
-
-        viewBinding.edtDate.setClickable(false);
-
-        branchAdapter.setCanOpen(false);
-        positionAdapter.setCanOpen(false);
-    }
-
-    private void doAddAgent() {
-
-        showProgress();
+        showProgress(getString(R.string.loading));
 
         JSONObject json = new JSONObject();
         try {
-//            json.put("AgentName", Functions.toStr(viewBinding.edtAgentName));
-//            json.put("AmgCode", Functions.toStr(viewBinding.edtAmgGeneral));
-//            json.put("BranchId", branchId);
-//            json.put("Description", Functions.toStr(viewBinding.edtDescription));
-//            json.put("EmailId", Functions.toStr(viewBinding.edtEmailId));
-//            json.put("KruniaCode", Functions.toStr(viewBinding.edtKruniaCode));
-//            json.put("MobileNo", Functions.toStr(viewBinding.edtPhoneNumber));
-//            json.put("TierId", tierId);
-//            json.put("UserId", PrefUtils.getUserId(this));
-//            Log.e("add_req", json.toString());
+            json.put("Id", eventModel.getId());
+            json.put("UserId", PrefUtils.getUserId(this));
+            json.put("Date", Functions.toStr(viewBinding.edtDate));
+            json.put("Title", Functions.toStr(viewBinding.edtEventName));
+            json.put("Description", Functions.toStr(viewBinding.edtDescription));
+            json.put("RegionId", strRegion);
+            json.put("BranchId", stringBuilderBranch.toString());
+            json.put("RoleId", stringBuilderPosition.toString());
+
+            Log.e("add_req", json.toString());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        new CallWebService(this, AppConstants.AddAgent, CallWebService.TYPE_POST, json) {
+        new CallWebService(this, AppConstants.AddEvent, CallWebService.TYPE_POST, json) {
 
             @Override
             public void response(String response) {
                 dismissProgress();
 
-//                AddAgentResponse addAgentResponse = MyApplication.getGson().fromJson(response, AddAgentResponse.class);
-//
-//                if (addAgentResponse != null) {
-//                    Log.e("add_res", MyApplication.getGson().toJson(addAgentResponse));
-//
-//                    if (addAgentResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-//                        SimpleToast.ok(EmployeeDetailActivity.this, getString(R.string.add_agent_success));
-//                        finish();
-//                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-//
-//                    } else {
-//                        SimpleToast.error(EmployeeDetailActivity.this, addAgentResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-//                    }
-//                }
+                Response addEventResponse = MyApplication.getGson().fromJson(response, Response.class);
+
+                if (addEventResponse != null) {
+
+                    if (addEventResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        SimpleToast.ok(EventDetailActivity.this, getString(R.string.add_event_success));
+                        finish();
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        Log.e("response", response);
+                    } else {
+                        SimpleToast.error(EventDetailActivity.this, addEventResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                }
             }
 
             @Override
@@ -395,53 +375,254 @@ public class EventDetailActivity extends AppCompatActivity {
         }.call();
     }
 
+    private void deleteEvent() {
+
+        showProgress(getString(R.string.loading));
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("Id", eventModel.getId());
+
+            Log.e("add_req", json.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        new CallWebService(this, AppConstants.DeleteEvent, CallWebService.TYPE_POST, json) {
+
+            @Override
+            public void response(String response) {
+                dismissProgress();
+
+                Response deleteEventResponse = MyApplication.getGson().fromJson(response, Response.class);
+
+                if (deleteEventResponse != null) {
+
+                    if (deleteEventResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        SimpleToast.ok(EventDetailActivity.this, getString(R.string.add_event_success));
+                        finish();
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        Log.e("response", response);
+                    } else {
+                        SimpleToast.error(EventDetailActivity.this, deleteEventResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, EventDetailActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(EventDetailActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
+    }
+
+    private void fetchRegion() {
+
+        showProgress(getString(R.string.loading));
+
+        new CallWebService(this, AppConstants.Region, CallWebService.TYPE_GET) {
+
+            @Override
+            public void response(String response) {
+
+                dismissProgress();
+
+                RegionListResponse regionListResponse = MyApplication.getGson().fromJson(response, RegionListResponse.class);
+
+                if (regionListResponse != null) {
+
+                    if (regionListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+
+                        regionArrayList = new ArrayList<>();
+                        regionArrayList = regionListResponse.getData().getBranches();
+
+                        for(int i=0; i<regionArrayList.size(); i++)
+                        {
+                            if (regionArrayList.get(i).getRegion().equals(eventModel.getRegionId()))
+                            {
+                                regionWhich = i;
+
+                                viewBinding.edtRegion.setText(regionArrayList.get(i).getRegionId());
+
+                                strRegion = regionArrayList.get(i).getRegion();
+                            }
+                        }
+
+                        fetchPosition();
+
+                    } else {
+                        SimpleToast.error(EventDetailActivity.this, regionListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+
+                } else {
+                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
+                }
+
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, EventDetailActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(EventDetailActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
+
+    }
+
+    private void fetchBranches() {
+
+        showProgress(getString(R.string.loading));
+
+        new CallWebService(this, AppConstants.Branch + "&regionid=" + strRegion, CallWebService.TYPE_GET) {
+
+            @Override
+            public void response(String response) {
+
+                dismissProgress();
+
+                BranchListResponse branchListResponse = MyApplication.getGson().fromJson(response, BranchListResponse.class);
+
+                if (branchListResponse != null) {
+
+                    if (branchListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+
+                        branchArrayList = new ArrayList<>();
+                        branchArrayList = branchListResponse.getData().getBranches();
+
+                    } else {
+                        SimpleToast.error(EventDetailActivity.this, branchListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+
+                } else {
+                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
+                }
+
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, EventDetailActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(EventDetailActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
+
+    }
+
+    private void fetchPosition() {
+
+        showProgress(getString(R.string.loading));
+
+        new CallWebService(this, AppConstants.Position, CallWebService.TYPE_GET) {
+
+            @Override
+            public void response(String response) {
+
+                dismissProgress();
+
+                PositionListResponse positionListResponse = MyApplication.getGson().fromJson(response, PositionListResponse.class);
+
+                if (positionListResponse != null) {
+
+                    if (positionListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+
+                        positionArrayList = new ArrayList<>();
+                        positionArrayList = positionListResponse.getData().getPosition();
+
+                        fetchBranches();
+
+                    } else {
+                        SimpleToast.error(EventDetailActivity.this, positionListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+
+                } else {
+                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
+                }
+
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, EventDetailActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(EventDetailActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
+
+    }
+
+    private void enableFields() {
+        viewBinding.txtCancel.setText(getString(R.string.btn_cancel));
+        viewBinding.btnAdd.setText(getString(R.string.btn_save));
+
+        viewBinding.edtEventName.setFocusableInTouchMode(true);
+//        viewBinding.edtDate.setFocusableInTouchMode(true);
+//        viewBinding.edtRegion.setFocusableInTouchMode(true);
+//        viewBinding.edtBranch.setFocusableInTouchMode(true);
+//        viewBinding.edtPosition.setFocusableInTouchMode(true);
+        viewBinding.edtDescription.setFocusableInTouchMode(true);
+
+        viewBinding.edtEventName.setClickable(true);
+        viewBinding.edtDate.setClickable(true);
+        viewBinding.edtRegion.setClickable(true);
+        viewBinding.edtBranch.setClickable(true);
+        viewBinding.edtPosition.setClickable(true);
+        viewBinding.edtDescription.setClickable(true);
+    }
+
+    private void disableFields() {
+        viewBinding.txtCancel.setText(getString(R.string.btn_delete));
+        viewBinding.btnAdd.setText(getString(R.string.btn_edit));
+
+        viewBinding.edtEventName.setFocusableInTouchMode(false);
+        viewBinding.edtDate.setFocusableInTouchMode(false);
+        viewBinding.edtRegion.setFocusableInTouchMode(false);
+        viewBinding.edtBranch.setFocusableInTouchMode(false);
+        viewBinding.edtPosition.setFocusableInTouchMode(false);
+        viewBinding.edtDescription.setFocusableInTouchMode(false);
+
+        viewBinding.edtEventName.setClickable(false);
+        viewBinding.edtDate.setClickable(false);
+        viewBinding.edtRegion.setClickable(false);
+        viewBinding.edtBranch.setClickable(false);
+        viewBinding.edtPosition.setClickable(false);
+        viewBinding.edtDescription.setClickable(false);
+
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    private void fetchBranches() {
-        showProgress();
-        branchApi.getBranchList(new APIListener<BranchListResponse>() {
-            @Override
-            public void onResponse(Response<BranchListResponse> response) {
-                dismissProgress();
-                if (response.isSuccessful()) {
-                    BranchListResponse branchListResponse = response.body();
-                    if (branchListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                        branchAdapter = new BranchAdapter(EventDetailActivity.this, R.layout.item_adapter, branchListResponse.getData().getBranches());
-                        viewBinding.spinnerBranch.setAdapter(branchAdapter);
-                        viewBinding.spinnerBranch.setOnItemSelectedListener(branchSelectListener);
-
-                        disableFields();
-
-                    } else {
-                        SimpleToast.error(EventDetailActivity.this, branchListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-                    }
-                } else {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BranchListResponse> call, Throwable t) {
-                dismissProgress();
-                if (t instanceof TimeoutException) {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.time_out), getString(R.string.fa_error));
-                } else if (t instanceof UnknownHostException) {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-                } else {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
-                }
-            }
-        });
-    }
-
-    public void showProgress() {
+    public void showProgress(String string) {
         if (dialog == null) {
-            dialog = new LoadingIndicatorDialog(this, "Please wait..", android.R.style.Theme_Translucent_NoTitleBar);
+            dialog = new LoadingIndicatorDialog(this, string, android.R.style.Theme_Translucent_NoTitleBar);
         }
         dialog.show();
     }

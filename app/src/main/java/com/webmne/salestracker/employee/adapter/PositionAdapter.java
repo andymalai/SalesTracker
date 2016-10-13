@@ -64,7 +64,7 @@ public class PositionAdapter extends ArrayAdapter<PositionModel> {
         View convertView = inflater.inflate(textViewResourceId, parent, false);
 
         TfTextView txtItem = (TfTextView) convertView.findViewById(R.id.txtItem);
-        txtItem.setText(positionModelList.get(position).getName());
+        txtItem.setText(positionModelList.get(position).getPositionName());
 
         return convertView;
     }

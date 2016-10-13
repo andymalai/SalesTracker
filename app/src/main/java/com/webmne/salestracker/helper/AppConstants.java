@@ -142,9 +142,23 @@ public class AppConstants {
     //
     public static final String CommunicationList = WEB_SERVICE_URL + "";
 
-    //
-    public static final String EventList = WEB_SERVICE_URL + "";
+    // http://demo.webmynehost.com/amgsales/services/fetch_events.php?format=json
+    public static final String EventList = WEB_SERVICE_URL + "fetch_events.php?format=json";
 
+    // http://demo.webmynehost.com/amgsales/services/region.php?format=json
+    public static final String Region = WEB_SERVICE_URL + "region.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/branch.php?format=json&regionid=0
+    public static final String Branch = WEB_SERVICE_URL + "branch.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/position.php?format=json
+    public static final String Position = WEB_SERVICE_URL + "position.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/add_event.php?format=json
+    public static final String AddEvent = WEB_SERVICE_URL + "add_event.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/delete_event.php?format=json
+    public static final String DeleteEvent = WEB_SERVICE_URL + "delete_event.php?format=json";
 
 
     // FTP details Local

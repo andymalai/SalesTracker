@@ -38,4 +38,9 @@ public class Branch {
     public void setRegion(String Region) {
         this.Region = Region;
     }
+
+    @Override
+    public String toString() {
+        return BranchName;
+    }
 }

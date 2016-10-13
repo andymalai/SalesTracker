@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
+import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.adapter.EventListAdapter;
@@ -16,9 +17,14 @@ import com.webmne.salestracker.custom.LineDividerItemDecoration;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityEventListBinding;
 import com.webmne.salestracker.employee.EmployeeDetailActivity;
-import com.webmne.salestracker.event.model.EventModel;
+import com.webmne.salestracker.event.model.Event;
+import com.webmne.salestracker.event.model.EventListMainResponse;
+import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
+import com.webmne.salestracker.helper.PrefUtils;
+import com.webmne.salestracker.helper.volley.CallWebService;
+import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 
 import java.util.ArrayList;
@@ -26,7 +32,8 @@ import java.util.ArrayList;
 public class EventListActivity extends AppCompatActivity {
 
     private EventListAdapter adapter;
-    private ArrayList<EventModel> eventList;
+    private ArrayList<Event> eventList;
+    private ArrayList<Event> mainEventList;
 
     private ActivityEventListBinding viewBinding;
     private LoadingIndicatorDialog dialog;
@@ -118,72 +125,69 @@ public class EventListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-            super.onBackPressed();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     private void getEvents() {
 
-//        showProgress(getString(R.string.loading));
-//
-//        viewBinding.contentLayout.setVisibility(View.GONE);
+        showProgress(getString(R.string.loading));
+
+        viewBinding.contentLayout.setVisibility(View.INVISIBLE);
 
         eventList = new ArrayList<>();
         adapter.setEventList(eventList);
 
+        new CallWebService(this, AppConstants.EventList, CallWebService.TYPE_GET) {
 
-        //////////// SET STATIC EVENT DATA /////////////////////
-        for (int i = 0; i < 10; i++) {
-            EventModel model = new EventModel();
-            model.setName("Event " + i);
-            model.setDesc("Description");
-            model.setCreateDate("2016/11/22 08:18:17");
-            eventList.add(model);
-        }
-        adapter.setEventList(eventList);
-        ////////////////////////////////////////////////////////
+            @Override
+            public void response(String response) {
 
+                dismissProgress();
 
-//        new CallWebService(this, AppConstants.EventList, CallWebService.TYPE_GET) {
-//
-//            @Override
-//            public void response(String response) {
-//
-//                dismissProgress();
-//
-//                viewBinding.contentLayout.setVisibility(View.VISIBLE);
-//
-////                ActionLogListResponse getActionLogListResponse = MyApplication.getGson().fromJson(response, EmployeeListActivity.class);
-////
-////                if (getActionLogListResponse != null) {
-////
-////                    if (getActionLogListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-////                        actionLogList = getActionLogListResponse.getData().getAction();
-////                        adapter.setActionList(actionLogList);
-////
-////                    } else {
-////                        SimpleToast.error(EmployeeListActivity.this, getActionLogListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-////                    }
-////
-////                } else {
-////                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
-////                }
-//
-//            }
-//
-//            @Override
-//            public void error(VolleyError error) {
-//                dismissProgress();
-//                viewBinding.contentLayout.setVisibility(View.VISIBLE);
-//                VolleyErrorHelper.showErrorMsg(error, EventListActivity.this);
-//            }
-//
-//            @Override
-//            public void noInternet() {
-//                dismissProgress();
-//                SimpleToast.error(EventListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-//            }
-//        }.call();
+                viewBinding.contentLayout.setVisibility(View.VISIBLE);
+
+                EventListMainResponse eventListModel = MyApplication.getGson().fromJson(response, EventListMainResponse.class);
+
+                if (eventListModel != null) {
+
+                    if (eventListModel.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+
+                        mainEventList = eventListModel.getEvents();
+
+                        for (int i = 0; i < mainEventList.size(); i++) {
+
+                            if (mainEventList.get(i).getBranchId().contains(PrefUtils.getUserProfile(EventListActivity.this).getBranch())
+                                    && mainEventList.get(i).getRoleId().contains(PrefUtils.getUserProfile(EventListActivity.this).getRoleid())) {
+                                eventList.add(mainEventList.get(i));
+                            }
+                        }
+
+                        adapter.setEventList(eventList);
+
+                    } else {
+                        SimpleToast.error(EventListActivity.this, eventListModel.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+
+                } else {
+                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
+                }
+
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                viewBinding.contentLayout.setVisibility(View.VISIBLE);
+                VolleyErrorHelper.showErrorMsg(error, EventListActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(EventListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
 
     }
 

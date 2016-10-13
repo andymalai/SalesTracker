@@ -43,6 +43,8 @@ public class Functions {
 
     public static final String ServerDateTimeFormat = "yyyy/MM/dd HH:mm:ss";
 
+    public static final String ServerDateFormat = "yyyy-MM-dd";
+
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -191,6 +193,20 @@ public class Functions {
         SimpleDateFormat inputFormat = new SimpleDateFormat(ServerDateTimeFormat);
 
         SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(inputDate);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+    public static String parseDate2(String inputDate, SimpleDateFormat outputFormat, SimpleDateFormat inputFormat) {
 
         Date date = null;
         String str = null;

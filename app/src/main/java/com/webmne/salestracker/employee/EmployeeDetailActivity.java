@@ -187,7 +187,7 @@ public class EmployeeDetailActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 PositionModel positionModel = positionAdapter.getItem(position);
-                positionName = positionModel.getName();
+                positionName = positionModel.getPositionName();
             }
 
             @Override

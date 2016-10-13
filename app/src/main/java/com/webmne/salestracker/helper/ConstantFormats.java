@@ -21,4 +21,7 @@ public class ConstantFormats {
 
     public static final SimpleDateFormat zoneFormat = new SimpleDateFormat("Z", Locale.US);
 
+    public static final SimpleDateFormat MMMFormat = new SimpleDateFormat("MMM", Locale.US);
+    public static final SimpleDateFormat ddFormat = new SimpleDateFormat("dd", Locale.US);
+
 }

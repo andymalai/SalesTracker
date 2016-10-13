@@ -6,26 +6,37 @@ package com.webmne.salestracker.employee.model;
 
 public class PositionModel {
 
-    String id, name;
+    /**
+     * PositionId : 7
+     * PositionName : AAS
+     */
 
-    public PositionModel(String id, String name) {
-        this.id = id;
-        this.name = name;
+    private String PositionId;
+    private String PositionName;
+
+    public PositionModel(String positionId, String positionName) {
+        PositionId = positionId;
+        PositionName = positionName;
     }
 
-    public String getId() {
-        return id;
+    public String getPositionId() {
+        return PositionId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPositionId(String PositionId) {
+        this.PositionId = PositionId;
     }
 
-    public String getName() {
-        return name;
+    public String getPositionName() {
+        return PositionName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPositionName(String PositionName) {
+        this.PositionName = PositionName;
+    }
+
+    @Override
+    public String toString() {
+        return PositionName;
     }
 }

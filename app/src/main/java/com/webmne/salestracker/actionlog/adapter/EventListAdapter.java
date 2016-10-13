@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.event.model.EventModel;
+import com.webmne.salestracker.event.model.Event;
+import com.webmne.salestracker.helper.ConstantFormats;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.widget.TfTextView;
 
@@ -20,16 +21,16 @@ import java.util.ArrayList;
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventHolder> {
 
     private Context context;
-    private ArrayList<EventModel> eventList;
+    private ArrayList<Event> eventList;
     private onClickListener onClickListener;
 
-    public EventListAdapter(Context context, ArrayList<EventModel> eventList, onClickListener onClickListener) {
+    public EventListAdapter(Context context, ArrayList<Event> eventList, onClickListener onClickListener) {
         this.context = context;
         this.eventList = eventList;
         this.onClickListener = onClickListener;
     }
 
-    public void setEventList(ArrayList<EventModel> eventList) {
+    public void setEventList(ArrayList<Event> eventList) {
         this.eventList = new ArrayList<>();
         this.eventList = eventList;
         notifyDataSetChanged();
@@ -44,7 +45,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
 
     @Override
     public void onBindViewHolder(EventHolder holder, int position) {
-        EventModel model = eventList.get(position);
+        Event model = eventList.get(position);
         holder.setEvent(model, position);
     }
 
@@ -68,15 +69,15 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             txtDesc = (TfTextView) itemView.findViewById(R.id.txtDesc);
         }
 
-        public void setEvent(EventModel model, final int position) {
+        public void setEvent(Event model, final int position) {
 
-            txtName.setText(String.format("%s", model.getName()));
+            txtName.setText(String.format("%s", model.getTitle()));
 
-            txtDesc.setText(String.format("%s", model.getDesc()));
+            txtDesc.setText(String.format("%s", model.getDescription()));
 
             // Created Date-Time
-            txtMonth.setText(Functions.parseDate(model.getCreateDate(), "MMM"));
-            txtDate.setText(Functions.parseDate(model.getCreateDate(), "dd"));
+            txtMonth.setText(Functions.parseDate2(model.getEventDate(), ConstantFormats.MMMFormat, ConstantFormats.ymdFormat));
+            txtDate.setText(Functions.parseDate2(model.getEventDate(), ConstantFormats.ddFormat, ConstantFormats.ymdFormat));
 
 
             parentView.setOnClickListener(new View.OnClickListener() {

@@ -300,6 +300,7 @@
     <!--AddEventActivity.class-->
     <string name="enter_event_name">Enter Event Name</string>
     <string name="enter_date">Enter Date</string>
+    <string name="add_event_success">Add Event Successfully.</string>
 
     <!--EventDetailActivity.class-->
     <string name="event_detail_title">Event Detail</string>
