@@ -157,6 +157,9 @@ public class AppConstants {
     // http://demo.webmynehost.com/amgsales/services/add_event.php?format=json
     public static final String AddEvent = WEB_SERVICE_URL + "add_event.php?format=json";
 
+    // http://demo.webmynehost.com/amgsales/services/update_event.php?format=json
+    public static final String UpdateEvent = WEB_SERVICE_URL + "update_event.php?format=json";
+
     // http://demo.webmynehost.com/amgsales/services/delete_event.php?format=json
     public static final String DeleteEvent = WEB_SERVICE_URL + "delete_event.php?format=json";
 

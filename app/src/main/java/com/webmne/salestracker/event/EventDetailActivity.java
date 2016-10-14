@@ -88,14 +88,16 @@ public class EventDetailActivity extends AppCompatActivity {
         viewBinding.txtCancel.setVisibility(View.VISIBLE);
         viewBinding.btnAdd.setText(getString(R.string.btn_edit));
 
-        // disableFields();
-
         event = getIntent().getStringExtra("event");
         eventModel = MyApplication.getGson().fromJson(event, Event.class);
 
         viewBinding.edtEventName.setText(String.format("%s", eventModel.getTitle()));
         viewBinding.edtDate.setText(String.format("%s", eventModel.getEventDate()));
         viewBinding.edtDescription.setText(String.format("%s", eventModel.getDescription()));
+
+        if (eventModel.getRegionId().equals("0")) {
+            viewBinding.edtRegion.setText("All");
+        }
 
         if (Functions.isConnected(this)) {
 
@@ -115,7 +117,7 @@ public class EventDetailActivity extends AppCompatActivity {
         viewBinding.edtRegion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Functions.hideKeyPad(EventDetailActivity.this, v);
                 new MaterialDialog.Builder(EventDetailActivity.this)
                         .title(getString(R.string.select_region))
                         .items(regionArrayList)
@@ -146,9 +148,10 @@ public class EventDetailActivity extends AppCompatActivity {
 
 
         viewBinding.edtBranch.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-
+                Functions.hideKeyPad(EventDetailActivity.this, v);
                 new MaterialDialog.Builder(EventDetailActivity.this)
                         .title(getString(R.string.select_branch))
                         .items(branchArrayList)
@@ -181,7 +184,7 @@ public class EventDetailActivity extends AppCompatActivity {
         viewBinding.edtPosition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Functions.hideKeyPad(EventDetailActivity.this, v);
                 new MaterialDialog.Builder(EventDetailActivity.this)
                         .title(getString(R.string.select_position))
                         .items(positionArrayList)
@@ -214,7 +217,7 @@ public class EventDetailActivity extends AppCompatActivity {
         viewBinding.edtDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Functions.hideKeyPad(EventDetailActivity.this, v);
                 Calendar calendar = Calendar.getInstance();
 
                 datePickerDialog = new DatePickerDialog(EventDetailActivity.this, new DatePickerDialog.OnDateSetListener() {
@@ -230,53 +233,10 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         });
 
-        viewBinding.btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!Functions.isConnected(EventDetailActivity.this)) {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-                    return;
-                }
-
-                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtEventName))) {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.enter_event_name), getString(R.string.fa_error));
-                    return;
-                }
-
-                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtDate))) {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.enter_date), getString(R.string.fa_error));
-                    return;
-                }
-
-                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtRegion))) {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.select_region), getString(R.string.fa_error));
-                    return;
-                }
-
-                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtBranch))) {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.select_branch), getString(R.string.fa_error));
-                    return;
-                }
-
-                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtPosition))) {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.select_position), getString(R.string.fa_error));
-                    return;
-                }
-
-                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtDescription))) {
-                    SimpleToast.error(EventDetailActivity.this, getString(R.string.enter_description), getString(R.string.fa_error));
-                    return;
-                }
-
-                addEvent();
-
-            }
-        });
-
         viewBinding.txtCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Functions.hideKeyPad(EventDetailActivity.this, v);
                 if (isEditMode) {
                     disableFields();
                     isEditMode = !isEditMode;
@@ -304,14 +264,13 @@ public class EventDetailActivity extends AppCompatActivity {
         viewBinding.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Functions.hideKeyPad(EventDetailActivity.this, v);
                 isEditMode = !isEditMode;
                 if (isEditMode) {
                     enableFields();
 
                 } else {
-//                    doUpdateProfile();
-
+                    doUpdate();
                 }
 
             }
@@ -319,7 +278,46 @@ public class EventDetailActivity extends AppCompatActivity {
 
     }
 
-    private void addEvent() {
+    private void doUpdate() {
+        if (!Functions.isConnected(EventDetailActivity.this)) {
+            SimpleToast.error(EventDetailActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            return;
+        }
+
+        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtEventName))) {
+            SimpleToast.error(EventDetailActivity.this, getString(R.string.enter_event_name), getString(R.string.fa_error));
+            return;
+        }
+
+        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtDate))) {
+            SimpleToast.error(EventDetailActivity.this, getString(R.string.enter_date), getString(R.string.fa_error));
+            return;
+        }
+
+        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtRegion))) {
+            SimpleToast.error(EventDetailActivity.this, getString(R.string.select_region), getString(R.string.fa_error));
+            return;
+        }
+
+        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtBranch))) {
+            SimpleToast.error(EventDetailActivity.this, getString(R.string.select_branch), getString(R.string.fa_error));
+            return;
+        }
+
+        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtPosition))) {
+            SimpleToast.error(EventDetailActivity.this, getString(R.string.select_position), getString(R.string.fa_error));
+            return;
+        }
+
+        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtDescription))) {
+            SimpleToast.error(EventDetailActivity.this, getString(R.string.enter_description), getString(R.string.fa_error));
+            return;
+        }
+
+        updateEvent();
+    }
+
+    private void updateEvent() {
 
         showProgress(getString(R.string.loading));
 
@@ -340,7 +338,7 @@ public class EventDetailActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        new CallWebService(this, AppConstants.AddEvent, CallWebService.TYPE_POST, json) {
+        new CallWebService(this, AppConstants.UpdateEvent, CallWebService.TYPE_POST, json) {
 
             @Override
             public void response(String response) {
@@ -351,7 +349,7 @@ public class EventDetailActivity extends AppCompatActivity {
                 if (addEventResponse != null) {
 
                     if (addEventResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                        SimpleToast.ok(EventDetailActivity.this, getString(R.string.add_event_success));
+                        SimpleToast.ok(EventDetailActivity.this, getString(R.string.update_event_success));
                         finish();
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         Log.e("response", response);
@@ -394,7 +392,7 @@ public class EventDetailActivity extends AppCompatActivity {
             @Override
             public void response(String response) {
                 dismissProgress();
-
+                
                 Response deleteEventResponse = MyApplication.getGson().fromJson(response, Response.class);
 
                 if (deleteEventResponse != null) {
@@ -444,10 +442,9 @@ public class EventDetailActivity extends AppCompatActivity {
                         regionArrayList = new ArrayList<>();
                         regionArrayList = regionListResponse.getData().getBranches();
 
-                        for(int i=0; i<regionArrayList.size(); i++)
-                        {
-                            if (regionArrayList.get(i).getRegion().equals(eventModel.getRegionId()))
-                            {
+                        for (int i = 0; i < regionArrayList.size(); i++) {
+
+                            if (regionArrayList.get(i).getRegion().equals(eventModel.getRegionId())) {
                                 regionWhich = i;
 
                                 viewBinding.edtRegion.setText(regionArrayList.get(i).getRegionId());
@@ -503,6 +500,33 @@ public class EventDetailActivity extends AppCompatActivity {
                         branchArrayList = new ArrayList<>();
                         branchArrayList = branchListResponse.getData().getBranches();
 
+                        stringBuilderBranch = new StringBuilder();
+
+                        ArrayList<Integer> tmpArray = new ArrayList<Integer>();
+
+                        StringBuilder tmpStringBuilder = new StringBuilder();
+
+                        for (int i = 0; i < branchArrayList.size(); i++) {
+
+                            if (eventModel.getBranchId().contains(branchArrayList.get(i).getBranchId())) {
+
+                                tmpArray.add(i);
+
+                                tmpStringBuilder.append(branchArrayList.get(i).getBranchName());
+                                tmpStringBuilder.append(", ");
+
+                                stringBuilderBranch.append(branchArrayList.get(i).getBranchId());
+                                stringBuilderBranch.append(",");
+                            }
+
+                        }
+
+                        viewBinding.edtBranch.setText(tmpStringBuilder.toString().substring(0, tmpStringBuilder.toString().length() - 1));
+
+                        branchWhich = tmpArray.toArray(new Integer[tmpArray.size()]);
+
+                        disableFields();
+
                     } else {
                         SimpleToast.error(EventDetailActivity.this, branchListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
@@ -548,6 +572,31 @@ public class EventDetailActivity extends AppCompatActivity {
                         positionArrayList = new ArrayList<>();
                         positionArrayList = positionListResponse.getData().getPosition();
 
+                        stringBuilderPosition = new StringBuilder();
+
+                        ArrayList<Integer> tmpArray = new ArrayList<Integer>();
+
+                        StringBuilder tmpStringBuilder = new StringBuilder();
+
+                        for (int i = 0; i < positionArrayList.size(); i++) {
+
+                            if (eventModel.getRoleId().contains(positionArrayList.get(i).getPositionId())) {
+
+                                tmpArray.add(i);
+
+                                tmpStringBuilder.append(positionArrayList.get(i).getPositionName());
+                                tmpStringBuilder.append(", ");
+
+                                stringBuilderPosition.append(positionArrayList.get(i).getPositionId());
+                                stringBuilderPosition.append(",");
+                            }
+
+                        }
+
+                        viewBinding.edtPosition.setText(tmpStringBuilder.toString().substring(0, tmpStringBuilder.toString().length() - 1));
+
+                        positionWhich = tmpArray.toArray(new Integer[tmpArray.size()]);
+
                         fetchBranches();
 
                     } else {
@@ -580,18 +629,12 @@ public class EventDetailActivity extends AppCompatActivity {
         viewBinding.btnAdd.setText(getString(R.string.btn_save));
 
         viewBinding.edtEventName.setFocusableInTouchMode(true);
-//        viewBinding.edtDate.setFocusableInTouchMode(true);
-//        viewBinding.edtRegion.setFocusableInTouchMode(true);
-//        viewBinding.edtBranch.setFocusableInTouchMode(true);
-//        viewBinding.edtPosition.setFocusableInTouchMode(true);
         viewBinding.edtDescription.setFocusableInTouchMode(true);
 
-        viewBinding.edtEventName.setClickable(true);
         viewBinding.edtDate.setClickable(true);
         viewBinding.edtRegion.setClickable(true);
         viewBinding.edtBranch.setClickable(true);
         viewBinding.edtPosition.setClickable(true);
-        viewBinding.edtDescription.setClickable(true);
     }
 
     private void disableFields() {
@@ -599,18 +642,14 @@ public class EventDetailActivity extends AppCompatActivity {
         viewBinding.btnAdd.setText(getString(R.string.btn_edit));
 
         viewBinding.edtEventName.setFocusableInTouchMode(false);
-        viewBinding.edtDate.setFocusableInTouchMode(false);
-        viewBinding.edtRegion.setFocusableInTouchMode(false);
-        viewBinding.edtBranch.setFocusableInTouchMode(false);
-        viewBinding.edtPosition.setFocusableInTouchMode(false);
         viewBinding.edtDescription.setFocusableInTouchMode(false);
 
-        viewBinding.edtEventName.setClickable(false);
+        viewBinding.edtEventName.setFocusable(false);
         viewBinding.edtDate.setClickable(false);
         viewBinding.edtRegion.setClickable(false);
         viewBinding.edtBranch.setClickable(false);
         viewBinding.edtPosition.setClickable(false);
-        viewBinding.edtDescription.setClickable(false);
+        viewBinding.edtDescription.setFocusable(false);
 
     }
 
