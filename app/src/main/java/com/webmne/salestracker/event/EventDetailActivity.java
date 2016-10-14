@@ -521,7 +521,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
                         }
 
-                        viewBinding.edtBranch.setText(tmpStringBuilder.toString().substring(0, tmpStringBuilder.toString().length() - 1));
+                        viewBinding.edtBranch.setText(tmpStringBuilder.toString().substring(0, tmpStringBuilder.toString().length() - 2));
 
                         branchWhich = tmpArray.toArray(new Integer[tmpArray.size()]);
 
@@ -593,7 +593,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
                         }
 
-                        viewBinding.edtPosition.setText(tmpStringBuilder.toString().substring(0, tmpStringBuilder.toString().length() - 1));
+                        viewBinding.edtPosition.setText(tmpStringBuilder.toString().substring(0, tmpStringBuilder.toString().length() - 2));
 
                         positionWhich = tmpArray.toArray(new Integer[tmpArray.size()]);
 

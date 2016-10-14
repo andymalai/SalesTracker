@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dimen_42dp"
-    android:paddingTop="@dimen/dimen_42dp">
+    android:paddingBottom="@dimen/dimen_40dp"
+    android:paddingTop="@dimen/dimen_40dp">
 
     <ImageView
         android:id="@+id/imgHomeTileIcon"

@@ -22,80 +22,45 @@
                 android:orientation="vertical"
                 android:padding="@dimen/dimen_16dp">
 
-                <com.webmne.salestracker.widget.TfTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/select_agent"
-                    android:textSize="@dimen/S_TEXT" />
-
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/spinnerAgent"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtAgent"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/agent_array"
-                    android:overScrollMode="never"
-                    android:overlapAnchor="false"
-                    android:paddingBottom="@dimen/dimen_16dp"
-                    android:prompt="@string/select_agent"
-                    android:spinnerMode="dropdown" />
-
-                <com.webmne.salestracker.widget.TfTextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_8dp"
-                    android:text="@string/select_dept"
-                    android:textSize="@dimen/S_TEXT" />
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="@string/select_agent"
+                    android:longClickable="false" />
 
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/spinnerDepartment"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtDepartment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/dept_array"
-                    android:overScrollMode="never"
-                    android:overlapAnchor="false"
-                    android:paddingBottom="@dimen/dimen_16dp"
-                    android:prompt="@string/select_dept"
-                    android:spinnerMode="dropdown" />
-
-                <com.webmne.salestracker.widget.TfTextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_8dp"
-                    android:text="@string/select_pic"
-                    android:textSize="@dimen/S_TEXT" />
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="@string/select_dept"
+                    android:longClickable="false" />
 
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/spinnerInCharge"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtIncharge"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/pic_array"
-                    android:overScrollMode="never"
-                    android:overlapAnchor="false"
-                    android:paddingBottom="@dimen/dimen_16dp"
-                    android:prompt="@string/select_pic"
-                    android:spinnerMode="dropdown" />
-
-                <com.webmne.salestracker.widget.TfTextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_8dp"
-                    android:text="@string/select_priority"
-                    android:textSize="@dimen/S_TEXT" />
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="@string/select_pic"
+                    android:longClickable="false" />
 
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/spinnerPriority"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtPriority"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:entries="@array/priority_array"
-                    android:overScrollMode="never"
-                    android:overlapAnchor="false"
-                    android:paddingBottom="@dimen/dimen_16dp"
-                    android:prompt="@string/select_priority"
-                    android:spinnerMode="dropdown" />
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="@string/select_priority"
+                    android:longClickable="false" />
 
                 <com.webmne.salestracker.widget.TfEditText
                     android:id="@+id/edtSelectFile"
@@ -130,4 +95,5 @@
         </ScrollView>
 
     </RelativeLayout>
+
 </layout>

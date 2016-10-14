@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -207,7 +206,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
                                     dialog.dismiss();
                                 }
                             })
-                            .content(String.format("%s  %s",getString(R.string.ask_for_delete_all_plan), ConstantFormats.sdf_day.format(binding.cv.getCurrentCalendar().getTime())))
+                            .content(String.format("%s  %s", getString(R.string.ask_for_delete_all_plan), ConstantFormats.sdf_day.format(binding.cv.getCurrentCalendar().getTime())))
                             .show();
 
                 }
@@ -281,24 +280,8 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_plan:
-
-//                sampleMarquee();
                 new CustomDialogAddVisitPlan(binding.cv.getCurrentCalendar(), "00:00",
                         new MaterialDialog.Builder(this), SalesVisitPlanActivity.this);
-
-               /* new CustomDialogAddVisitPlan(currentDate, timeLineHours.get(getAdapterPosition()).getTime(), new MaterialDialog.Builder(this), this, new CustomDialogAddVisitPlanCallBack() {
-                    @Override
-                    public void addCallBack(JSONObject json) {
-
-                        Log.e("json", json.toString());
-
-                        addSalesVisitData(json);
-
-                    }
-                });*/
-
-//                initAddVisitPlanCustomDialog();
-
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -309,8 +292,6 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         super.onResume();
         Log.e("onResume", "Call");
         fetchPlan();
-
-        // binding.cv.setMode(CalendarView.MODE.MONTH);
     }
 
     public void showProgress(String str) {

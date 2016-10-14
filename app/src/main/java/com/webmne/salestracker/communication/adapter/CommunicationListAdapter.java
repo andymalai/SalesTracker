@@ -1,17 +1,25 @@
 package com.webmne.salestracker.communication.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.communication.CommunicationModel;
-import com.webmne.salestracker.widget.TfTextView;
+import com.webmne.salestracker.communication.Communication;
+import com.webmne.salestracker.databinding.RowCommunicationListBinding;
+import com.webmne.salestracker.helper.AppConstants;
+import com.webmne.salestracker.helper.DownloadHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -20,30 +28,25 @@ import java.util.ArrayList;
 public class CommunicationListAdapter extends RecyclerView.Adapter<CommunicationListAdapter.CommunicationViewHolder> {
 
     private Context context;
-    private ArrayList<CommunicationModel> communicationList;
+    private ArrayList<Communication> communicationList;
     private onClickListener onClickListener;
+    private File file;
 
-    public CommunicationListAdapter(Context context, ArrayList<CommunicationModel> communicationList, onClickListener onClickListener) {
+    public CommunicationListAdapter(Context context, ArrayList<Communication> communicationList, onClickListener onClickListener) {
         this.context = context;
         this.communicationList = communicationList;
         this.onClickListener = onClickListener;
     }
 
-    public void setEmployeeList(ArrayList<CommunicationModel> communicationList) {
-        this.communicationList = new ArrayList<>();
-        this.communicationList = communicationList;
-        notifyDataSetChanged();
-    }
-
     @Override
     public CommunicationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.row_communication_list, parent, false);
-        return new CommunicationViewHolder(v);
+        RowCommunicationListBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.row_communication_list, parent, false);
+        return new CommunicationViewHolder(binding.getRoot());
     }
 
     @Override
     public void onBindViewHolder(CommunicationViewHolder holder, int position) {
-        CommunicationModel communicationModel = communicationList.get(position);
+        Communication communicationModel = communicationList.get(position);
         holder.setCommunicationDetail(communicationModel);
     }
 
@@ -52,34 +55,68 @@ public class CommunicationListAdapter extends RecyclerView.Adapter<Communication
         return communicationList.size();
     }
 
+    public void setCommunicationData(ArrayList<Communication> communication) {
+        this.communicationList.clear();
+        this.communicationList = communication;
+        notifyDataSetChanged();
+    }
+
     class CommunicationViewHolder extends RecyclerView.ViewHolder {
 
-        TfTextView txtTitle,txtDesc;
-        ImageView imgDownload;
-        LinearLayout parentView;
+        private RowCommunicationListBinding binding;
 
-        public CommunicationViewHolder(View itemView) {
+        CommunicationViewHolder(View itemView) {
             super(itemView);
-            txtTitle = (TfTextView) itemView.findViewById(R.id.txtTitle);
-            txtDesc = (TfTextView) itemView.findViewById(R.id.txtDesc);
-            imgDownload = (ImageView) itemView.findViewById(R.id.imgDownload);
-            parentView = (LinearLayout) itemView.findViewById(R.id.parentView);
+            this.binding = DataBindingUtil.bind(itemView);
         }
 
-        public void setCommunicationDetail(final CommunicationModel model) {
+        void setCommunicationDetail(final Communication model) {
 
-            txtTitle.setText(model.getTitle());
-            txtDesc.setText(model.getDesc());
+            binding.txtTitle.setText(model.getTitle());
 
-            imgDownload.setOnClickListener(new View.OnClickListener() {
+            binding.imgDownload.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    onClickListener.onClick();
-
+                    createDir(model);
                 }
             });
+        }
+    }
 
+    private void createDir(Communication model) {
+        file = new File(Environment.getExternalStorageDirectory() + AppConstants.COMMUNICATION_DIRECTORY);
+
+        if (file.exists()) {
+            File file1 = new File(Environment.getExternalStorageDirectory() + AppConstants.COMMUNICATION_DIRECTORY + "/" + model.getAttachment());
+
+            if (file1.exists()) {
+                MimeTypeMap map = MimeTypeMap.getSingleton();
+                String ext = MimeTypeMap.getFileExtensionFromUrl(file1.getName());
+                String type = map.getMimeTypeFromExtension(ext);
+
+                if (type == null)
+                    type = "*/*";
+
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    Uri data = Uri.fromFile(file1);
+                    intent.setDataAndType(data, type);
+                    context.startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(context, "Unable to view", Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                Toast.makeText(context, "Downloading..", Toast.LENGTH_SHORT).show();
+                String url = AppConstants.ATTACHMENT_PREFIX + AppConstants.COMMUNICATION_FILE_PATH + "/" + model.getAttachment();
+                Log.e("url", url);
+                String str_file_path = AppConstants.COMMUNICATION_DIRECTORY + "/";
+
+                DownloadHelper downloadHelper = new DownloadHelper(context);
+                downloadHelper.startDownload(url, str_file_path, model.getAttachment());
+            }
+        } else {
+            file.mkdirs();
         }
     }
 

@@ -130,4 +130,9 @@ public class AgentModel implements Serializable {
     public void setEmailid(String Emailid) {
         this.Emailid = Emailid;
     }
+
+    @Override
+    public String toString() {
+        return Name;
+    }
 }

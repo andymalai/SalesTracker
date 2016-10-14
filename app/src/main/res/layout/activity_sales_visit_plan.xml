@@ -38,6 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/dimen_8dp"
+                    android:textColor="@color/half_black"
                     android:text="Actual Progress: 50/300" />
 
                 <com.webmne.salestracker.widget.TfTextView

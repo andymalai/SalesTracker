@@ -50,7 +50,11 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     private BranchAdapter branchAdapter;
     private LoadingIndicatorDialog dialog;
 
-    private String tierId;
+    private ArrayList<Tier> tierModels;
+    private int tierWhich = 0, branchWhich = 0;
+    private ArrayList<Branch> branchModels;
+
+    private int tierId = 0, branchId = 0;
 
     private ArrayList<Integer> selectedAgentIds;
 
@@ -93,6 +97,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void fetchBranches() {
+
         showProgress(getString(R.string.loading));
 
         branchApi.getBranchList(new APIListener<BranchListResponse>() {
@@ -102,8 +107,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
                 if (response.isSuccessful()) {
                     BranchListResponse branchListResponse = response.body();
                     if (branchListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                        branchAdapter = new BranchAdapter(AgentProfileActivity.this, R.layout.item_adapter, branchListResponse.getData().getBranches());
-                        viewBinding.spinnerBranch.setAdapter(branchAdapter);
+                        branchModels = branchListResponse.getData().getBranches();
 
                         // set details after all spinner adapter set
                         fetchDetails();
@@ -126,6 +130,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void fetchTier() {
+
         showProgress(getString(R.string.loading));
 
         tierApi.getTierList(new APIListener<TierListResponse>() {
@@ -136,8 +141,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
 
                     TierListResponse tierListResponse = response.body();
                     if (tierListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                        adapter = new TierAdapter(AgentProfileActivity.this, R.layout.item_adapter, tierListResponse.getData().getTiers());
-                        viewBinding.spinnerTier.setAdapter(adapter);
+                        tierModels = tierListResponse.getData().getTiers();
 
                         // call branches for set branch spinner
                         fetchBranches();
@@ -161,6 +165,55 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
     private void actionListener() {
         viewBinding.btnEdit.setOnClickListener(this);
         viewBinding.txtCancel.setOnClickListener(this);
+
+        viewBinding.edtTier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(AgentProfileActivity.this)
+                        .title(R.string.select_tier)
+                        .typeface(Functions.getBoldFont(AgentProfileActivity.this), Functions.getRegularFont(AgentProfileActivity.this))
+                        .items(tierModels)
+                        .itemsCallbackSingleChoice(tierWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                tierWhich = which;
+
+                                Tier tier = tierModels.get(which);
+                                viewBinding.edtTier.setText(tier.getTierName());
+                                tierId = Integer.parseInt(tier.getTeirid());
+
+                                return true;
+                            }
+                        })
+                        .positiveText(R.string.btn_ok)
+                        .show();
+            }
+        });
+
+        viewBinding.edtBranch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(AgentProfileActivity.this)
+                        .title(R.string.select_branch)
+                        .typeface(Functions.getBoldFont(AgentProfileActivity.this), Functions.getRegularFont(AgentProfileActivity.this))
+                        .items(branchModels)
+                        .itemsCallbackSingleChoice(branchWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                                branchWhich = which;
+
+                                Branch branch = branchModels.get(which);
+                                viewBinding.edtBranch.setText(branch.getBranchName());
+                                branchId = Integer.parseInt(branch.getBranchId());
+
+                                return true;
+                            }
+                        })
+                        .positiveText(R.string.btn_ok)
+                        .show();
+            }
+        });
     }
 
     private void fetchDetails() {
@@ -176,22 +229,21 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
         viewBinding.edtAmgGeneral.setText(String.format("%s", agentModel.getAmgCode()));
         viewBinding.edtDescription.setText(String.format("%s", agentModel.getDescription()));
 
-        Log.e("tier", agentModel.getTierid());
+        tierWhich = getIndex(tierModels, agentModel.getTierid());
+        viewBinding.edtTier.setText(tierModels.get(tierWhich).getTierName());
+        tierId = Integer.parseInt(tierModels.get(tierWhich).getTeirid());
 
-        int tierPosition = getIndex(adapter, agentModel.getTierid());
-        viewBinding.spinnerTier.setSelection(tierPosition);
+        branchWhich = getBranchIndex(branchModels, agentModel.getBranchid());
+        viewBinding.edtBranch.setText(branchModels.get(branchWhich).getBranchName());
+        branchId = Integer.parseInt(branchModels.get(branchWhich).getBranchId());
 
-        int branchPosition = getBranchIndex(branchAdapter, agentModel.getBranchid());
-        viewBinding.spinnerBranch.setSelection(branchPosition);
-
-        adapter.setCanOpen(false);
-        branchAdapter.setCanOpen(false);
+        disableFields();
     }
 
-    private int getIndex(TierAdapter adapter, String myString) {
+    private int getIndex(ArrayList<Tier> adapter, String myString) {
         int index = 0;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            Tier tier = adapter.getItem(i);
+        for (int i = 0; i < adapter.size(); i++) {
+            Tier tier = adapter.get(i);
             if (tier.getTeirid().equals(myString)) {
                 index = i;
                 break;
@@ -201,10 +253,10 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
         return index;
     }
 
-    private int getBranchIndex(BranchAdapter adapter, String myString) {
+    private int getBranchIndex(ArrayList<Branch> adapter, String myString) {
         int index = 0;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            Branch tier = adapter.getItem(i);
+        for (int i = 0; i < adapter.size(); i++) {
+            Branch tier = adapter.get(i);
             if (tier.getBranchId().equals(myString)) {
                 index = i;
                 break;
@@ -263,13 +315,10 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
 
         showProgress(getString(R.string.update_agents_profile));
 
-        Tier tier = (Tier) viewBinding.spinnerTier.getSelectedItem();
-        tierId = tier.getTeirid();
-
         JSONObject json = new JSONObject();
         try {
             json.put("AgentName", Functions.toStr(viewBinding.edtAgentName));
-            json.put("TierId", Integer.parseInt(tierId));
+            json.put("TierId", tierId);
             json.put("EmailId", Functions.toStr(viewBinding.edtEmailId));
             json.put("Description", Functions.toStr(viewBinding.edtDescription));
             json.put("MobileNo", Functions.toStr(viewBinding.edtPhoneNumber));
@@ -293,7 +342,7 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
                 if (wsResponse != null) {
                     if (wsResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                         SimpleToast.ok(AgentProfileActivity.this, getString(R.string.profile_success));
-                        disableFields();
+
                         finish();
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     } else {
@@ -327,16 +376,20 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
         viewBinding.edtKruniaCode.setFocusableInTouchMode(true);
         viewBinding.edtAmgGeneral.setFocusableInTouchMode(true);
 
-        adapter.setCanOpen(true);
+        viewBinding.edtTier.setClickable(true);
+        viewBinding.edtBranch.setClickable(false);
+
     }
 
     private void disableFields() {
+
         viewBinding.txtCancel.setText(getString(R.string.btn_delete));
         viewBinding.btnEdit.setText(getString(R.string.btn_edit));
 
         viewBinding.edtAgentName.setFocusableInTouchMode(false);
-        viewBinding.spinnerTier.setFocusableInTouchMode(false);
-        viewBinding.spinnerBranch.setFocusableInTouchMode(false);
+        viewBinding.edtTier.setClickable(false);
+        viewBinding.edtBranch.setClickable(false);
+
         viewBinding.edtPhoneNumber.setFocusableInTouchMode(false);
         viewBinding.edtEmailId.setFocusableInTouchMode(false);
         viewBinding.edtKruniaCode.setFocusableInTouchMode(false);
@@ -344,16 +397,11 @@ public class AgentProfileActivity extends AppCompatActivity implements View.OnCl
         viewBinding.edtDescription.setFocusableInTouchMode(false);
 
         viewBinding.edtAgentName.setFocusable(false);
-        viewBinding.spinnerTier.setFocusable(false);
-        viewBinding.spinnerBranch.setFocusable(false);
         viewBinding.edtPhoneNumber.setFocusable(false);
         viewBinding.edtEmailId.setFocusable(false);
         viewBinding.edtKruniaCode.setFocusable(false);
         viewBinding.edtAmgGeneral.setFocusable(false);
         viewBinding.edtDescription.setFocusable(false);
-
-        adapter.setCanOpen(false);
-        branchAdapter.setCanOpen(false);
     }
 
     private void deleteAgent() {

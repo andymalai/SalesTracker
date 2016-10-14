@@ -42,7 +42,6 @@ public class EmployeeListActivity extends AppCompatActivity {
 
     private EmployeeListAdapter adapter;
     private ArrayList<EmployeeModel> employeeList;
-    private MenuItem searchItem;
 
     private ActivityEmployeeListBinding viewBinding;
     private LoadingIndicatorDialog dialog;
@@ -86,7 +85,7 @@ public class EmployeeListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (Functions.isConnected(this))
-            getAgents();
+            getEmplyoees();
         else
             SimpleToast.error(EmployeeListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
 
@@ -94,27 +93,6 @@ public class EmployeeListActivity extends AppCompatActivity {
     }
 
     private void actionListener() {
-        viewBinding.searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String newText) {
-                if (TextUtils.isEmpty(newText)) {
-                    adapter.setEmployeeList(employeeList);
-                } else {
-                    adapter.searchFilter(newText);
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (TextUtils.isEmpty(newText)) {
-                    adapter.setEmployeeList(employeeList);
-                } else {
-                    adapter.searchFilter(newText);
-                }
-                return true;
-            }
-        });
 
         viewBinding.agentRecyclerView.setOnItemClickListener(new FamiliarRecyclerView.OnItemClickListener() {
             @Override
@@ -123,18 +101,6 @@ public class EmployeeListActivity extends AppCompatActivity {
                 intent.putExtra("employee", MyApplication.getGson().toJson(adapter.getEmployeeList().get(position)));
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-
-        viewBinding.agentRecyclerView.setOnScrollListener(new FamiliarRecyclerViewOnScrollListener(viewBinding.agentRecyclerView.getLayoutManager()) {
-            @Override
-            public void onScrolledToTop() {
-
-            }
-
-            @Override
-            public void onScrolledToBottom() {
-                Toast.makeText(EmployeeListActivity.this, "Load more..", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -149,7 +115,7 @@ public class EmployeeListActivity extends AppCompatActivity {
 
                     @Override
                     public void onFinish() {
-                        getAgents();
+                        getEmplyoees();
                         viewBinding.swipeRefresh.setRefreshing(false);
                     }
                 }.start();
@@ -198,13 +164,12 @@ public class EmployeeListActivity extends AppCompatActivity {
                 if (deleteResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                     SimpleToast.ok(EmployeeListActivity.this, getString(R.string.delete_success));
                     viewBinding.txtDelete.setVisibility(View.GONE);
-                    searchItem.setVisible(true);
-                    viewBinding.searchView.setVisibility(View.VISIBLE);
+
                     viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimary));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         getWindow().setStatusBarColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimaryDark));
                     }
-                    getAgents();
+                    getEmplyoees();
                 } else {
                     SimpleToast.error(EmployeeListActivity.this, deleteResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                 }
@@ -226,15 +191,11 @@ public class EmployeeListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (viewBinding.searchView.isSearchOpen()) {
-            viewBinding.searchView.closeSearch();
-        } else {
-            super.onBackPressed();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        }
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    private void getAgents() {
+    private void getEmplyoees() {
 
 //        showProgress(getString(R.string.loading));
 //
@@ -318,16 +279,14 @@ public class EmployeeListActivity extends AppCompatActivity {
 
                 if (getSelectedItems() == 0) {
                     viewBinding.txtDelete.setVisibility(View.GONE);
-                    searchItem.setVisible(true);
-                    viewBinding.searchView.setVisibility(View.VISIBLE);
+
                     viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimary));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         getWindow().setStatusBarColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimaryDark));
                     }
 
                 } else {
-                    viewBinding.searchView.setVisibility(View.GONE);
-                    searchItem.setVisible(false);
+
                     viewBinding.txtDelete.setVisibility(View.VISIBLE);
                     viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.tile1));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -346,17 +305,6 @@ public class EmployeeListActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         viewBinding.unbind();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_agent, menu);
-        searchItem = menu.findItem(R.id.action_search);
-        viewBinding.searchView.setMenuItem(searchItem);
-
-        viewBinding.searchView.setVoiceSearch(true);
-        viewBinding.searchView.setHint(getString(R.string.search_employee));
-        return true;
     }
 
     public void showProgress(String string) {

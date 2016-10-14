@@ -27,44 +27,29 @@
                     android:id="@+id/edtAgentName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_8dp"
                     android:layout_marginTop="@dimen/dimen_8dp"
                     android:hint="@string/add_name"
                     android:inputType="text" />
 
-                <com.webmne.salestracker.widget.TfTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_8dp"
-                    android:text="@string/select_tier"
-                    android:textSize="@dimen/S_TEXT" />
-
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/spinnerTier"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtTier"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                    android:overlapAnchor="false"
-                    android:paddingBottom="@dimen/dimen_16dp"
-                    android:spinnerMode="dropdown" />
-
-                <com.webmne.salestracker.widget.TfTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_8dp"
-                    android:text="@string/select_branch"
-                    android:textSize="@dimen/S_TEXT" />
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="@string/select_tier"
+                    android:longClickable="false" />
 
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/spinnerBranch"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtBranch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                    android:overlapAnchor="false"
-                    android:paddingBottom="@dimen/dimen_16dp"
-                    android:spinnerMode="dropdown" />
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:hint="@string/select_branch"
+                    android:longClickable="false" />
 
                 <com.webmne.salestracker.widget.TfEditText
                     android:id="@+id/edtPhoneNumber"

@@ -9,9 +9,11 @@ public class AppConstants {
     // public static final String BASE_URL = "http://ws-srv-php/projects/drupal/amgsales2/";
     public static final String BASE_URL = "http://demo.webmynehost.com/amgsales/";
     //    public static final String ATTACHMENT_PREFIX = BASE_URL;
-    public static final String ATTACHMENT_PREFIX = "http://ws-srv-php/projects/drupal/amgsales2/";
+    public static final String ATTACHMENT_PREFIX = "http://demo.webmynehost.com/amgsales/";
+    public static final String COMMUNICATION_FILE_PATH = "sites/default/files/communication/";
     public static final String WEB_SERVICE_URL = BASE_URL + "services/";
     public static final String ACTION_LOG_DIRECTORY = "/SalesTracker/ActionLog/";
+    public static final String COMMUNICATION_DIRECTORY = "/SalesTracker/Communication/";
 
     // User Position Constants
     public static String MARKETER = "Marketer";
@@ -104,6 +106,9 @@ public class AppConstants {
     public static final String PlanList = WEB_SERVICE_URL + "fetch_visit_paln.php?format=json";
 
     // http://demo.webmynehost.com/amgsales/services/fetch_agent_list.php?format=json&user_id=699
+    public static final String AgentForPlan = WEB_SERVICE_URL + "fetch_agent_list.php?format=json&user_id=";
+
+    // http://demo.webmynehost.com/amgsales/services/add_plan.php?format=json
     public static final String AddPlan = WEB_SERVICE_URL + "add_plan.php?format=json";
 
     // http://demo.webmynehost.com/amgsales/services/update_box.php?format=json
@@ -139,8 +144,8 @@ public class AppConstants {
     // http://demo.webmynehost.com/amgsales/services/delete_recruiment.php?format=json
     public static final String DeleteRecruitment = WEB_SERVICE_URL + "delete_recruiment.php?format=json";
 
-    //
-    public static final String CommunicationList = WEB_SERVICE_URL + "";
+    // http://demo.webmynehost.com/amgsales/services/fetch_communication.php?format=json
+    public static final String CommunicationList = WEB_SERVICE_URL + "fetch_communication.php?format=json";
 
     // http://demo.webmynehost.com/amgsales/services/fetch_events.php?format=json
     public static final String EventList = WEB_SERVICE_URL + "fetch_events.php?format=json";
@@ -162,7 +167,6 @@ public class AppConstants {
 
     // http://demo.webmynehost.com/amgsales/services/delete_event.php?format=json
     public static final String DeleteEvent = WEB_SERVICE_URL + "delete_event.php?format=json";
-
 
     // FTP details Local
     public static final String FTP_HOST = "ws-srv-php";

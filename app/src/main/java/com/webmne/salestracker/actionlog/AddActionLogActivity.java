@@ -9,9 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
@@ -50,9 +50,18 @@ import retrofit2.Response;
 public class AddActionLogActivity extends AppCompatActivity {
 
     ActivityAddActionLogBinding binding;
+
     private ArrayList<AgentModel> agentList;
+    private int agentWhich = 0;
+
     private ArrayList<Department> deptList;
+    private int deptWhich = 0;
+
+    private int priorityWhich = 0;
+
     private ArrayList<InCharge> inChargeList;
+    private int inchargeWhich = 0;
+
     private static final int FILE_SELECT_CODE = 0;
     private AgentListApi agentListApi;
     private LoadingIndicatorDialog dialog;
@@ -60,7 +69,7 @@ public class AddActionLogActivity extends AppCompatActivity {
     private DepartmentAdapter departmentAdapter;
     private InChargeAdapter inChargeAdapter;
 
-    private String deptId;
+    private int deptId = 0;
     private String inChargeName;
     private String agentId;
     private String priority;
@@ -104,6 +113,7 @@ public class AddActionLogActivity extends AppCompatActivity {
     }
 
     private void actionListener() {
+
         binding.edtSelectFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,18 +132,120 @@ public class AddActionLogActivity extends AppCompatActivity {
             }
         });
 
+        binding.edtDepartment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(AddActionLogActivity.this)
+                        .title(R.string.select_dept)
+                        .typeface(Functions.getBoldFont(AddActionLogActivity.this), Functions.getRegularFont(AddActionLogActivity.this))
+                        .items(deptList)
+                        .itemsCallbackSingleChoice(deptWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                deptWhich = which;
+
+                                Department department = deptList.get(which);
+                                binding.edtDepartment.setText(department.getDepartment());
+                                deptId = Integer.parseInt(department.getDepartmentID());
+                                setDepartmentInchargeAdapter();
+
+                                return true;
+                            }
+                        })
+                        .positiveText(R.string.btn_ok)
+                        .show();
+            }
+        });
+
+        binding.edtPriority.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(AddActionLogActivity.this)
+                        .title(R.string.select_priority)
+                        .typeface(Functions.getBoldFont(AddActionLogActivity.this), Functions.getRegularFont(AddActionLogActivity.this))
+                        .items(getResources().getStringArray(R.array.priority_array))
+                        .itemsCallbackSingleChoice(priorityWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                priorityWhich = which;
+                                binding.edtPriority.setText(text);
+                                priority = text.toString();
+                                return true;
+                            }
+                        })
+                        .positiveText(R.string.btn_ok)
+                        .show();
+            }
+        });
+
+        binding.edtAgent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(AddActionLogActivity.this)
+                        .title(R.string.select_agent)
+                        .typeface(Functions.getBoldFont(AddActionLogActivity.this), Functions.getRegularFont(AddActionLogActivity.this))
+                        .items(agentList)
+                        .itemsCallbackSingleChoice(agentWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                agentWhich = which;
+
+                                AgentModel agentModel = agentList.get(which);
+                                binding.edtAgent.setText(agentModel.getName());
+                                agentId = agentModel.getAgentid();
+
+                                return true;
+                            }
+                        })
+                        .positiveText(R.string.btn_ok)
+                        .show();
+            }
+        });
+
+        binding.edtIncharge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (deptId == 0) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.select_dept), getString(R.string.fa_error));
+
+                } else if (inChargeList.size() == 0) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.no_pic), getString(R.string.fa_error));
+
+                } else {
+                    new MaterialDialog.Builder(AddActionLogActivity.this)
+                            .title(R.string.select_pic)
+                            .typeface(Functions.getBoldFont(AddActionLogActivity.this), Functions.getRegularFont(AddActionLogActivity.this))
+                            .items(inChargeList)
+                            .itemsCallbackSingleChoice(inchargeWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                                @Override
+                                public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                    inchargeWhich = which;
+
+                                    InCharge inCharge = inChargeList.get(which);
+                                    binding.edtIncharge.setText(inCharge.getPicName());
+                                    inChargeName = inCharge.getPicName();
+
+                                    return true;
+                                }
+                            })
+                            .positiveText(R.string.btn_ok)
+                            .show();
+                }
+            }
+        });
+
         binding.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                priority = (String) binding.spinnerPriority.getSelectedItem();
+                // priority = (String) binding.spinnerPriority.getSelectedItem();
 
                 if (TextUtils.isEmpty(agentId)) {
                     SimpleToast.error(AddActionLogActivity.this, getString(R.string.select_agent), getString(R.string.fa_error));
                     return;
                 }
 
-                if (TextUtils.isEmpty(deptId)) {
+                if (deptId == 0) {
                     SimpleToast.error(AddActionLogActivity.this, getString(R.string.select_dept), getString(R.string.fa_error));
                     return;
                 }
@@ -147,7 +259,6 @@ public class AddActionLogActivity extends AppCompatActivity {
                     SimpleToast.error(AddActionLogActivity.this, getString(R.string.select_priority), getString(R.string.fa_error));
                     return;
                 }
-
 
                 if (TextUtils.isEmpty(Functions.toStr(binding.edtDescription))) {
                     SimpleToast.error(AddActionLogActivity.this, getString(R.string.enter_description), getString(R.string.fa_error));
@@ -219,13 +330,13 @@ public class AddActionLogActivity extends AppCompatActivity {
             json.put("AgentId", Integer.parseInt(agentId));
             json.put("Description", Functions.toStr(binding.edtDescription));
             json.put("Status", "");
-            json.put("Priroty", binding.spinnerPriority.getSelectedItem().toString());
+            json.put("Priroty", priority);
             if (file == null) {
                 json.put("File", "");
             } else {
                 json.put("File", Functions.toStr(binding.edtSelectFile));
             }
-            json.put("DepartmentId", Integer.parseInt(deptId));
+            json.put("DepartmentId", deptId);
             json.put("PicName", inChargeName);
 
         } catch (Exception e) {
@@ -286,8 +397,9 @@ public class AddActionLogActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     AgentListResponse listResponse = response.body();
                     if (listResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                        agentList.addAll(listResponse.getData().getAgents());
-                        agentAdapter = new AgentAdapter(AddActionLogActivity.this, R.layout.item_adapter, agentList);
+                        agentList = listResponse.getData().getAgents();
+
+                        /*agentAdapter = new AgentAdapter(AddActionLogActivity.this, R.layout.item_adapter, agentList);
                         binding.spinnerAgent.setAdapter(agentAdapter);
                         binding.spinnerAgent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
@@ -301,7 +413,7 @@ public class AddActionLogActivity extends AppCompatActivity {
                             public void onNothingSelected(AdapterView<?> parent) {
 
                             }
-                        });
+                        });*/
 
                         setDepartmentAdapter();
 
@@ -332,8 +444,8 @@ public class AddActionLogActivity extends AppCompatActivity {
         showProgress(getString(R.string.loading));
 
         deptList = new ArrayList<>();
-        departmentAdapter = new DepartmentAdapter(AddActionLogActivity.this, R.layout.item_adapter, deptList);
-        binding.spinnerDepartment.setAdapter(departmentAdapter);
+        //departmentAdapter = new DepartmentAdapter(AddActionLogActivity.this, R.layout.item_adapter, deptList);
+        //  binding.spinnerDepartment.setAdapter(departmentAdapter);
 
         new CallWebService(this, AppConstants.DepartmentList, CallWebService.TYPE_GET) {
 
@@ -346,7 +458,9 @@ public class AddActionLogActivity extends AppCompatActivity {
                 if (getDepartmentListResponse != null) {
                     if (getDepartmentListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
 
-                        departmentAdapter.setDepartmentList(getDepartmentListResponse.getData().getDepartment());
+                        deptList = getDepartmentListResponse.getData().getDepartment();
+
+                        /*departmentAdapter.setDepartmentList(getDepartmentListResponse.getData().getDepartment());
 
                         binding.spinnerDepartment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
@@ -354,14 +468,14 @@ public class AddActionLogActivity extends AppCompatActivity {
                                 Department department = (Department) departmentAdapter.getItem(position);
                                 deptId = department.getDepartmentID();
                                 Log.e("deptId", deptId);
-                                setDepartmentInchargeAdapter();
+
                             }
 
                             @Override
                             public void onNothingSelected(AdapterView<?> parent) {
 
                             }
-                        });
+                        });*/
 
                     } else {
                         SimpleToast.error(AddActionLogActivity.this, getDepartmentListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
@@ -391,8 +505,6 @@ public class AddActionLogActivity extends AppCompatActivity {
         showProgress(getString(R.string.loading));
 
         inChargeList = new ArrayList<>();
-        inChargeAdapter = new InChargeAdapter(AddActionLogActivity.this, R.layout.item_adapter, inChargeList);
-        binding.spinnerInCharge.setAdapter(inChargeAdapter);
 
         JSONObject json = new JSONObject();
         try {
@@ -413,21 +525,9 @@ public class AddActionLogActivity extends AppCompatActivity {
                 if (inChargeListResponse != null) {
 
                     if (inChargeListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                        inChargeAdapter.setPic(inChargeListResponse.getData().getDepartmentPic());
 
-                        binding.spinnerInCharge.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                InCharge inCharge = (InCharge) inChargeAdapter.getItem(position);
-                                inChargeName = inCharge.getPicName();
-                                Log.e("inChargeName", inChargeName);
-                            }
+                        inChargeList = inChargeListResponse.getData().getDepartmentPic();
 
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
-                        });
                     } else {
                         SimpleToast.error(AddActionLogActivity.this, inChargeListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
@@ -448,16 +548,6 @@ public class AddActionLogActivity extends AppCompatActivity {
                 SimpleToast.error(AddActionLogActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
             }
         }.call();
-    }
-
-    private void setAgentAdapter() {
-        agentList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            AgentModel model = new AgentModel();
-            model.setName("Agent " + i);
-            agentList.add(model);
-        }
-        binding.spinnerAgent.setAdapter(new AgentAdapter(this, R.layout.item_adapter, agentList));
     }
 
     @Override

@@ -387,7 +387,7 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
 
         agentModelList = new ArrayList<>();
 
-        new CallWebService(context, AppConstants.EmployeeList + PrefUtils.getUserId(context), CallWebService.TYPE_GET) {
+        new CallWebService(context, AppConstants.AgentForPlan + PrefUtils.getUserId(context), CallWebService.TYPE_GET) {
 
             @Override
             public void response(String response) {

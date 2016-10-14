@@ -28,4 +28,9 @@ public class Tier {
     public void setTierName(String TierName) {
         this.TierName = TierName;
     }
+
+    @Override
+    public String toString() {
+        return TierName;
+    }
 }

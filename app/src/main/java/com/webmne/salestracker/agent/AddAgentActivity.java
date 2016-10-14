@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
@@ -51,9 +52,9 @@ public class AddAgentActivity extends AppCompatActivity {
     private int tierId = 0, branchId = 0;
     private AppApi appApi;
 
-    //  private ArrayList<TierModel> tierModels;
+    private ArrayList<Tier> tierModels;
+    private int tierWhich = 0, branchWhich = 0;
     private ArrayList<Branch> branchModels;
-    private AdapterView.OnItemSelectedListener tierSelectListener;
     private AdapterView.OnItemSelectedListener branchSelectListener;
 
     @Override
@@ -161,31 +162,54 @@ public class AddAgentActivity extends AppCompatActivity {
             }
         });
 
-        tierSelectListener = new AdapterView.OnItemSelectedListener() {
+        viewBinding.edtTier.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Tier tier = adapter.getItem(position);
-                tierId = Integer.parseInt(tier.getTeirid());
-            }
+            public void onClick(View v) {
+                new MaterialDialog.Builder(AddAgentActivity.this)
+                        .title(R.string.select_tier)
+                        .typeface(Functions.getBoldFont(AddAgentActivity.this), Functions.getRegularFont(AddAgentActivity.this))
+                        .items(tierModels)
+                        .itemsCallbackSingleChoice(tierWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                tierWhich = which;
 
+                                Tier tier = tierModels.get(which);
+                                viewBinding.edtTier.setText(tier.getTierName());
+                                tierId = Integer.parseInt(tier.getTeirid());
+
+                                return true;
+                            }
+                        })
+                        .positiveText(R.string.btn_ok)
+                        .show();
+            }
+        });
+
+        viewBinding.edtBranch.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onClick(View v) {
+                new MaterialDialog.Builder(AddAgentActivity.this)
+                        .title(R.string.select_branch)
+                        .typeface(Functions.getBoldFont(AddAgentActivity.this), Functions.getRegularFont(AddAgentActivity.this))
+                        .items(branchModels)
+                        .itemsCallbackSingleChoice(branchWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 
+                                branchWhich = which;
+
+                                Branch branch = branchModels.get(which);
+                                viewBinding.edtBranch.setText(branch.getBranchName());
+                                branchId = Integer.parseInt(branch.getBranchId());
+
+                                return true;
+                            }
+                        })
+                        .positiveText(R.string.btn_ok)
+                        .show();
             }
-        };
-
-        branchSelectListener = new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Branch branch = branchAdapter.getItem(position);
-                branchId = Integer.parseInt(branch.getBranchId());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        };
+        });
     }
 
     private void doAddAgent() {
@@ -252,6 +276,7 @@ public class AddAgentActivity extends AppCompatActivity {
     }
 
     private void fetchTier() {
+
         showProgress();
 
         tierApi.getTierList(new APIListener<TierListResponse>() {
@@ -262,12 +287,12 @@ public class AddAgentActivity extends AppCompatActivity {
 
                     TierListResponse tierListResponse = response.body();
                     if (tierListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                        adapter = new TierAdapter(AddAgentActivity.this, R.layout.item_adapter, tierListResponse.getData().getTiers());
-                        viewBinding.spinnerTier.setAdapter(adapter);
-                        viewBinding.spinnerTier.setOnItemSelectedListener(tierSelectListener);
+
+                        tierModels = tierListResponse.getData().getTiers();
 
                         // call branches for set branch spinner
                         fetchBranches();
+
                     } else {
                         SimpleToast.error(AddAgentActivity.this, tierListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
@@ -291,7 +316,9 @@ public class AddAgentActivity extends AppCompatActivity {
     }
 
     private void fetchBranches() {
+
         showProgress();
+
         branchApi.getBranchList(new APIListener<BranchListResponse>() {
             @Override
             public void onResponse(Response<BranchListResponse> response) {
@@ -299,9 +326,8 @@ public class AddAgentActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     BranchListResponse branchListResponse = response.body();
                     if (branchListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-                        branchAdapter = new BranchAdapter(AddAgentActivity.this, R.layout.item_adapter, branchListResponse.getData().getBranches());
-                        viewBinding.spinnerBranch.setAdapter(branchAdapter);
-                        viewBinding.spinnerBranch.setOnItemSelectedListener(branchSelectListener);
+                        branchModels = branchListResponse.getData().getBranches();
+
                     } else {
                         SimpleToast.error(AddAgentActivity.this, branchListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }

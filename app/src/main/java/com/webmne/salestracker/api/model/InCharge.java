@@ -28,4 +28,9 @@ public class InCharge {
     public void setPicName(String PicName) {
         this.PicName = PicName;
     }
+
+    @Override
+    public String toString() {
+        return PicName;
+    }
 }
