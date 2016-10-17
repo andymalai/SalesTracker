@@ -1,6 +1,5 @@
 package com.webmne.salestracker.visitplan;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
@@ -30,7 +29,6 @@ import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -87,6 +85,10 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
         edtStartTime.setTypeface(Functions.getRegularFont(context));
         edtEndTime = (EditText) view.findViewById(R.id.edtEndTime);
         edtEndTime.setTypeface(Functions.getRegularFont(context));
+
+        if (time.equals("All\nDay")) {
+            time = "00:00:00";
+        }
 
         String[] newTime = time.split(":");
         edtStartTime.setText(String.format("%s:%s", newTime[0], newTime[1]));
@@ -252,7 +254,7 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
             @Override
             public void timePickerCallBack(String hour, String minute) {
 
-                Log.e("tag", str_flag+","+ hour+","+ minute);
+                Log.e("tag", str_flag + "," + hour + "," + minute);
                 setFullDateTime(str_flag, hour, minute);
 
             }

@@ -29,9 +29,19 @@ public class ActionLogModel {
     private int Sla;
     private String Reopen;
     private String UpdatedDatetime;
+    private String ApprovedDateAndBy;
     private String AttachmentPath;
     private String Attachment;
     private String RemarkCount;
+
+
+    public String getApprovedDateAndBy() {
+        return ApprovedDateAndBy;
+    }
+
+    public void setApprovedDateAndBy(String approvedDateAndBy) {
+        ApprovedDateAndBy = approvedDateAndBy;
+    }
 
     public String getId() {
         return Id;

@@ -125,6 +125,10 @@ public class ActionLogDetails extends LinearLayout {
         binding.txtSla.setText(String.format("%s Days", actionLog.getSla()));
         binding.txtLastUpdate.setText(String.format("%s", Functions.parseDate(actionLog.getUpdatedDatetime(), "dd MMM yyyy, hh:mm a")));
 
+        String[] approveDateSplit = actionLog.getApprovedDateAndBy().split(" By");
+        String approveDate = Functions.parseDate(approveDateSplit[0], "dd MMM yyyy, hh:mm a");
+        binding.txtApprovedDate.setText(String.format("%s By%s", approveDate, approveDateSplit[1]));
+
         if (TextUtils.isEmpty(actionLog.getAttachment())) {
             binding.txtAttachment.setText(String.format("%s", context.getString(R.string.no_attachment)));
             binding.txtAttachment.setTextColor(ContextCompat.getColor(context, R.color.half_black));

@@ -168,6 +168,9 @@ public class AppConstants {
     // http://demo.webmynehost.com/amgsales/services/fetch_emp.php?format=json&user_id=697
     public static final String EmployeeList = WEB_SERVICE_URL + "fetch_emp.php?format=json&user_id=";
 
+    // http://demo.webmynehost.com/amgsales/services/add_emp.php?format=json
+    public static final String AddEmployee = WEB_SERVICE_URL + "add_emp.php?format=json";
+
     //
     public static final String UpdateEmployee = WEB_SERVICE_URL + "";
 
