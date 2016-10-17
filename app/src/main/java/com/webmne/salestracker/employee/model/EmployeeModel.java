@@ -1,20 +1,31 @@
 package com.webmne.salestracker.employee.model;
 
+import java.io.Serializable;
+
 /**
  * Created by vatsaldesai on 23-09-2016.
  */
 
-public class EmployeeModel {
+public class EmployeeModel implements Serializable {
 
-    private String empId;
-    private String position;
-    private String name;
-    private String phone;
-    private String email;
-    private String region;
-    private String branch;
-    private boolean IsChecked = false;
 
+    /**
+     * Name : MKT_guj_002
+     * Position : 9
+     * Phone : 9724470522
+     * EmailId : ermanojkolhe@gmail.com
+     * Branch : 51
+     * Region : 20
+     * IsChecked : true
+     */
+
+    private String Name;
+    private String Position;
+    private String Phone;
+    private String EmailId;
+    private String Branch;
+    private String Region;
+    private boolean IsChecked;
 
     public boolean isChecked() {
         return IsChecked;
@@ -24,59 +35,51 @@ public class EmployeeModel {
         IsChecked = checked;
     }
 
-    public String getEmpId() {
-        return empId;
+    public String getName() {
+        return Name;
     }
 
-    public void setEmpId(String empId) {
-        this.empId = empId;
+    public void setName(String Name) {
+        this.Name = Name;
     }
 
     public String getPosition() {
-        return position;
+        return Position;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setPosition(String Position) {
+        this.Position = Position;
     }
 
     public String getPhone() {
-        return phone;
+        return Phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPhone(String Phone) {
+        this.Phone = Phone;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailId() {
+        return EmailId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
+    public void setEmailId(String EmailId) {
+        this.EmailId = EmailId;
     }
 
     public String getBranch() {
-        return branch;
+        return Branch;
     }
 
-    public void setBranch(String branch) {
-        this.branch = branch;
+    public void setBranch(String Branch) {
+        this.Branch = Branch;
+    }
+
+    public String getRegion() {
+        return Region;
+    }
+
+    public void setRegion(String Region) {
+        this.Region = Region;
     }
 }

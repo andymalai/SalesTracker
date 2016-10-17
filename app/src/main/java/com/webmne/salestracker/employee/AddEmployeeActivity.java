@@ -40,7 +40,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
     private LoadingIndicatorDialog dialog;
 
     private ArrayList<Branch> branchArrayList = new ArrayList<>();
-    private Integer[] branchWhich;
+    private int branchWhich = 0;
     private StringBuilder stringBuilderBranch;
 
     private ArrayList<Region> regionArrayList;
@@ -48,7 +48,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
 
     private ArrayList<PositionModel> positionArrayList;
 
-//    private ArrayList<PositionModel> positionArrayList;
+    //    private ArrayList<PositionModel> positionArrayList;
     private int positionWhich = 0;
 //    private StringBuilder stringBuilderPosition;
 
@@ -80,33 +80,21 @@ public class AddEmployeeActivity extends AppCompatActivity {
 
         getPositions();
 
-        if (Functions.isConnected(this)) {
-
-            // call all ws one by one
-            fetchRegion();
-
-        } else {
-            SimpleToast.error(AddEmployeeActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-        }
+        // call all ws one by one
+        fetchRegion();
 
         actionListener();
     }
 
-    private void getPositions()
-    {
+    private void getPositions() {
         positionArrayList = new ArrayList<>();
 
-        if(PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.HOS))
-        {
+        if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.HOS)) {
             positionArrayList.add(new PositionModel(null, AppConstants.MARKETER));
-        }
-        else if(PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.BM))
-        {
+        } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.BM)) {
             positionArrayList.add(new PositionModel(null, AppConstants.MARKETER));
             positionArrayList.add(new PositionModel(null, AppConstants.HOS));
-        }
-        else if(PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.HOS))
-        {
+        } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.HOS)) {
             positionArrayList.add(new PositionModel(null, AppConstants.MARKETER));
             positionArrayList.add(new PositionModel(null, AppConstants.HOS));
             positionArrayList.add(new PositionModel(null, AppConstants.BM));
@@ -134,7 +122,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
                                 strRegion = regionArrayList.get(which).getRegion();
 
                                 viewBinding.edtBranch.setText("");
-                                branchWhich = null;
+                                branchWhich = 0;
 
                                 fetchBranches();
 
@@ -155,23 +143,14 @@ public class AddEmployeeActivity extends AppCompatActivity {
                         .title(getString(R.string.select_branch))
                         .items(branchArrayList)
                         .typeface(Functions.getBoldFont(AddEmployeeActivity.this), Functions.getRegularFont(AddEmployeeActivity.this))
-                        .itemsCallbackMultiChoice(branchWhich, new MaterialDialog.ListCallbackMultiChoice() {
+                        .itemsCallbackSingleChoice(regionWhich, new MaterialDialog.ListCallbackSingleChoice() {
                             @Override
-                            public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
 
                                 branchWhich = which;
+                                viewBinding.edtBranch.setText(text.toString().replace("[", "").replace("]", ""));
 
-                                stringBuilderBranch = new StringBuilder();
-
-                                for (int i = 0; i < which.length; i++) {
-
-                                    stringBuilderBranch.append(branchArrayList.get(which[i]).getBranchId());
-                                    stringBuilderBranch.append(",");
-                                }
-
-                                viewBinding.edtBranch.setText(Arrays.toString(text).replace("[", "").replace("]", ""));
-
-                                return true;
+                                return false;
                             }
                         })
                         .positiveText(getString(R.string.btn_ok))
@@ -189,17 +168,17 @@ public class AddEmployeeActivity extends AppCompatActivity {
                         .items(positionArrayList)
                         .typeface(Functions.getBoldFont(AddEmployeeActivity.this), Functions.getRegularFont(AddEmployeeActivity.this))
                         .itemsCallbackSingleChoice(positionWhich, new MaterialDialog.ListCallbackSingleChoice() {
-                                    @Override
-                                    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
 
-                                        positionWhich = which;
+                                positionWhich = which;
 
 
-                                        viewBinding.edtPosition.setText(text);
+                                viewBinding.edtPosition.setText(text);
 
-                                        return false;
-                                    }
-                                })
+                                return false;
+                            }
+                        })
                         .positiveText(getString(R.string.btn_ok))
                         .show();
 

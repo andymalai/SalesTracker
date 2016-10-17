@@ -218,6 +218,7 @@
     <!--activity_add_employee.xml-->
     <string name="add_employee_title">Add Employee</string>
     <string name="add_employee_name">Employee Name</string>
+    <string name="add_employee_id">Employee Id</string>
     <string name="select_position">Select Position</string>
     <string name="marketer">Marketer</string>
     <string name="select_region">Select Region</string>

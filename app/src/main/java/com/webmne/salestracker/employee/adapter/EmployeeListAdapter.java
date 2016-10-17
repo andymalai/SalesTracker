@@ -90,7 +90,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
                 imgCall.setVisibility(View.VISIBLE);
             }
 
-            if (TextUtils.isEmpty(employeeModel.getEmail())) {
+            if (TextUtils.isEmpty(employeeModel.getEmailId())) {
                 imgEmail.setVisibility(View.GONE);
             } else {
                 imgEmail.setVisibility(View.VISIBLE);
@@ -181,7 +181,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
             imgEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Functions.sendMailTo(context, employeeModel.getEmail());
+                    Functions.sendMailTo(context, employeeModel.getEmailId());
                 }
             });
         }

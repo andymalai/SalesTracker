@@ -38,6 +38,14 @@
                 android:padding="@dimen/dimen_16dp">
 
                 <com.webmne.salestracker.widget.TfEditText
+                    android:id="@+id/edtEmpId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:hint="@string/add_employee_id"
+                    android:inputType="text" />
+
+                <com.webmne.salestracker.widget.TfEditText
                     android:id="@+id/edtName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -94,7 +94,7 @@ public class EmployeeDetailActivity extends AppCompatActivity {
 
         viewBinding.edtName.setText(String.format("%s", employeeModel.getName()));
         viewBinding.edtPhoneNumber.setText(String.format("%s", employeeModel.getPhone()));
-        viewBinding.edtEmailId.setText(String.format("%s", employeeModel.getEmail()));
+        viewBinding.edtEmailId.setText(String.format("%s", employeeModel.getEmailId()));
 
         getPositions();
 
@@ -365,7 +365,7 @@ public class EmployeeDetailActivity extends AppCompatActivity {
 
         JSONObject json = new JSONObject();
         try {
-            json.put("Id", employeeModel.getEmpId());
+            // json.put("Id", employeeModel.getEmpId());
             json.put("UserId", PrefUtils.getUserId(this));
 //            json.put("Date", Functions.toStr(viewBinding.edtDate));
 //            json.put("Title", Functions.toStr(viewBinding.edtEventName));
@@ -421,7 +421,7 @@ public class EmployeeDetailActivity extends AppCompatActivity {
 
         JSONObject json = new JSONObject();
         try {
-            json.put("Id", employeeModel.getEmpId());
+          //  json.put("Id", employeeModel.getEmpId());
 
             Log.e("add_req", json.toString());
 

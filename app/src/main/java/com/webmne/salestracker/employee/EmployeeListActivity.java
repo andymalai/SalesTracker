@@ -1,6 +1,5 @@
 package com.webmne.salestracker.employee;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
@@ -10,17 +9,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.api.model.EmployeeListResponse;
 import com.webmne.salestracker.custom.LineDividerItemDecoration;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityEmployeeListBinding;
@@ -33,7 +28,6 @@ import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
-import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerViewOnScrollListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -206,24 +200,6 @@ public class EmployeeListActivity extends AppCompatActivity {
         employeeList = new ArrayList<>();
         adapter.setEmployeeList(employeeList);
 
-
-        //////////// SET STATIC EMPLOYEE DATA /////////////////////
-        for (int i = 0; i < 10; i++) {
-            EmployeeModel model = new EmployeeModel();
-            model.setEmpId(String.valueOf(i));
-            model.setName("Employee " + i);
-            model.setBranch("Ankleshwar");
-            model.setRegion("Gujarat");
-            model.setEmail("vat@gmail.com");
-            model.setPhone("8563245674");
-            model.setPosition("DM");
-            employeeList.add(model);
-        }
-        adapter.setEmployeeList(employeeList);
-        ////////////////////////////////////////////////////////
-
-
-
         new CallWebService(this, AppConstants.EmployeeList + PrefUtils.getUserId(this), CallWebService.TYPE_GET) {
 
             @Override
@@ -233,22 +209,19 @@ public class EmployeeListActivity extends AppCompatActivity {
 
                 viewBinding.contentLayout.setVisibility(View.VISIBLE);
 
-//                ActionLogListResponse getActionLogListResponse = MyApplication.getGson().fromJson(response, EmployeeListActivity.class);
-//
-//                if (getActionLogListResponse != null) {
-//
-//                    if (getActionLogListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-//                        actionLogList = getActionLogListResponse.getData().getAction();
-//                        adapter.setActionList(actionLogList);
-//
-//                    } else {
-//                        SimpleToast.error(EmployeeListActivity.this, getActionLogListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-//                    }
-//
-//                } else {
-//                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
-//                }
+                EmployeeListResponse listResponse = MyApplication.getGson().fromJson(response, EmployeeListResponse.class);
 
+                if (listResponse != null) {
+
+                    if (listResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        adapter.setEmployeeList(listResponse.getData().getEmployee());
+                    } else {
+                        SimpleToast.error(EmployeeListActivity.this, listResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+
+                } else {
+                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
+                }
             }
 
             @Override
@@ -327,7 +300,7 @@ public class EmployeeListActivity extends AppCompatActivity {
         int selected = 0;
         for (EmployeeModel model : employeeList) {
             if (model.isChecked()) {
-                selectedEmployeeIds.add(Integer.valueOf(model.getEmpId()));
+              //  selectedEmployeeIds.add(Integer.valueOf(model.get()));
                 selected++;
             }
         }
