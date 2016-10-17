@@ -28,7 +28,6 @@ import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import com.webmne.salestracker.widget.TfButton;
 import com.webmne.salestracker.widget.TfEditText;
-import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerViewOnScrollListener;
 
 import org.json.JSONObject;
 
@@ -74,6 +73,14 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
         });
         binding.toolbarLayout.txtCustomTitle.setText(getString(R.string.action_log_details_title));
 
+        if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.MARKETER)) {
+            binding.btnApprove.setVisibility(View.GONE);
+            binding.btnReject.setVisibility(View.GONE);
+        } else {
+            binding.btnApprove.setVisibility(View.VISIBLE);
+            binding.btnReject.setVisibility(View.VISIBLE);
+        }
+
         actionListener();
 
         initRecyclerView();
@@ -93,6 +100,20 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
     }
 
     private void actionListener() {
+
+        binding.btnApprove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                approveRejectActionlog("A");
+            }
+        });
+
+        binding.btnReject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                approveRejectActionlog("R");
+            }
+        });
 
         binding.btnReopen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,9 +183,21 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
         actionId = actionLog.getId().split("_")[1];
 
         if (actionLog.getReopen().equalsIgnoreCase(getString(R.string.str_true))) {
-            binding.btnReopen.setEnabled(true);
+            binding.btnReopen.setVisibility(View.VISIBLE);
         } else {
-            binding.btnReopen.setEnabled(false);
+            binding.btnReopen.setVisibility(View.GONE);
+        }
+
+        if (actionLog.getStatus().equals(AppConstants.APPROVE) ||
+                actionLog.getStatus().equals(AppConstants.REJECTED) ||
+                actionLog.getStatus().equals(AppConstants.COMPLETE)) {
+
+            binding.btnApprove.setVisibility(View.GONE);
+            binding.btnReject.setVisibility(View.GONE);
+
+        } else {
+            binding.btnApprove.setVisibility(View.VISIBLE);
+            binding.btnReject.setVisibility(View.VISIBLE);
         }
 
         fetchRemark();
@@ -234,6 +267,63 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
                         SimpleToast.ok(ActionLogDetailsActivity.this, getString(R.string.reopen_success));
                     } else {
                         SimpleToast.error(ActionLogDetailsActivity.this, reopenRemarkResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                } else {
+                    SimpleToast.error(ActionLogDetailsActivity.this, getString(R.string.try_again), getString(R.string.fa_error));
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, ActionLogDetailsActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(ActionLogDetailsActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
+    }
+
+    private void approveRejectActionlog(String strFlag) {
+
+        showProgress(getString(R.string.loading));
+
+        String[] splitId = actionLog.getId().split("_");
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("ActionId", splitId[1]);
+            json.put("Status", strFlag);
+            json.put("UserId", PrefUtils.getUserId(this));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.e("action_req", json.toString());
+
+        new CallWebService(this, AppConstants.ApproveRejectActionLog, CallWebService.TYPE_POST, json) {
+
+            @Override
+            public void response(String response) {
+                dismissProgress();
+
+                com.webmne.salestracker.api.model.Response updateActionLogResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
+
+                if (updateActionLogResponse != null) {
+                    if (updateActionLogResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+
+                        Log.e("updateActionLogResponse", MyApplication.getGson().toJson(updateActionLogResponse));
+
+                        SimpleToast.ok(ActionLogDetailsActivity.this, updateActionLogResponse.getResponse().getResponseMsg());
+
+                        finish();
+
+                    } else {
+                        SimpleToast.error(ActionLogDetailsActivity.this, updateActionLogResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
                 } else {
                     SimpleToast.error(ActionLogDetailsActivity.this, getString(R.string.try_again), getString(R.string.fa_error));

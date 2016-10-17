@@ -1,5 +1,6 @@
 package com.webmne.salestracker.employee;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
@@ -28,6 +29,7 @@ import com.webmne.salestracker.employee.model.EmployeeModel;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
+import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
@@ -197,9 +199,9 @@ public class EmployeeListActivity extends AppCompatActivity {
 
     private void getEmplyoees() {
 
-//        showProgress(getString(R.string.loading));
-//
-//        viewBinding.contentLayout.setVisibility(View.GONE);
+        showProgress(getString(R.string.loading));
+
+        viewBinding.contentLayout.setVisibility(View.GONE);
 
         employeeList = new ArrayList<>();
         adapter.setEmployeeList(employeeList);
@@ -221,46 +223,47 @@ public class EmployeeListActivity extends AppCompatActivity {
         ////////////////////////////////////////////////////////
 
 
-//        new CallWebService(this, AppConstants.EmployeeList, CallWebService.TYPE_GET) {
+
+        new CallWebService(this, AppConstants.EmployeeList + PrefUtils.getUserId(this), CallWebService.TYPE_GET) {
+
+            @Override
+            public void response(String response) {
+
+                dismissProgress();
+
+                viewBinding.contentLayout.setVisibility(View.VISIBLE);
+
+//                ActionLogListResponse getActionLogListResponse = MyApplication.getGson().fromJson(response, EmployeeListActivity.class);
 //
-//            @Override
-//            public void response(String response) {
+//                if (getActionLogListResponse != null) {
 //
-//                dismissProgress();
+//                    if (getActionLogListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+//                        actionLogList = getActionLogListResponse.getData().getAction();
+//                        adapter.setActionList(actionLogList);
 //
-//                viewBinding.contentLayout.setVisibility(View.VISIBLE);
+//                    } else {
+//                        SimpleToast.error(EmployeeListActivity.this, getActionLogListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+//                    }
 //
-////                ActionLogListResponse getActionLogListResponse = MyApplication.getGson().fromJson(response, EmployeeListActivity.class);
-////
-////                if (getActionLogListResponse != null) {
-////
-////                    if (getActionLogListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-////                        actionLogList = getActionLogListResponse.getData().getAction();
-////                        adapter.setActionList(actionLogList);
-////
-////                    } else {
-////                        SimpleToast.error(EmployeeListActivity.this, getActionLogListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-////                    }
-////
-////                } else {
-////                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
-////                }
-//
-//            }
-//
-//            @Override
-//            public void error(VolleyError error) {
-//                dismissProgress();
-//                viewBinding.contentLayout.setVisibility(View.VISIBLE);
-//                VolleyErrorHelper.showErrorMsg(error, EmployeeListActivity.this);
-//            }
-//
-//            @Override
-//            public void noInternet() {
-//                dismissProgress();
-//                SimpleToast.error(EmployeeListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-//            }
-//        }.call();
+//                } else {
+//                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
+//                }
+
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                viewBinding.contentLayout.setVisibility(View.VISIBLE);
+                VolleyErrorHelper.showErrorMsg(error, EmployeeListActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(EmployeeListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
 
     }
 

@@ -14,9 +14,26 @@
             android:layout_above="@+id/bottomBar"
             android:orientation="vertical">
 
-            <include
-                android:id="@+id/toolbarLayout"
-                layout="@layout/app_bar" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/toolbarLayout"
+                    layout="@layout/app_bar" />
+
+                <com.webmne.salestracker.widget.TfTextView
+                    android:id="@+id/btnReopen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/dimen_12dp"
+                    android:text="@string/btn_reopen"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/M_TEXT" />
+
+            </RelativeLayout>
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -34,17 +51,31 @@
 
                     </com.webmne.salestracker.widget.ActionLogDetails>
 
-                    <com.webmne.salestracker.widget.TfTextView
-                        android:id="@+id/btnReopen"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:layout_marginBottom="@dimen/dimen_16dp"
-                        android:layout_marginRight="@dimen/dimen_16dp"
-                        android:layout_marginTop="@dimen/dimen_8dp"
-                        android:text="@string/btn_reopen"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/M_TEXT" />
+                        android:gravity="center_vertical|right"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/dimen_10dp">
+
+                        <com.webmne.salestracker.widget.TfTextView
+                            android:id="@+id/btnApprove"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/dimen_16dp"
+                            android:text="@string/btn_approve"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/M_TEXT" />
+
+                        <com.webmne.salestracker.widget.TfTextView
+                            android:id="@+id/btnReject"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/btn_reject"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/M_TEXT" />
+
+                    </LinearLayout>
 
                     <com.webmne.salestracker.widget.TfTextView
                         android:id="@+id/txtRemarkCount"

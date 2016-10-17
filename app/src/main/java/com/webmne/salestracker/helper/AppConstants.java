@@ -99,9 +99,6 @@ public class AppConstants {
     // http://ws-srv-php/projects/drupal/amgsales2/services/update_action.php
     public static final String UpdateActionLog = WEB_SERVICE_URL + "update_action.php";
 
-    //
-    public static final String EmployeeList = WEB_SERVICE_URL + "";
-
     // http://demo.webmynehost.com/amgsales/services/fetch_visit_paln.php?format=json
     public static final String PlanList = WEB_SERVICE_URL + "fetch_visit_paln.php?format=json";
 
@@ -167,6 +164,20 @@ public class AppConstants {
 
     // http://demo.webmynehost.com/amgsales/services/delete_event.php?format=json
     public static final String DeleteEvent = WEB_SERVICE_URL + "delete_event.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/fetch_emp.php?format=json&user_id=697
+    public static final String EmployeeList = WEB_SERVICE_URL + "fetch_emp.php?format=json&user_id=";
+
+    //
+    public static final String UpdateEmployee = WEB_SERVICE_URL + "";
+
+    //
+    public static final String DeleteEmployee = WEB_SERVICE_URL + "";
+
+    // http://demo.webmynehost.com/amgsales/services/aap_rej_status.php?format=json
+    public static final String ApproveRejectActionLog = WEB_SERVICE_URL + "aap_rej_status.php?format=json";
+
+
 
     // FTP details Local
     public static final String FTP_HOST = "ws-srv-php";

@@ -89,6 +89,12 @@ public class AgentsListActivity extends AppCompatActivity {
                 R.color.color3,
                 R.color.color4);
 
+        if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.HOS)) {
+            viewBinding.fab.setVisibility(View.GONE);
+        } else {
+            viewBinding.fab.setVisibility(View.VISIBLE);
+        }
+
         initRecyclerView();
     }
 

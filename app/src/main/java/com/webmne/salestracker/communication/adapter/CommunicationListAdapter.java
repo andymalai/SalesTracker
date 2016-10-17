@@ -13,11 +13,13 @@ import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.communication.Communication;
 import com.webmne.salestracker.databinding.RowCommunicationListBinding;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.DownloadHelper;
+import com.webmne.salestracker.helper.Functions;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -83,7 +85,7 @@ public class CommunicationListAdapter extends RecyclerView.Adapter<Communication
         }
     }
 
-    private void createDir(Communication model) {
+    private void createDir(final Communication model) {
         file = new File(Environment.getExternalStorageDirectory() + AppConstants.COMMUNICATION_DIRECTORY);
 
         if (file.exists()) {
@@ -107,13 +109,27 @@ public class CommunicationListAdapter extends RecyclerView.Adapter<Communication
                 }
 
             } else {
-                Toast.makeText(context, "Downloading..", Toast.LENGTH_SHORT).show();
-                String url = AppConstants.ATTACHMENT_PREFIX + AppConstants.COMMUNICATION_FILE_PATH + "/" + model.getAttachment();
-                Log.e("url", url);
-                String str_file_path = AppConstants.COMMUNICATION_DIRECTORY + "/";
 
-                DownloadHelper downloadHelper = new DownloadHelper(context);
-                downloadHelper.startDownload(url, str_file_path, model.getAttachment());
+                Functions.showPrompt(context, context.getString(R.string.yes), context.getString(R.string.no), context.getString(R.string.ask_download), new Functions.onPromptListener() {
+                    @Override
+                    public void onClickYes(MaterialDialog dialog) {
+
+                        Toast.makeText(context, "Downloading..", Toast.LENGTH_SHORT).show();
+                        String url = AppConstants.ATTACHMENT_PREFIX + AppConstants.COMMUNICATION_FILE_PATH + "/" + model.getAttachment();
+                        Log.e("url", url);
+                        String str_file_path = AppConstants.COMMUNICATION_DIRECTORY + "/";
+
+                        DownloadHelper downloadHelper = new DownloadHelper(context);
+                        downloadHelper.startDownload(url, str_file_path, model.getAttachment());
+
+                    }
+
+                    @Override
+                    public void onClickNo(MaterialDialog dialog) {
+                        dialog.dismiss();
+                    }
+                });
+
             }
         } else {
             file.mkdirs();

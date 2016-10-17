@@ -16,6 +16,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.model.ActionLogModel;
 import com.webmne.salestracker.databinding.LayoutActionLogBinding;
@@ -66,7 +67,7 @@ public class ActionLogDetails extends LinearLayout {
         parentView = binding.getRoot();
     }
 
-    private void createDir(ActionLogModel actionLog) {
+    private void createDir(final ActionLogModel actionLog) {
         file = new File(Environment.getExternalStorageDirectory() + AppConstants.ACTION_LOG_DIRECTORY + "/" + actionLog.getId());
 
         if (file.exists()) {
@@ -90,12 +91,24 @@ public class ActionLogDetails extends LinearLayout {
                 }
 
             } else {
-                String url = AppConstants.ATTACHMENT_PREFIX + actionLog.getAttachmentPath() + "/" + actionLog.getAttachment();
-                Log.e("url", url);
-                String str_file_path = AppConstants.ACTION_LOG_DIRECTORY + actionLog.getId() + "/";
 
-                DownloadHelper downloadHelper = new DownloadHelper(context);
-                downloadHelper.startDownload(url, str_file_path, actionLog.getAttachment());
+                Functions.showPrompt(context, context.getString(R.string.yes), context.getString(R.string.no), context.getString(R.string.ask_download), new Functions.onPromptListener() {
+                    @Override
+                    public void onClickYes(MaterialDialog dialog) {
+                        String url = AppConstants.ATTACHMENT_PREFIX + actionLog.getAttachmentPath() + "/" + actionLog.getAttachment();
+                        Log.e("url", url);
+                        String str_file_path = AppConstants.ACTION_LOG_DIRECTORY + actionLog.getId() + "/";
+
+                        DownloadHelper downloadHelper = new DownloadHelper(context);
+                        downloadHelper.startDownload(url, str_file_path, actionLog.getAttachment());
+                    }
+
+                    @Override
+                    public void onClickNo(MaterialDialog dialog) {
+                        dialog.dismiss();
+                    }
+                });
+
             }
         } else {
             file.mkdirs();

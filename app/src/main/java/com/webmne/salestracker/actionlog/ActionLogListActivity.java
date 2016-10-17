@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -116,6 +117,7 @@ public class ActionLogListActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(ActionLogListActivity.this, ActionLogDetailsActivity.class);
                 intent.putExtra("action", MyApplication.getGson().toJson(actionLogList.get(position)));
+                Log.e("action", MyApplication.getGson().toJson(actionLogList.get(position)));
                 startActivity(intent);
 
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

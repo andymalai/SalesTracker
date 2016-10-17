@@ -392,7 +392,7 @@ public class EventDetailActivity extends AppCompatActivity {
             @Override
             public void response(String response) {
                 dismissProgress();
-                
+
                 Response deleteEventResponse = MyApplication.getGson().fromJson(response, Response.class);
 
                 if (deleteEventResponse != null) {

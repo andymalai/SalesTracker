@@ -17,6 +17,8 @@ import com.webmne.salestracker.contacts.adapter.ContactPageAdapter;
 import com.webmne.salestracker.contacts.fragment.BranchContactFragment;
 import com.webmne.salestracker.contacts.fragment.DepartmentContactFragment;
 import com.webmne.salestracker.databinding.ActivityContactBinding;
+import com.webmne.salestracker.helper.AppConstants;
+import com.webmne.salestracker.helper.PrefUtils;
 
 public class ContactActivity extends AppCompatActivity {
 
@@ -72,9 +74,7 @@ public class ContactActivity extends AppCompatActivity {
                     BranchContactFragment branchContactFragment = (BranchContactFragment) fragment;
 
                     branchContactFragment.searchBranchContact(query);
-                }
-                else
-                {
+                } else {
                     DepartmentContactFragment departmentContactFragment = (DepartmentContactFragment) fragment;
 
                     departmentContactFragment.searchDepartmentContact(query);
@@ -94,9 +94,7 @@ public class ContactActivity extends AppCompatActivity {
                     BranchContactFragment branchContactFragment = (BranchContactFragment) fragment;
 
                     branchContactFragment.searchBranchContact(newText);
-                }
-                else
-                {
+                } else {
                     DepartmentContactFragment departmentContactFragment = (DepartmentContactFragment) fragment;
 
                     departmentContactFragment.searchDepartmentContact(newText);
@@ -120,7 +118,6 @@ public class ContactActivity extends AppCompatActivity {
                 } else if (position == 1) {
                     contactBinding.searchView.setHint(getString(R.string.search_department_contact));
                 }
-
             }
 
             @Override
@@ -134,7 +131,10 @@ public class ContactActivity extends AppCompatActivity {
 
         contactPageAdapter = new ContactPageAdapter(getSupportFragmentManager(), this);
 
-        contactPageAdapter.addFragment(BranchContactFragment.newInstance(), getString(R.string.branch_contact));
+        if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.MARKETER)) {
+            contactPageAdapter.addFragment(BranchContactFragment.newInstance(), getString(R.string.branch_contact));
+        }
+
         contactPageAdapter.addFragment(DepartmentContactFragment.newInstance(), getString(R.string.department_contact));
 
         contactBinding.viewpager.setAdapter(contactPageAdapter);
@@ -169,7 +169,12 @@ public class ContactActivity extends AppCompatActivity {
         searchItem = menu.findItem(R.id.action_search);
         contactBinding.searchView.setMenuItem(searchItem);
 
-        contactBinding.searchView.setHint(getString(R.string.search_branch_contact));
+        if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.MARKETER)) {
+            contactBinding.searchView.setHint(getString(R.string.search_branch_contact));
+        } else {
+            contactBinding.searchView.setHint(getString(R.string.search_department_contact));
+        }
+
         contactBinding.searchView.setVoiceSearch(true);
 
         return true;
