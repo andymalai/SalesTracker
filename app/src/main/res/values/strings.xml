@@ -194,6 +194,7 @@
     <string name="dept">Department</string>
     <string name="sla">SLA</string>
     <string name="last_update">Last Updated</string>
+    <string name="approved_date">Approved Date</string>
     <string name="attachment">Attachment</string>
 
     <!--layout_empty_view.xml-->

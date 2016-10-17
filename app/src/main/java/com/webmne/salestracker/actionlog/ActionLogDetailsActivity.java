@@ -73,14 +73,6 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
         });
         binding.toolbarLayout.txtCustomTitle.setText(getString(R.string.action_log_details_title));
 
-        if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.MARKETER)) {
-            binding.btnApprove.setVisibility(View.GONE);
-            binding.btnReject.setVisibility(View.GONE);
-        } else {
-            binding.btnApprove.setVisibility(View.VISIBLE);
-            binding.btnReject.setVisibility(View.VISIBLE);
-        }
-
         actionListener();
 
         initRecyclerView();
@@ -188,16 +180,22 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
             binding.btnReopen.setVisibility(View.GONE);
         }
 
-        if (actionLog.getStatus().equals(AppConstants.APPROVE) ||
-                actionLog.getStatus().equals(AppConstants.REJECTED) ||
-                actionLog.getStatus().equals(AppConstants.COMPLETE)) {
-
+        if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.MARKETER)) {
             binding.btnApprove.setVisibility(View.GONE);
             binding.btnReject.setVisibility(View.GONE);
 
         } else {
-            binding.btnApprove.setVisibility(View.VISIBLE);
-            binding.btnReject.setVisibility(View.VISIBLE);
+            if (actionLog.getStatus().equals(AppConstants.APPROVE) ||
+                    actionLog.getStatus().equals(AppConstants.REJECTED) ||
+                    actionLog.getStatus().equals(AppConstants.COMPLETE)) {
+
+                binding.btnApprove.setVisibility(View.GONE);
+                binding.btnReject.setVisibility(View.GONE);
+
+            } else {
+                binding.btnApprove.setVisibility(View.VISIBLE);
+                binding.btnReject.setVisibility(View.VISIBLE);
+            }
         }
 
         fetchRemark();

@@ -177,6 +177,29 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="@string/approved_date"
+                android:textSize="@dimen/M_TEXT" />
+
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/txtApprovedDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/approved_date"
+                android:textSize="@dimen/N_TEXT" />
+        </LinearLayout>
+
+        <include layout="@layout/layout_divider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.webmne.salestracker.widget.TfTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/attachment"
                 android:textSize="@dimen/M_TEXT" />
 
