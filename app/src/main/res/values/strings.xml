@@ -311,6 +311,6 @@
     <string name="event_detail_title">Event Detail</string>
     <string name="event_delete_dialog">Are you sure want to delete this event?</string>
 
-
+    <string name="update_plan">Update Plan</string>
 
 </resources>

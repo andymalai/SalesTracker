@@ -40,7 +40,6 @@ class TimeLineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-
         OtherViewHolder otherViewHolder = (OtherViewHolder) holder;
         // day in question
         TimeLineHour date = days.get(position);

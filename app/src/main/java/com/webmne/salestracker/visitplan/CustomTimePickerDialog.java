@@ -35,7 +35,7 @@ public class CustomTimePickerDialog extends MaterialDialog {
 
     private String strHour, strMinute, str_flag, strSelectedStartTime, strSelectedEndTime;
 
-    protected CustomTimePickerDialog(Builder builder, Context context, String str_flag, String strSelectedStartTime, String strSelectedEndTime, CustomTimePickerCallBack customTimePickerCallBack) {
+    public CustomTimePickerDialog(Builder builder, Context context, String str_flag, String strSelectedStartTime, String strSelectedEndTime, CustomTimePickerCallBack customTimePickerCallBack) {
         super(builder);
 
         this.context = context;

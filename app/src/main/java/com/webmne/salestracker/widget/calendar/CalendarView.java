@@ -554,8 +554,14 @@ public class CalendarView extends LinearLayout {
 
         // initial array to hold 24
         ArrayList<TimeLineHour> hours = new ArrayList<>();
-        for (int i = 0; i < 24; i++) {
 
+        // All Day
+        TimeLineHour th = new TimeLineHour();
+        th.setTime("All\nDay");
+        th.setFormat("");
+        hours.add(th);
+
+        for (int i = 0; i < 24; i++) {
             Date date = calendar.getTime();
 
             TimeLineHour hour = new TimeLineHour();
@@ -578,6 +584,13 @@ public class CalendarView extends LinearLayout {
 
         // initial array to hold 24
         ArrayList<TimeLineHour> hours = new ArrayList<>();
+
+        // All Day
+        TimeLineHour th = new TimeLineHour();
+        th.setTime("All\nDay");
+        th.setFormat("");
+        hours.add(th);
+
         for (int i = 0; i < 24; i++) {
 
             Date date = calendar.getTime();

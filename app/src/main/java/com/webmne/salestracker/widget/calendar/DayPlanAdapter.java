@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -19,11 +20,14 @@ import com.webmne.salestracker.api.model.Plan;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ItemEventBinding;
 import com.webmne.salestracker.helper.AppConstants;
+import com.webmne.salestracker.helper.ConstantFormats;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import com.webmne.salestracker.visitplan.CustomDialogAddVisitPlan;
+import com.webmne.salestracker.visitplan.CustomTimePickerCallBack;
+import com.webmne.salestracker.visitplan.CustomTimePickerDialog;
 import com.webmne.salestracker.widget.PlanItem;
 import com.webmne.salestracker.widget.TfButton;
 import com.webmne.salestracker.widget.TfEditText;
@@ -32,6 +36,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by sagartahelyani on 30-09-2016.
@@ -45,6 +51,9 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
     private Calendar currentDate;
     private Calendar todayCalendar;
     private LoadingIndicatorDialog dialog;
+
+    int startHour, startminute, endHour, endminute;
+    String strSelectedStartTime, strSelectedEndTime, strStartTime, strEndTime;
 
     DayPlanAdapter(Context context, ArrayList<Plan> plans, ArrayList<TimeLineHour> timeLineHours, Calendar currentDate) {
         this.plans = plans;
@@ -134,8 +143,8 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
 
     private void openRemarkDialog(Plan plan) {
         MaterialDialog dialog = new MaterialDialog.Builder(context)
-                .title(R.string.dialog_title)
-                .customView(R.layout.custom_dialog_action_log_edit, true)
+                .title(R.string.update_plan)
+                .customView(R.layout.dialog_update_plan, true)
                 .typeface(Functions.getBoldFont(context), Functions.getRegularFont(context))
                 .canceledOnTouchOutside(false)
                 .show();
@@ -225,6 +234,36 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
             });
 
             final TfEditText editText = (TfEditText) view.findViewById(R.id.edtDesc);
+            final EditText edtStartTime = (EditText) view.findViewById(R.id.edtStartTime);
+            final EditText edtEndTime = (EditText) view.findViewById(R.id.edtEndTime);
+
+            String[] start = plan.getStartTime().split(":");
+            // edtStartTime.setText(start[0] + ":" + start[1]);
+            strSelectedStartTime = start[0] + ":" + start[1];
+
+            setFullDateTime("s", start[0], start[1], edtStartTime);
+
+            String[] end = plan.getEndTime().split(":");
+            //  edtEndTime.setText(end[0] + ":" + end[1]);
+            strSelectedEndTime = end[0] + ":" + end[1];
+
+            setFullDateTime("e", end[0], end[1], edtEndTime);
+
+            edtStartTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    showTimePickerDialog("s", edtStartTime);
+                }
+            });
+
+            edtEndTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showTimePickerDialog("e", edtEndTime);
+
+                }
+            });
 
             if (plan.getRemark().equals("0")) {
                 editText.setText("");
@@ -239,8 +278,15 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
             btnOk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    Log.e("strt", strStartTime);
+                    Log.e("end", strEndTime);
+
+                    plan.setStartTime(Functions.toStr(edtStartTime) + ":00");
+                    plan.setEndTime(Functions.toStr(edtEndTime) + ":00");
+                    notifyDataSetChanged();
                     plan.setRemark(Functions.toStr(editText));
-                    doUpdateRemark(plan);
+                    doUpdatePlan(plan);
                     dialog.dismiss();
                 }
             });
@@ -255,14 +301,61 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
         }
     }
 
-    private void doUpdateRemark(Plan plan) {
+    private void showTimePickerDialog(final String str_flag, final EditText edtEndTime) {
+        new CustomTimePickerDialog(new MaterialDialog.Builder(context), context, str_flag, strSelectedStartTime, strSelectedEndTime, new CustomTimePickerCallBack() {
+            @Override
+            public void timePickerCallBack(String hour, String minute) {
+
+                Log.e("tag", str_flag + "," + hour + "," + minute);
+                setFullDateTime(str_flag, hour, minute, edtEndTime);
+
+            }
+        });
+    }
+
+    private void setFullDateTime(String str_flag, String hour, String minute, EditText edtEndTime) {
+
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault());
+        String timeZone = ConstantFormats.zoneFormat.format(calendar.getTime());
+        boolean isContain = timeZone.contains(":");
+        String newTimeZone;
+        if (isContain) {
+            newTimeZone = timeZone;
+            Log.e("newTimeZone_1", newTimeZone);
+        } else {
+            newTimeZone = new StringBuilder(timeZone).insert(timeZone.length() - 2, ":").toString();
+            Log.e("newTimeZone_2", newTimeZone);
+        }
+
+        String d = ConstantFormats.ymdFormat.format(currentDate.getTime());
+
+        if (str_flag.equals("s")) {
+            startHour = Integer.parseInt(hour);
+            startminute = Integer.parseInt(minute);
+            strSelectedStartTime = hour + ":" + minute;
+            strStartTime = d + "T" + hour + ":" + minute + ":00" + newTimeZone;
+            edtEndTime.setText(hour + ":" + minute);
+
+        } else if (str_flag.equals("e")) {
+            endHour = Integer.parseInt(hour);
+            endminute = Integer.parseInt(minute);
+            strSelectedEndTime = hour + ":" + minute;
+            strEndTime = d + "T" + hour + ":" + minute + ":00" + newTimeZone;
+            edtEndTime.setText(hour + ":" + minute);
+        }
+    }
+
+    private void doUpdatePlan(Plan plan) {
 
         showProgress(context.getString(R.string.loading));
         JSONObject json = new JSONObject();
         try {
             json.put("PlanId", plan.getPlanId());
+            json.put("StartTime", strStartTime);
+            json.put("EndTime", strEndTime);
             json.put("Remark", plan.getRemark());
-            Log.e("update_remark", json.toString());
+
+            Log.e("update_plan", json.toString());
 
         } catch (Exception e) {
             e.printStackTrace();
