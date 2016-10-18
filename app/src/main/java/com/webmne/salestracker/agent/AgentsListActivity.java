@@ -196,7 +196,7 @@ public class AgentsListActivity extends AppCompatActivity {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("AgentID", new JSONArray(selectedAgentIds));
+            jsonObject.put("EmpId", new JSONArray(selectedAgentIds));
         } catch (Exception e) {
             e.printStackTrace();
         }

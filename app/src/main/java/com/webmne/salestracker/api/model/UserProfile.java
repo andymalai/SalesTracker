@@ -1,45 +1,35 @@
 package com.webmne.salestracker.api.model;
 
+import java.io.Serializable;
+
 /**
  * Created by sagartahelyani on 26-08-2016.
  */
-public class UserProfile {
+public class UserProfile implements Serializable{
 
     /**
-     * Branch : 44
-     * Branch_name : Ankleshwar
-     * Email : mkt212@amg.com
+     * Email : ermanojkolhe@gmail.com
      * FirstName : MKT_guj_001
-     * Mobile : 555555
-     * Pos_name : Marketer
+     * Mobile : 9724470522
+     * Branch : 51
+     * Branch_name : Ankleshwar
+     * RegionId : 20
+     * Region : Gujarat
      * Roleid : 9
-     * Userid : 676
+     * Userid : 709
+     * Pos_name : Marketer
      */
 
-    private String Branch;
-    private String Branch_name;
     private String Email;
     private String FirstName;
     private String Mobile;
-    private String Pos_name;
+    private String Branch;
+    private String Branch_name;
+    private String RegionId;
+    private String Region;
     private String Roleid;
     private String Userid;
-
-    public String getBranch() {
-        return Branch;
-    }
-
-    public void setBranch(String Branch) {
-        this.Branch = Branch;
-    }
-
-    public String getBranch_name() {
-        return Branch_name;
-    }
-
-    public void setBranch_name(String Branch_name) {
-        this.Branch_name = Branch_name;
-    }
+    private String Pos_name;
 
     public String getEmail() {
         return Email;
@@ -65,12 +55,36 @@ public class UserProfile {
         this.Mobile = Mobile;
     }
 
-    public String getPos_name() {
-        return Pos_name;
+    public String getBranch() {
+        return Branch;
     }
 
-    public void setPos_name(String Pos_name) {
-        this.Pos_name = Pos_name;
+    public void setBranch(String Branch) {
+        this.Branch = Branch;
+    }
+
+    public String getBranch_name() {
+        return Branch_name;
+    }
+
+    public void setBranch_name(String Branch_name) {
+        this.Branch_name = Branch_name;
+    }
+
+    public String getRegionId() {
+        return RegionId;
+    }
+
+    public void setRegionId(String RegionId) {
+        this.RegionId = RegionId;
+    }
+
+    public String getRegion() {
+        return Region;
+    }
+
+    public void setRegion(String Region) {
+        this.Region = Region;
     }
 
     public String getRoleid() {
@@ -87,5 +101,13 @@ public class UserProfile {
 
     public void setUserid(String Userid) {
         this.Userid = Userid;
+    }
+
+    public String getPos_name() {
+        return Pos_name;
+    }
+
+    public void setPos_name(String Pos_name) {
+        this.Pos_name = Pos_name;
     }
 }

@@ -129,43 +129,47 @@ public class EmployeeListActivity extends AppCompatActivity {
         viewBinding.txtDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("selected", selectedEmployeeIds.toString() + "  #");
 
-//                deleteAgents();
+                deleteEmployees();
             }
 
         });
     }
 
-    private void deleteAgents() {
-        showProgress(getString(R.string.delete_employee));
+    private void deleteEmployees() {
+
+        showProgress(getString(R.string.delete_employees));
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("AgentID", new JSONArray(selectedEmployeeIds));
+            jsonObject.put("EmpId", new JSONArray(selectedEmployeeIds));
         } catch (Exception e) {
             e.printStackTrace();
         }
         Log.e("delete_req", jsonObject.toString());
 
-        new CallWebService(this, AppConstants.DeleteAgent, CallWebService.TYPE_POST, jsonObject) {
+        new CallWebService(this, AppConstants.DeleteEmployee, CallWebService.TYPE_POST, jsonObject) {
 
             @Override
             public void response(String response) {
                 dismissProgress();
 
                 com.webmne.salestracker.api.model.Response deleteResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
-                Log.e("delete_res", deleteResponse.toString());
+                Log.e("delete_res", MyApplication.getGson().toJson(deleteResponse));
 
                 if (deleteResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+
                     SimpleToast.ok(EmployeeListActivity.this, getString(R.string.delete_success));
                     viewBinding.txtDelete.setVisibility(View.GONE);
 
                     viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimary));
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         getWindow().setStatusBarColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimaryDark));
                     }
+
                     getEmplyoees();
+
                 } else {
                     SimpleToast.error(EmployeeListActivity.this, deleteResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                 }
@@ -183,6 +187,7 @@ public class EmployeeListActivity extends AppCompatActivity {
                 SimpleToast.error(EmployeeListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
             }
         }.call();
+
     }
 
     @Override
@@ -195,7 +200,7 @@ public class EmployeeListActivity extends AppCompatActivity {
 
         showProgress(getString(R.string.loading));
 
-        viewBinding.contentLayout.setVisibility(View.GONE);
+        viewBinding.contentLayout.setVisibility(View.INVISIBLE);
 
         employeeList = new ArrayList<>();
         adapter.setEmployeeList(employeeList);
@@ -215,6 +220,8 @@ public class EmployeeListActivity extends AppCompatActivity {
 
                     if (listResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                         adapter.setEmployeeList(listResponse.getData().getEmployee());
+                        employeeList = listResponse.getData().getEmployee();
+
                     } else {
                         SimpleToast.error(EmployeeListActivity.this, listResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
@@ -247,15 +254,15 @@ public class EmployeeListActivity extends AppCompatActivity {
         viewBinding.agentRecyclerView.addItemDecoration(new LineDividerItemDecoration(this));
 
         viewBinding.agentRecyclerView.setEmptyView(viewBinding.emptyLayout);
-        viewBinding.emptyLayout.setContent("No Employee Found.", R.drawable.ic_agent);
+        viewBinding.emptyLayout.setContent("No Employee Found.", R.drawable.ic_employee);
 
         adapter = new EmployeeListAdapter(EmployeeListActivity.this, employeeList, new EmployeeListAdapter.onSelectionListener() {
             @Override
             public void onSelect() {
 
                 if (getSelectedItems() == 0) {
-                    viewBinding.txtDelete.setVisibility(View.GONE);
 
+                    viewBinding.txtDelete.setVisibility(View.GONE);
                     viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimary));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         getWindow().setStatusBarColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimaryDark));
@@ -267,6 +274,7 @@ public class EmployeeListActivity extends AppCompatActivity {
                     viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.tile1));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         getWindow().setStatusBarColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.tile2));
+
                     }
                 }
             }
@@ -300,11 +308,10 @@ public class EmployeeListActivity extends AppCompatActivity {
         int selected = 0;
         for (EmployeeModel model : employeeList) {
             if (model.isChecked()) {
-              //  selectedEmployeeIds.add(Integer.valueOf(model.get()));
+                selectedEmployeeIds.add(Integer.valueOf(model.getId()));
                 selected++;
             }
         }
-        Log.e("selectedEmployeeIds", selectedEmployeeIds.toString());
         return selected;
     }
 }

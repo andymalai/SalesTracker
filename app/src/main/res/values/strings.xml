@@ -214,6 +214,7 @@
     <string name="employee_title">Employee</string>
     <string name="search_employee">Search Employee by Name</string>
     <string name="delete_employee">Deleting Employee..</string>
+    <string name="delete_employees">Deleting Employees..</string>
 
     <!--activity_add_employee.xml-->
     <string name="add_employee_title">Add Employee</string>
@@ -222,7 +223,11 @@
     <string name="select_position">Select Position</string>
     <string name="marketer">Marketer</string>
     <string name="select_region">Select Region</string>
+    <string name="enter_employee_id">Enter Employee ID</string>
     <string name="enter_employee_name">Enter Employee Name</string>
+
+    <!--AddEmployeeActivity.class-->
+    <string name="add_employee_success">Add Employee Successfully.</string>
 
     <!--EmployeeDetailActivity.class-->
     <string name="employee_delete_dialog">Are you sure want to delete this employee?</string>

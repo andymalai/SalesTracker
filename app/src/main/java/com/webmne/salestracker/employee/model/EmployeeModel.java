@@ -8,17 +8,8 @@ import java.io.Serializable;
 
 public class EmployeeModel implements Serializable {
 
-
-    /**
-     * Name : MKT_guj_002
-     * Position : 9
-     * Phone : 9724470522
-     * EmailId : ermanojkolhe@gmail.com
-     * Branch : 51
-     * Region : 20
-     * IsChecked : true
-     */
-
+    private String Id;
+    private String EmpId;
     private String Name;
     private String Position;
     private String Phone;
@@ -26,6 +17,23 @@ public class EmployeeModel implements Serializable {
     private String Branch;
     private String Region;
     private boolean IsChecked;
+
+
+    public String getEmpId() {
+        return EmpId;
+    }
+
+    public void setEmpId(String empId) {
+        EmpId = empId;
+    }
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
+    }
 
     public boolean isChecked() {
         return IsChecked;

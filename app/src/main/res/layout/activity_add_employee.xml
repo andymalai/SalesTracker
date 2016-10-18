@@ -54,26 +54,6 @@
                     android:inputType="text" />
 
                 <com.webmne.salestracker.widget.TfEditText
-                    android:id="@+id/edtRegion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_8dp"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:hint="@string/select_region"
-                    android:longClickable="false" />
-
-                <com.webmne.salestracker.widget.TfEditText
-                    android:id="@+id/edtBranch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_8dp"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:hint="@string/select_branch"
-                    android:longClickable="false" />
-
-                <com.webmne.salestracker.widget.TfEditText
                     android:id="@+id/edtPosition"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -11,13 +11,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
-import com.webmne.salestracker.api.model.Branch;
-import com.webmne.salestracker.api.model.BranchListResponse;
+import com.webmne.salestracker.api.model.Response;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityAddEmployeeBinding;
 import com.webmne.salestracker.employee.model.PositionModel;
-import com.webmne.salestracker.event.model.Region;
-import com.webmne.salestracker.event.model.RegionListResponse;
+import com.webmne.salestracker.event.PositionListResponse;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
@@ -28,7 +26,6 @@ import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by vatsaldesai on 26-09-2016.
@@ -39,20 +36,11 @@ public class AddEmployeeActivity extends AppCompatActivity {
     private ActivityAddEmployeeBinding viewBinding;
     private LoadingIndicatorDialog dialog;
 
-    private ArrayList<Branch> branchArrayList = new ArrayList<>();
-    private int branchWhich = 0;
-    private StringBuilder stringBuilderBranch;
-
-    private ArrayList<Region> regionArrayList;
-    private int regionWhich = 0;
-
+    private ArrayList<PositionModel> positionList;
     private ArrayList<PositionModel> positionArrayList;
-
-    //    private ArrayList<PositionModel> positionArrayList;
     private int positionWhich = 0;
-//    private StringBuilder stringBuilderPosition;
 
-    private String strRegion = "0";
+    String selectedPositionID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,84 +68,31 @@ public class AddEmployeeActivity extends AppCompatActivity {
 
         getPositions();
 
-        // call all ws one by one
-        fetchRegion();
-
         actionListener();
     }
 
     private void getPositions() {
-        positionArrayList = new ArrayList<>();
+        positionList = new ArrayList<>();
 
         if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.HOS)) {
-            positionArrayList.add(new PositionModel(null, AppConstants.MARKETER));
+            positionList.add(new PositionModel(null, AppConstants.MARKETER));
         } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.BM)) {
-            positionArrayList.add(new PositionModel(null, AppConstants.MARKETER));
-            positionArrayList.add(new PositionModel(null, AppConstants.HOS));
+            positionList.add(new PositionModel(null, AppConstants.MARKETER));
+            positionList.add(new PositionModel(null, AppConstants.HOS));
         } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.HOS)) {
-            positionArrayList.add(new PositionModel(null, AppConstants.MARKETER));
-            positionArrayList.add(new PositionModel(null, AppConstants.HOS));
-            positionArrayList.add(new PositionModel(null, AppConstants.BM));
+            positionList.add(new PositionModel(null, AppConstants.MARKETER));
+            positionList.add(new PositionModel(null, AppConstants.HOS));
+            positionList.add(new PositionModel(null, AppConstants.BM));
+        }
+
+        if (Functions.isConnected(this)) {
+            fetchPosition();
+        } else {
+            SimpleToast.error(AddEmployeeActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
         }
     }
 
     private void actionListener() {
-
-        viewBinding.edtRegion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                new MaterialDialog.Builder(AddEmployeeActivity.this)
-                        .title(getString(R.string.select_region))
-                        .items(regionArrayList)
-                        .typeface(Functions.getBoldFont(AddEmployeeActivity.this), Functions.getRegularFont(AddEmployeeActivity.this))
-                        .itemsCallbackSingleChoice(regionWhich, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-
-                                regionWhich = which;
-
-                                viewBinding.edtRegion.setText(text.toString().replace("[", "").replace("]", ""));
-
-                                strRegion = regionArrayList.get(which).getRegion();
-
-                                viewBinding.edtBranch.setText("");
-                                branchWhich = 0;
-
-                                fetchBranches();
-
-                                return false;
-                            }
-                        })
-                        .positiveText(getString(R.string.btn_ok))
-                        .show();
-
-            }
-        });
-
-        viewBinding.edtBranch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                new MaterialDialog.Builder(AddEmployeeActivity.this)
-                        .title(getString(R.string.select_branch))
-                        .items(branchArrayList)
-                        .typeface(Functions.getBoldFont(AddEmployeeActivity.this), Functions.getRegularFont(AddEmployeeActivity.this))
-                        .itemsCallbackSingleChoice(regionWhich, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-
-                                branchWhich = which;
-                                viewBinding.edtBranch.setText(text.toString().replace("[", "").replace("]", ""));
-
-                                return false;
-                            }
-                        })
-                        .positiveText(getString(R.string.btn_ok))
-                        .show();
-
-            }
-        });
 
         viewBinding.edtPosition.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,7 +100,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
 
                 new MaterialDialog.Builder(AddEmployeeActivity.this)
                         .title(getString(R.string.select_position))
-                        .items(positionArrayList)
+                        .items(positionList)
                         .typeface(Functions.getBoldFont(AddEmployeeActivity.this), Functions.getRegularFont(AddEmployeeActivity.this))
                         .itemsCallbackSingleChoice(positionWhich, new MaterialDialog.ListCallbackSingleChoice() {
                             @Override
@@ -173,6 +108,14 @@ public class AddEmployeeActivity extends AppCompatActivity {
 
                                 positionWhich = which;
 
+                                for(int i=0; i<positionArrayList.size(); i++)
+                                {
+                                    if(text.equals(positionArrayList.get(i).getPositionName()))
+                                    {
+                                        selectedPositionID = positionArrayList.get(i).getPositionId();
+                                        break;
+                                    }
+                                }
 
                                 viewBinding.edtPosition.setText(text);
 
@@ -181,29 +124,6 @@ public class AddEmployeeActivity extends AppCompatActivity {
                         })
                         .positiveText(getString(R.string.btn_ok))
                         .show();
-
-
-//                                MaterialDialog.ListCallbackMultiChoice() {
-//                            @Override
-//                            public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
-//
-//                                positionWhich = which;
-//
-////                                stringBuilderPosition = new StringBuilder();
-////
-////                                for (int i = 0; i < which.length; i++) {
-////
-////                                    stringBuilderPosition.append(positionArrayList.get(which[i]).getPositionId());
-////                                    stringBuilderPosition.append(",");
-////                                }
-//
-//                                viewBinding.edtPosition.setText(Arrays.toString(text).replace("[", "").replace("]", ""));
-//
-//                                return true;
-//                            }
-//                        })
-//                        .positiveText(getString(R.string.btn_ok))
-//                        .show();
 
             }
         });
@@ -216,18 +136,13 @@ public class AddEmployeeActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtEmpId))) {
+                    SimpleToast.error(AddEmployeeActivity.this, getString(R.string.enter_employee_id), getString(R.string.fa_error));
+                    return;
+                }
+
                 if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtName))) {
                     SimpleToast.error(AddEmployeeActivity.this, getString(R.string.enter_employee_name), getString(R.string.fa_error));
-                    return;
-                }
-
-                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtRegion))) {
-                    SimpleToast.error(AddEmployeeActivity.this, getString(R.string.select_region), getString(R.string.fa_error));
-                    return;
-                }
-
-                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtBranch))) {
-                    SimpleToast.error(AddEmployeeActivity.this, getString(R.string.select_branch), getString(R.string.fa_error));
                     return;
                 }
 
@@ -256,54 +171,58 @@ public class AddEmployeeActivity extends AppCompatActivity {
                     return;
                 }
 
-//                doAddAgent();
+                AddEmployee();
 
             }
         });
 
     }
 
-    private void doAddAgent() {
+    private void AddEmployee() {
 
         showProgress(getString(R.string.loading));
 
         JSONObject json = new JSONObject();
         try {
-//            json.put("AgentName", Functions.toStr(viewBinding.edtAgentName));
-//            json.put("AmgCode", Functions.toStr(viewBinding.edtAmgGeneral));
-//            json.put("BranchId", branchId);
-//            json.put("Description", Functions.toStr(viewBinding.edtDescription));
-//            json.put("EmailId", Functions.toStr(viewBinding.edtEmailId));
-//            json.put("KruniaCode", Functions.toStr(viewBinding.edtKruniaCode));
-//            json.put("MobileNo", Functions.toStr(viewBinding.edtPhoneNumber));
-//            json.put("TierId", tierId);
-//            json.put("UserId", PrefUtils.getUserId(this));
-//            Log.e("add_req", json.toString());
+            json.put("EmpId", Functions.toStr(viewBinding.edtEmpId));
+            json.put("Position", selectedPositionID);
+            json.put("Name", Functions.toStr(viewBinding.edtName));
+            json.put("Phone", Functions.toStr(viewBinding.edtPhoneNumber));
+            json.put("Email", Functions.toStr(viewBinding.edtEmailId));
+            json.put("Region", PrefUtils.getUserProfile(this).getRegionId());
+            json.put("Branch", PrefUtils.getUserProfile(this).getBranch());
+            json.put("ParentId", PrefUtils.getUserId(this));
+            json.put("Department", "0");
+            json.put("Userpic", "0");
+            json.put("DepartmentPIC", "0");
+            json.put("RoleDescription", "0");
+            json.put("PositionName", "0");
+            Log.e("add_req", json.toString());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        new CallWebService(this, AppConstants.AddAgent, CallWebService.TYPE_POST, json) {
+        new CallWebService(this, AppConstants.AddEmployee, CallWebService.TYPE_POST, json) {
 
             @Override
             public void response(String response) {
                 dismissProgress();
 
-//                AddAgentResponse addAgentResponse = MyApplication.getGson().fromJson(response, AddAgentResponse.class);
-//
-//                if (addAgentResponse != null) {
-//                    Log.e("add_res", MyApplication.getGson().toJson(addAgentResponse));
-//
-//                    if (addAgentResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-//                        SimpleToast.ok(AddEmployeeActivity.this, getString(R.string.add_agent_success));
-//                        finish();
-//                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-//
-//                    } else {
-//                        SimpleToast.error(AddEmployeeActivity.this, addAgentResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-//                    }
-//                }
+                Response addEmployeeResponse = MyApplication.getGson().fromJson(response, Response.class);
+
+                if (addEmployeeResponse != null) {
+                    Log.e("add_res", MyApplication.getGson().toJson(addEmployeeResponse));
+
+                    if (addEmployeeResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                        SimpleToast.ok(AddEmployeeActivity.this, getString(R.string.add_employee_success));
+                        finish();
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+                    } else {
+                        SimpleToast.error(AddEmployeeActivity.this, addEmployeeResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+                }
             }
 
             @Override
@@ -318,106 +237,57 @@ public class AddEmployeeActivity extends AppCompatActivity {
                 SimpleToast.error(AddEmployeeActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
             }
         }.call();
+    }
+
+    private void fetchPosition() {
+
+        showProgress(getString(R.string.loading));
+
+        new CallWebService(this, AppConstants.Position, CallWebService.TYPE_GET) {
+
+            @Override
+            public void response(String response) {
+
+                dismissProgress();
+
+                PositionListResponse positionListResponse = MyApplication.getGson().fromJson(response, PositionListResponse.class);
+
+                if (positionListResponse != null) {
+
+                    if (positionListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+
+                        positionArrayList = new ArrayList<>();
+                        positionArrayList = positionListResponse.getData().getPosition();
+
+                    } else {
+                        SimpleToast.error(AddEmployeeActivity.this, positionListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                    }
+
+                } else {
+                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
+                }
+
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                VolleyErrorHelper.showErrorMsg(error, AddEmployeeActivity.this);
+            }
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(AddEmployeeActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
+
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-    }
-
-    private void fetchRegion() {
-
-        showProgress(getString(R.string.loading));
-
-        new CallWebService(this, AppConstants.Region, CallWebService.TYPE_GET) {
-
-            @Override
-            public void response(String response) {
-
-                dismissProgress();
-
-                RegionListResponse regionListResponse = MyApplication.getGson().fromJson(response, RegionListResponse.class);
-
-                if (regionListResponse != null) {
-
-                    if (regionListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-
-                        regionArrayList = new ArrayList<>();
-                        regionArrayList = regionListResponse.getData().getBranches();
-
-                        fetchBranches();
-
-                    } else {
-                        SimpleToast.error(AddEmployeeActivity.this, regionListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-                    }
-
-                } else {
-                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
-                }
-
-            }
-
-            @Override
-            public void error(VolleyError error) {
-                dismissProgress();
-                VolleyErrorHelper.showErrorMsg(error, AddEmployeeActivity.this);
-            }
-
-            @Override
-            public void noInternet() {
-                dismissProgress();
-                SimpleToast.error(AddEmployeeActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-            }
-        }.call();
-
-    }
-
-    private void fetchBranches() {
-
-        showProgress(getString(R.string.loading));
-
-        Log.e("branch", AppConstants.Branch + "&regionid=" + strRegion);
-
-        new CallWebService(this, AppConstants.Branch + "&regionid=" + strRegion, CallWebService.TYPE_GET) {
-
-            @Override
-            public void response(String response) {
-
-                dismissProgress();
-
-                BranchListResponse branchListResponse = MyApplication.getGson().fromJson(response, BranchListResponse.class);
-
-                if (branchListResponse != null) {
-
-                    if (branchListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
-
-                        branchArrayList = new ArrayList<>();
-                        branchArrayList = branchListResponse.getData().getBranches();
-
-                    } else {
-                        SimpleToast.error(AddEmployeeActivity.this, branchListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
-                    }
-
-                } else {
-                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
-                }
-
-            }
-
-            @Override
-            public void error(VolleyError error) {
-                dismissProgress();
-                VolleyErrorHelper.showErrorMsg(error, AddEmployeeActivity.this);
-            }
-
-            @Override
-            public void noInternet() {
-                dismissProgress();
-                SimpleToast.error(AddEmployeeActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-            }
-        }.call();
-
     }
 
     public void showProgress(String string) {

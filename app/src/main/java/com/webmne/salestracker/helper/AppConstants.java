@@ -171,11 +171,11 @@ public class AppConstants {
     // http://demo.webmynehost.com/amgsales/services/add_emp.php?format=json
     public static final String AddEmployee = WEB_SERVICE_URL + "add_emp.php?format=json";
 
-    //
-    public static final String UpdateEmployee = WEB_SERVICE_URL + "";
+    // http://demo.webmynehost.com/amgsales/services/update_emp.php?format=json
+    public static final String UpdateEmployee = WEB_SERVICE_URL + "update_emp.php?format=json";
 
-    //
-    public static final String DeleteEmployee = WEB_SERVICE_URL + "";
+    // http://demo.webmynehost.com/amgsales/services/delete_emp.php?format=json
+    public static final String DeleteEmployee = WEB_SERVICE_URL + "delete_emp.php?format=json";
 
     // http://demo.webmynehost.com/amgsales/services/aap_rej_status.php?format=json
     public static final String ApproveRejectActionLog = WEB_SERVICE_URL + "aap_rej_status.php?format=json";
