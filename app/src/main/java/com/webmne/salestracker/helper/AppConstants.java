@@ -26,7 +26,7 @@ public class AppConstants {
     public static String PENDING = "P";
     public static String REJECTED = "R";
     public static String PROCESSING = "PR";
-    public static String ORDERDUE = "OD";
+    public static String OVERDUE = "OD";
     public static String DUETODAY = "DT";
     public static String ONGOING = "OG";
     public static String APPROVE = "A";

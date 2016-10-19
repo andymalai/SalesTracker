@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 public class EventListActivity extends AppCompatActivity {
 
     private EventListAdapter adapter;
-    private ArrayList<Event> eventList;
+//    private ArrayList<Event> eventList;
     private ArrayList<Event> mainEventList;
 
     private ActivityEventListBinding viewBinding;
@@ -88,8 +89,8 @@ public class EventListActivity extends AppCompatActivity {
         viewBinding.recyclerView.setOnItemClickListener(new FamiliarRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(FamiliarRecyclerView familiarRecyclerView, View view, int position) {
-                Intent intent = new Intent(EventListActivity.this, EmployeeDetailActivity.class);
-                intent.putExtra("event", MyApplication.getGson().toJson(eventList.get(position)));
+                Intent intent = new Intent(EventListActivity.this, EventDetailActivity.class);
+                intent.putExtra("event", MyApplication.getGson().toJson(mainEventList.get(position)));
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -135,8 +136,8 @@ public class EventListActivity extends AppCompatActivity {
 
         viewBinding.contentLayout.setVisibility(View.INVISIBLE);
 
-        eventList = new ArrayList<>();
-        adapter.setEventList(eventList);
+        mainEventList = new ArrayList<>();
+        adapter.setEventList(mainEventList);
 
         new CallWebService(this, AppConstants.EventList, CallWebService.TYPE_GET) {
 
@@ -155,15 +156,14 @@ public class EventListActivity extends AppCompatActivity {
 
                         mainEventList = eventListModel.getEvents();
 
-                        for (int i = 0; i < mainEventList.size(); i++) {
+//                        for (int i = 0; i < mainEventList.size(); i++) {
+//                            if (mainEventList.get(i).getBranchId().contains(PrefUtils.getUserProfile(EventListActivity.this).getBranch())
+//                                    && mainEventList.get(i).getRoleId().contains(PrefUtils.getUserProfile(EventListActivity.this).getRoleid())) {
+//                                eventList.add(mainEventList.get(i));
+//                            }
+//                        }
 
-                            if (mainEventList.get(i).getBranchId().contains(PrefUtils.getUserProfile(EventListActivity.this).getBranch())
-                                    && mainEventList.get(i).getRoleId().contains(PrefUtils.getUserProfile(EventListActivity.this).getRoleid())) {
-                                eventList.add(mainEventList.get(i));
-                            }
-                        }
-
-                        adapter.setEventList(eventList);
+                        adapter.setEventList(mainEventList);
 
                     } else {
                         SimpleToast.error(EventListActivity.this, eventListModel.getResponse().getResponseMsg(), getString(R.string.fa_error));
@@ -192,7 +192,7 @@ public class EventListActivity extends AppCompatActivity {
     }
 
     private void initRecyclerView() {
-        eventList = new ArrayList<>();
+        mainEventList = new ArrayList<>();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         viewBinding.recyclerView.setLayoutManager(layoutManager);
         viewBinding.recyclerView.addItemDecoration(new LineDividerItemDecoration(this));
@@ -200,12 +200,12 @@ public class EventListActivity extends AppCompatActivity {
         viewBinding.recyclerView.setEmptyView(viewBinding.emptyLayout);
         viewBinding.emptyLayout.setContent("No Event Found.", R.drawable.ic_action_event);
 
-        adapter = new EventListAdapter(EventListActivity.this, eventList, new EventListAdapter.onClickListener() {
+        adapter = new EventListAdapter(EventListActivity.this, mainEventList, new EventListAdapter.onClickListener() {
             @Override
             public void onClick(int position) {
 
                 Intent intent = new Intent(EventListActivity.this, EventDetailActivity.class);
-                intent.putExtra("event", MyApplication.getGson().toJson(eventList.get(position)));
+                intent.putExtra("event", MyApplication.getGson().toJson(mainEventList.get(position)));
                 startActivity(intent);
 
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

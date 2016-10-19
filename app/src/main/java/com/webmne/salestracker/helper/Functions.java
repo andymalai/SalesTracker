@@ -258,7 +258,7 @@ public class Functions {
         } else if (status.equals(AppConstants.COMPLETE)) {
             return context.getString(R.string.completed);
 
-        } else if (status.equals(AppConstants.ORDERDUE)) {
+        } else if (status.equals(AppConstants.OVERDUE)) {
             return context.getString(R.string.order_due);
 
         } else if (status.equals(AppConstants.DUETODAY)) {
