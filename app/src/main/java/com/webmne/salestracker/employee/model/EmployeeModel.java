@@ -15,6 +15,16 @@ public class EmployeeModel implements Serializable {
     private String Phone;
     private String EmailId;
     private String Branch;
+
+    public String getBranchId() {
+        return BranchId;
+    }
+
+    public void setBranchId(String branchId) {
+        BranchId = branchId;
+    }
+
+    private String BranchId;
     private String Region;
     private boolean IsChecked;
 
@@ -90,4 +100,10 @@ public class EmployeeModel implements Serializable {
     public void setRegion(String Region) {
         this.Region = Region;
     }
+
+    @Override
+    public String toString() {
+        return Name;
+    }
 }
+

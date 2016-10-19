@@ -15,15 +15,14 @@ import android.widget.LinearLayout;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.model.DatePlan;
 import com.webmne.salestracker.api.model.Plan;
-import com.webmne.salestracker.custom.WhiteLineDividerItemDecoration;
 import com.webmne.salestracker.helper.ConstantFormats;
+import com.webmne.salestracker.visitplan.model.AgentListModel;
+import com.webmne.salestracker.visitplan.model.SelectedUser;
 import com.webmne.salestracker.widget.TfButton;
 import com.webmne.salestracker.widget.TfTextView;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -50,6 +49,12 @@ public class CalendarView extends LinearLayout {
         this.onGridSelectListener = onGridSelectListener;
     }
 
+    private OnModeChangeListener OnModeChangeListener;
+
+    public void setOnModeChangeListener(CalendarView.OnModeChangeListener onModeChangeListener) {
+        OnModeChangeListener = onModeChangeListener;
+    }
+
     public void setOnCalendarActionClickListener(CalendarView.OnCalendarActionClickListener onCalendarActionClickListener) {
         this.onCalendarActionClickListener = onCalendarActionClickListener;
     }
@@ -70,6 +75,7 @@ public class CalendarView extends LinearLayout {
     private FamiliarRecyclerView grid;
     private RecyclerView timelineRecyclerView;
     private LinearLayout timelineLayout;
+
     //private View blankView;
     private TfButton btnDay, btnMonth, btnDeleteAll, btnRecruitment, btnMapping, btnWeek;
     private ArrayList<TimeLineHour> timeArray;
@@ -134,6 +140,11 @@ public class CalendarView extends LinearLayout {
         monthAdapter.notifyDataSetChanged();
     }
 
+    public void setUser(SelectedUser selectedUser) {
+        this.selectedUser = selectedUser;
+        dayAdapter.setSelectedUser(selectedUser);
+    }
+
     public enum MODE {
         DAY,
         WEEK,
@@ -143,6 +154,7 @@ public class CalendarView extends LinearLayout {
     // This is default mode to set as month
     private MODE mode = MODE.MONTH;
 
+    private SelectedUser selectedUser;
     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(_ctx, LinearLayoutManager.VERTICAL, false);
 
     public CalendarView(Context context) {
@@ -161,6 +173,9 @@ public class CalendarView extends LinearLayout {
 
     public void setMode(MODE mode) {
         this.mode = mode;
+        if (OnModeChangeListener != null) {
+            OnModeChangeListener.onModeChange(mode);
+        }
         updateCalendar();
     }
 
@@ -179,7 +194,7 @@ public class CalendarView extends LinearLayout {
         assignTimelineAdapter();
 
         dayPlans = new ArrayList<>();
-        dayAdapter = new DayPlanAdapter(_ctx, dayPlans, getTimeLineHoursSimple(), currentDate);
+        dayAdapter = new DayPlanAdapter(selectedUser, _ctx, dayPlans, getTimeLineHoursSimple(), currentDate);
 
     }
 
@@ -528,6 +543,10 @@ public class CalendarView extends LinearLayout {
 
     }
 
+    public MODE getMode() {
+        return mode;
+    }
+
     private void setDay() {
 
         String d = ConstantFormats.ymdFormat.format(currentDate.getTime());
@@ -663,5 +682,9 @@ public class CalendarView extends LinearLayout {
 
     public interface OnCalendarActionClickListener {
         void onCalendarActionCalled(int optionType);
+    }
+
+    public interface OnModeChangeListener {
+        void onModeChange(MODE modeType);
     }
 }

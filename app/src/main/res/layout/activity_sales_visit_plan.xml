@@ -38,8 +38,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/dimen_8dp"
-                    android:textColor="@color/half_black"
-                    android:text="Actual Progress: 50/300" />
+                    android:text="Actual Progress: 0/0"
+                    android:textColor="@color/half_black" />
 
                 <com.webmne.salestracker.widget.TfTextView
                     android:id="@+id/txtVariance"
@@ -47,8 +47,69 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/dimen_4dp"
-                    android:text="(36.00%)"
+                    android:text="(0%)"
                     android:textColor="@color/tile1" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/selectionLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:orientation="vertical">
+
+                <com.webmne.salestracker.widget.TfDropdownEditText
+                    android:id="@+id/edtBranch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@drawable/dropdown_bg"
+                    android:clickable="true"
+                    android:drawableRight="@drawable/ic_content_clear"
+                    android:focusable="false"
+                    android:hint="@string/select_branch"
+                    android:longClickable="false"
+                    android:padding="@dimen/dimen_8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:orientation="horizontal">
+
+                    <com.webmne.salestracker.widget.TfDropdownEditText
+                        android:id="@+id/edtMarketer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/dimen_4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/dropdown_bg"
+                        android:clickable="true"
+                        android:drawableRight="@drawable/ic_content_clear"
+                        android:focusable="false"
+                        android:hint="@string/select_marketer"
+                        android:longClickable="false"
+                        android:padding="@dimen/dimen_8dp" />
+
+                    <com.webmne.salestracker.widget.TfDropdownEditText
+                        android:id="@+id/edtHos"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/dropdown_bg"
+                        android:clickable="true"
+                        android:drawableRight="@drawable/ic_content_clear"
+                        android:focusable="false"
+                        android:hint="@string/select_hos"
+                        android:longClickable="false"
+                        android:padding="@dimen/dimen_8dp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

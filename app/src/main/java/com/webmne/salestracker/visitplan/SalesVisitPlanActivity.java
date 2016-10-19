@@ -8,7 +8,9 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -16,6 +18,9 @@ import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.google.gson.Gson;
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.api.call.GetBranches;
+import com.webmne.salestracker.api.model.Branch;
+import com.webmne.salestracker.api.model.DatePlan;
 import com.webmne.salestracker.api.model.FetchMappingData;
 import com.webmne.salestracker.api.model.FetchMappingResponse;
 import com.webmne.salestracker.api.model.FetchRecruitmentData;
@@ -24,6 +29,8 @@ import com.webmne.salestracker.api.model.PlanDataResponse;
 import com.webmne.salestracker.api.model.SalesPlanResponse;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivitySalesVisitPlanBinding;
+import com.webmne.salestracker.employee.GetEmployees;
+import com.webmne.salestracker.employee.model.EmployeeModel;
 import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.ConstantFormats;
 import com.webmne.salestracker.helper.Functions;
@@ -35,6 +42,7 @@ import com.webmne.salestracker.visitplan.adapter.CustomDialogVisitPlanAgentListA
 import com.webmne.salestracker.visitplan.dialogs.MappingDialog;
 import com.webmne.salestracker.visitplan.dialogs.RecruitmentDialog;
 import com.webmne.salestracker.visitplan.model.AgentListModel;
+import com.webmne.salestracker.visitplan.model.SelectedUser;
 import com.webmne.salestracker.widget.TfButton;
 import com.webmne.salestracker.widget.calendar.CalendarView;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
@@ -47,7 +55,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class SalesVisitPlanActivity extends AppCompatActivity {
+public class SalesVisitPlanActivity extends AppCompatActivity implements View.OnTouchListener {
 
     private ActivitySalesVisitPlanBinding binding;
     private MenuItem addPlanItem;
@@ -55,12 +63,22 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
     private FamiliarRecyclerView familiarRecyclerView;
     private CustomDialogVisitPlanAgentListAdapter customDialogVisitPlanAgentListAdapter;
-    private ArrayList<AgentListModel> agentModelList;
     private TfButton btnCancel, btnOk;
     private CustomDialogAddVisitPlan customDialogAddVisitPlan;
     private SalesPlanResponse planResponse;
 
     private CustomDialogActualProduction customDialogActualProduction;
+    private ArrayList<AgentListModel> agentModelList;
+
+    private ArrayList<EmployeeModel> emptList;
+    private ArrayList<Branch> branchList;
+    private ArrayList<EmployeeModel> mktList;
+    private ArrayList<EmployeeModel> hosList;
+    private int mktWhich = 0;
+    private int hosWhich = 0;
+    private int branchWhich = 0;
+
+    private SelectedUser selectedUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +104,63 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         });
         binding.toolbarLayout.txtCustomTitle.setText(getString(R.string.sales_title));
 
+        setDefaultUser();
+
         initCalendarView();
 
         clickListener();
+
+        // call ws
+        if (!PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.MARKETER)) {
+            callWs();
+        }
+    }
+
+    private void setDefaultUser() {
+        // default selectedUser
+        selectedUser = new SelectedUser();
+        selectedUser.setUserId(PrefUtils.getUserId(this));
+        selectedUser.setUserName(PrefUtils.getUserProfile(this).getFirstName());
+        if (binding.cv != null) {
+            binding.cv.setUser(selectedUser);
+        }
+    }
+
+    private void callWs() {
+
+        branchList = new ArrayList<>();
+
+        // get Employees
+        new GetEmployees(this, PrefUtils.getUserId(this), new GetEmployees.OnGetEmpListener() {
+            @Override
+            public void getEmployees(ArrayList<EmployeeModel> agentList) {
+                emptList = agentList;
+                setUpChild(emptList);
+
+                if (PrefUtils.getUserProfile(SalesVisitPlanActivity.this).getPos_name().equals(AppConstants.RM)) {
+                    // get Branches
+                    new GetBranches(SalesVisitPlanActivity.this, PrefUtils.getUserProfile(SalesVisitPlanActivity.this).getRegionId(), new GetBranches.OnGetBranchListener() {
+                        @Override
+                        public void getBranches(ArrayList<Branch> list) {
+                            branchList = list;
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void setUpChild(ArrayList<EmployeeModel> emptList) {
+        mktList = new ArrayList<>();
+        hosList = new ArrayList<>();
+
+        for (EmployeeModel model : emptList) {
+            if (model.getPosition().equals(AppConstants.MKT_POS + "")) {
+                mktList.add(model);
+            } else if (model.getPosition().equals(AppConstants.HOS_POS + "")) {
+                hosList.add(model);
+            }
+        }
     }
 
     private void clickListener() {
@@ -105,15 +177,150 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
             }
         });
 
+        binding.edtMarketer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(SalesVisitPlanActivity.this)
+                        .title(getString(R.string.select_marketer))
+                        .items(mktList)
+                        .typeface(Functions.getBoldFont(SalesVisitPlanActivity.this), Functions.getRegularFont(SalesVisitPlanActivity.this))
+                        .itemsCallbackSingleChoice(mktWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+
+                                mktWhich = which;
+
+                                EmployeeModel model = mktList.get(which);
+                                Log.e("model", model.getId() + " @");
+
+                                selectedUser.setUserId(model.getId());
+                                selectedUser.setUserName(model.getName());
+                                binding.cv.setUser(selectedUser);
+
+                                fetchPlan();
+
+                                new GetAgentsForPlan(SalesVisitPlanActivity.this, model.getId(), new GetAgentsForPlan.OnGetAgentsListener() {
+                                    @Override
+                                    public void getAgents(ArrayList<AgentListModel> agentList) {
+
+                                    }
+                                });
+
+                                binding.edtMarketer.setText(text.toString().replace("[", "").replace("]", ""));
+                                binding.edtHos.setText("");
+
+                                return false;
+                            }
+                        })
+                        .positiveText(getString(R.string.btn_ok))
+                        .show();
+            }
+        });
+
+        binding.edtHos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(SalesVisitPlanActivity.this)
+                        .title(getString(R.string.select_hos))
+                        .items(hosList)
+                        .typeface(Functions.getBoldFont(SalesVisitPlanActivity.this), Functions.getRegularFont(SalesVisitPlanActivity.this))
+                        .itemsCallbackSingleChoice(hosWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+
+                                hosWhich = which;
+
+                                EmployeeModel model = hosList.get(which);
+                                Log.e("model", model.getId() + " @");
+
+                                selectedUser.setUserId(model.getId());
+                                selectedUser.setUserName(model.getName());
+                                binding.cv.setUser(selectedUser);
+
+                                fetchPlan();
+
+                                new GetAgentsForPlan(SalesVisitPlanActivity.this, model.getId(), new GetAgentsForPlan.OnGetAgentsListener() {
+                                    @Override
+                                    public void getAgents(ArrayList<AgentListModel> agentList) {
+
+                                    }
+                                });
+
+                                binding.edtHos.setText(text.toString().replace("[", "").replace("]", ""));
+                                binding.edtMarketer.setText("");
+
+                                return false;
+                            }
+                        })
+                        .positiveText(getString(R.string.btn_ok))
+                        .show();
+            }
+        });
+
+        binding.edtBranch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(SalesVisitPlanActivity.this)
+                        .title(getString(R.string.select_branch))
+                        .items(branchList)
+                        .typeface(Functions.getBoldFont(SalesVisitPlanActivity.this), Functions.getRegularFont(SalesVisitPlanActivity.this))
+                        .itemsCallbackSingleChoice(branchWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+
+                                branchWhich = which;
+
+                                Branch branch = branchList.get(which);
+                                binding.edtBranch.setText(branch.getBranchName());
+
+                                mktList = new ArrayList<EmployeeModel>();
+                                hosList = new ArrayList<EmployeeModel>();
+
+                                for (EmployeeModel model : emptList) {
+                                    if (model.getBranch().equals(branch.getBranchId())) {
+                                        if (model.getPosition().equals(AppConstants.MKT_POS + "")) {
+                                            mktList.add(model);
+                                        } else if (model.getPosition().equals(AppConstants.HOS_POS + "")) {
+                                            hosList.add(model);
+                                        }
+                                    }
+                                }
+
+                                /*selectedUser.setUserId(model.getId());
+                                selectedUser.setUserName(model.getName());
+                                binding.cv.setUser(selectedUser);
+
+                                fetchPlan();
+
+                                new GetAgentsForPlan(SalesVisitPlanActivity.this, model.getId(), new GetAgentsForPlan.OnGetAgentsListener() {
+                                    @Override
+                                    public void getAgents(ArrayList<AgentListModel> agentList) {
+
+                                    }
+                                });
+
+                                binding.edtHos.setText(text.toString().replace("[", "").replace("]", ""));
+                                binding.edtMarketer.setText("");*/
+
+                                return false;
+                            }
+                        })
+                        .positiveText(getString(R.string.btn_ok))
+                        .show();
+            }
+        });
+
+        binding.edtMarketer.setOnTouchListener(this);
+        binding.edtBranch.setOnTouchListener(this);
+        binding.edtHos.setOnTouchListener(this);
+
     }
 
     private void fetchPlan() {
 
-        showProgress(getString(R.string.loading));
-
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("UserId", PrefUtils.getUserId(SalesVisitPlanActivity.this));
+            jsonObject.put("UserId", selectedUser.getUserId());
             jsonObject.put("Month", binding.cv.getCurrentCalendar().get(Calendar.MONTH) + 1);
             jsonObject.put("Year", binding.cv.getCurrentCalendar().get(Calendar.YEAR));
         } catch (Exception e) {
@@ -128,9 +335,10 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
                 dismissProgress();
 
                 planResponse = MyApplication.getGson().fromJson(response, SalesPlanResponse.class);
+                setPlanDetails(planResponse.getData());
+
                 if (planResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                     Log.e("plan_res", response);
-                    setPlanDetails(planResponse.getData());
                 }
             }
 
@@ -150,22 +358,74 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
 
     private void setPlanDetails(PlanDataResponse data) {
 
-        binding.txtProgress.setText(String.format("Actual Progress: %s/%s", data.getProgress(), data.getTarget()));
+        if (data != null) {
+            binding.txtProgress.setText(String.format("Actual Progress: %s/%s", data.getProgress(), data.getTarget()));
 
-        float variance = (Float.parseFloat(data.getProgress()) * 100) / Float.parseFloat(data.getTarget());
-        binding.txtVariance.setText(Html.fromHtml("<u>" + String.format(Locale.US, "(%.2f%s)", variance, "%") + "</u>"));
+            float variance = (Float.parseFloat(data.getProgress()) * 100) / Float.parseFloat(data.getTarget());
+            binding.txtVariance.setText(Html.fromHtml("<u>" + String.format(Locale.US, "(%.2f%s)", variance, "%") + "</u>"));
 
-        binding.cv.setMonthPlans(data.getPlans());
-        binding.cv.notifyAdapter();
+            binding.cv.setMonthPlans(data.getPlans());
+            binding.cv.notifyAdapter();
+
+        } else {
+            binding.txtProgress.setText(String.format("Actual Progress: %s/%s", "0", "0"));
+
+            binding.txtVariance.setText(Html.fromHtml("<u>" + "0.0%" + "</u>"));
+
+            binding.cv.setMonthPlans(new ArrayList<DatePlan>());
+        }
     }
 
     private void initCalendarView() {
+
+        if (PrefUtils.getUserProfile(SalesVisitPlanActivity.this).getPos_name().equals(AppConstants.MARKETER)) {
+            binding.selectionLayout.setVisibility(View.GONE);
+
+        } else {
+            binding.selectionLayout.setVisibility(View.VISIBLE);
+            if (PrefUtils.getUserProfile(SalesVisitPlanActivity.this).getPos_name().equals(AppConstants.HOS)) {
+                binding.edtBranch.setVisibility(View.GONE);
+                binding.edtHos.setVisibility(View.GONE);
+                binding.edtMarketer.setVisibility(View.VISIBLE);
+
+            } else if (PrefUtils.getUserProfile(SalesVisitPlanActivity.this).getPos_name().equals(AppConstants.BM)) {
+                binding.edtBranch.setVisibility(View.GONE);
+                binding.edtHos.setVisibility(View.VISIBLE);
+                binding.edtMarketer.setVisibility(View.VISIBLE);
+
+            } else if (PrefUtils.getUserProfile(SalesVisitPlanActivity.this).getPos_name().equals(AppConstants.RM)) {
+                binding.edtBranch.setVisibility(View.VISIBLE);
+                binding.edtHos.setVisibility(View.VISIBLE);
+                binding.edtMarketer.setVisibility(View.VISIBLE);
+            }
+        }
+
         binding.cv.setMode(CalendarView.MODE.MONTH);
+        binding.cv.setUser(selectedUser);
         binding.cv.updateCalendar();
+
         binding.cv.setOnCalendarChangeListener(new CalendarView.onMonthChangeListener() {
             @Override
             public void onMonthChange() {
                 fetchPlan();
+            }
+        });
+
+        binding.cv.setOnModeChangeListener(new CalendarView.OnModeChangeListener() {
+            @Override
+            public void onModeChange(CalendarView.MODE modeType) {
+                binding.cv.setUser(selectedUser);
+                if (PrefUtils.getUserProfile(SalesVisitPlanActivity.this).getPos_name().equals(AppConstants.MARKETER)) {
+                    binding.selectionLayout.setVisibility(View.GONE);
+
+                } else {
+                    if (modeType == CalendarView.MODE.MONTH) {
+                        binding.selectionLayout.setVisibility(View.VISIBLE);
+
+                    } else {
+                        binding.selectionLayout.setVisibility(View.GONE);
+                    }
+                }
             }
         });
 
@@ -280,7 +540,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_plan:
-                new CustomDialogAddVisitPlan(binding.cv.getCurrentCalendar(), "00:00",
+                new CustomDialogAddVisitPlan(selectedUser, binding.cv.getCurrentCalendar(), "00:00",
                         new MaterialDialog.Builder(this), SalesVisitPlanActivity.this);
                 break;
         }
@@ -290,7 +550,8 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("onResume", "Call");
+
+        // get agents and plan one by one
         fetchPlan();
     }
 
@@ -619,5 +880,37 @@ public class SalesVisitPlanActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e("UPDATE_RECRUITMENT_EXP", e.getMessage());
         }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        EditText editText = (EditText) v;
+        final int DRAWABLE_LEFT = 0;
+        final int DRAWABLE_TOP = 1;
+        final int DRAWABLE_RIGHT = 2;
+        final int DRAWABLE_BOTTOM = 3;
+
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                // your action here
+                editText.setText("");
+
+                if (editText.getId() == R.id.edtMarketer) {
+                    mktWhich = 0;
+                    setDefaultUser();
+                    fetchPlan();
+                } else if (editText.getId() == R.id.edtHos) {
+                    hosWhich = 0;
+                    setDefaultUser();
+                    fetchPlan();
+                } else {
+                    branchWhich = 0;
+                    setUpChild(emptList);
+                }
+
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -28,6 +28,7 @@ import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import com.webmne.salestracker.visitplan.CustomDialogAddVisitPlan;
 import com.webmne.salestracker.visitplan.CustomTimePickerCallBack;
 import com.webmne.salestracker.visitplan.CustomTimePickerDialog;
+import com.webmne.salestracker.visitplan.model.SelectedUser;
 import com.webmne.salestracker.widget.PlanItem;
 import com.webmne.salestracker.widget.TfButton;
 import com.webmne.salestracker.widget.TfEditText;
@@ -55,9 +56,19 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
     int startHour, startminute, endHour, endminute;
     String strSelectedStartTime, strSelectedEndTime, strStartTime, strEndTime;
 
-    DayPlanAdapter(Context context, ArrayList<Plan> plans, ArrayList<TimeLineHour> timeLineHours, Calendar currentDate) {
+    private SelectedUser selectedUser;
+
+    DayPlanAdapter(SelectedUser selectedUser, Context context, ArrayList<Plan> plans, ArrayList<TimeLineHour> timeLineHours, Calendar currentDate) {
         this.plans = plans;
         this.timeLineHours = timeLineHours;
+
+        this.selectedUser = selectedUser;
+        if (this.selectedUser == null) {
+            Log.e("selectedUser", "NULL");
+        } else {
+            Log.e("selectedUser", selectedUser.getUserName());
+        }
+
         this.context = context;
         this.currentDate = currentDate;
         todayCalendar = Calendar.getInstance();
@@ -80,7 +91,13 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
         holder.newBinding.parentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new CustomDialogAddVisitPlan(currentDate, timeLineHours.get(holder.getAdapterPosition()).getTime(),
+                // TODO: 18-10-2016
+                if (selectedUser == null) {
+                    Log.e("selectedUser", "NULL");
+                } else {
+                    Log.e("selectedUser", selectedUser.getUserName());
+                }
+                new CustomDialogAddVisitPlan(selectedUser, currentDate, timeLineHours.get(holder.getAdapterPosition()).getTime(),
                         new MaterialDialog.Builder(context), context);
 
             }
@@ -103,6 +120,10 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
         this.plans = newPlans;
         this.currentDate = currentDate;
         notifyDataSetChanged();
+    }
+
+    void setSelectedUser(SelectedUser selectedUser) {
+        this.selectedUser = selectedUser;
     }
 
     class EventHolder extends RecyclerView.ViewHolder {
@@ -244,7 +265,11 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
             setFullDateTime("s", start[0], start[1], edtStartTime);
 
             String[] end = plan.getEndTime().split(":");
-            //  edtEndTime.setText(end[0] + ":" + end[1]);
+
+            if (plan.getStartTime().equals(plan.getEndTime())) {
+                end[0] = String.format(Locale.US, "%02d", Integer.parseInt(end[0]) + 1);
+            }
+
             strSelectedEndTime = end[0] + ":" + end[1];
 
             setFullDateTime("e", end[0], end[1], edtEndTime);

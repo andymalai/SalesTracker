@@ -63,6 +63,8 @@
     <string name="add_name">Agent Name</string>
     <string name="select_tier">Select Tier</string>
     <string name="select_branch">Select Branch</string>
+    <string name="select_marketer">Select Marketer</string>
+    <string name="select_hos">Select HOS</string>
     <string name="enter_number">Phone Number</string>
     <string name="enter_email">Email Address</string>
     <string name="enter_krunia">Code for Krunia</string>

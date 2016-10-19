@@ -79,10 +79,7 @@ public class CustomDialogVisitPlanAgentListAdapter extends RecyclerView.Adapter<
             } else {
                 parentView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
             }
-
         }
-
     }
-
 
 }

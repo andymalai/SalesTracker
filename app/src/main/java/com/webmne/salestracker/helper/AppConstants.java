@@ -31,6 +31,12 @@ public class AppConstants {
     public static String ONGOING = "OG";
     public static String APPROVE = "A";
 
+    // position int constants
+    public static final int MKT_POS = 9;
+    public static final int HOS_POS = 6;
+    public static final int BM_POS = 5;
+    public static final int RM_POS = 4;
+
     // Plan Item click listener
     public static final int DELETE_PLAN = 1;
     public static final int OPEN_REMARK = 2;

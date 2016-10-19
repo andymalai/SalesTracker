@@ -4,6 +4,10 @@
         <attr name="isBold" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="TfDropdownEditText">
+        <attr name="hint" format="string" />
+    </declare-styleable>
+
     <declare-styleable name="FamiliarRecyclerView">
         <attr name="frv_divider" format="reference|color" />
         <attr name="frv_dividerVertical" format="reference|color" />
