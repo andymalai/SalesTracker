@@ -256,6 +256,7 @@
 
     <!--SalesVisitPlanACtivity.java-->
     <string name="add_visit_plan_success">Visit plan added successfully.</string>
+    <string name="progress_update_success">Progress updated successfully.</string>
     <string name="delete_all_plan">Delete All Plan</string>
     <string name="ask_for_delete_all_plan">Are you sure want to delete all plan of</string>
 

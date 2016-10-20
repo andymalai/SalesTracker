@@ -126,7 +126,7 @@ public class CustomDialogActualProduction extends MaterialDialog {
                 if (addResponse != null) {
                     if (addResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
 
-                        SimpleToast.ok(context, context.getString(R.string.add_visit_plan_success));
+                        SimpleToast.ok(context, context.getString(R.string.progress_update_success));
 
                         dismissProgress();
 

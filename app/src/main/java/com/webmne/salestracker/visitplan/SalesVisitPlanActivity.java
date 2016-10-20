@@ -277,7 +277,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
                                 hosList = new ArrayList<EmployeeModel>();
 
                                 for (EmployeeModel model : emptList) {
-                                    if (model.getBranch().equals(branch.getBranchId())) {
+                                    if (model.getBranchId().equals(branch.getBranchId())) {
                                         if (model.getPosition().equals(AppConstants.MKT_POS + "")) {
                                             mktList.add(model);
                                         } else if (model.getPosition().equals(AppConstants.HOS_POS + "")) {
@@ -285,22 +285,6 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
                                         }
                                     }
                                 }
-
-                                /*selectedUser.setUserId(model.getId());
-                                selectedUser.setUserName(model.getName());
-                                binding.cv.setUser(selectedUser);
-
-                                fetchPlan();
-
-                                new GetAgentsForPlan(SalesVisitPlanActivity.this, model.getId(), new GetAgentsForPlan.OnGetAgentsListener() {
-                                    @Override
-                                    public void getAgents(ArrayList<AgentListModel> agentList) {
-
-                                    }
-                                });
-
-                                binding.edtHos.setText(text.toString().replace("[", "").replace("]", ""));
-                                binding.edtMarketer.setText("");*/
 
                                 return false;
                             }
@@ -370,7 +354,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
         } else {
             binding.txtProgress.setText(String.format("Actual Progress: %s/%s", "0", "0"));
 
-            binding.txtVariance.setText(Html.fromHtml("<u>" + "0.0%" + "</u>"));
+            binding.txtVariance.setText(Html.fromHtml("<u>" + "(0.0%)" + "</u>"));
 
             binding.cv.setMonthPlans(new ArrayList<DatePlan>());
         }
@@ -897,16 +881,18 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
 
                 if (editText.getId() == R.id.edtMarketer) {
                     mktWhich = 0;
-                    setDefaultUser();
-                    fetchPlan();
+
                 } else if (editText.getId() == R.id.edtHos) {
                     hosWhich = 0;
-                    setDefaultUser();
-                    fetchPlan();
+
                 } else {
                     branchWhich = 0;
                     setUpChild(emptList);
+                    binding.edtMarketer.setText("");
+                    binding.edtHos.setText("");
                 }
+                setDefaultUser();
+                fetchPlan();
 
                 return true;
             }

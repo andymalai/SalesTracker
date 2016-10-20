@@ -113,11 +113,12 @@ public class ContactActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
 
-                if (position == 0) {
+              /*  if (position == 0) {
                     contactBinding.searchView.setHint(getString(R.string.search_branch_contact));
                 } else if (position == 1) {
                     contactBinding.searchView.setHint(getString(R.string.search_department_contact));
-                }
+                }*/
+                contactBinding.searchView.setHint(getString(R.string.search_department_contact));
             }
 
             @Override
@@ -131,9 +132,9 @@ public class ContactActivity extends AppCompatActivity {
 
         contactPageAdapter = new ContactPageAdapter(getSupportFragmentManager(), this);
 
-        if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.MARKETER)) {
+        /*if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.MARKETER)) {
             contactPageAdapter.addFragment(BranchContactFragment.newInstance(), getString(R.string.branch_contact));
-        }
+        }*/
 
         contactPageAdapter.addFragment(DepartmentContactFragment.newInstance(), getString(R.string.department_contact));
 
@@ -169,12 +170,13 @@ public class ContactActivity extends AppCompatActivity {
         searchItem = menu.findItem(R.id.action_search);
         contactBinding.searchView.setMenuItem(searchItem);
 
-        if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.MARKETER)) {
+        /*if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.MARKETER)) {
             contactBinding.searchView.setHint(getString(R.string.search_branch_contact));
         } else {
             contactBinding.searchView.setHint(getString(R.string.search_department_contact));
-        }
+        }*/
 
+        contactBinding.searchView.setHint(getString(R.string.search_department_contact));
         contactBinding.searchView.setVoiceSearch(true);
 
         return true;
