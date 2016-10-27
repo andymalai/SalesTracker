@@ -57,6 +57,9 @@ public class AppConstants {
     // login-url login.php?format=json&password=MKT_guj_001&username=MKT_guj_001&roleID=9
     public static final String LoginBase = "login.php?format=json";
 
+    // http://ws-srv-php/projects/drupal/amgsales2/services/login.php?format=json&password=MKT_guj_001&username=MKT_guj_001
+    public static final String Login = WEB_SERVICE_URL + "login.php?format=json";
+
     // http://ws-srv-php/projects/drupal/amgsales2/services/branch_list.php?format=json&branch=28
     public static final String BranchContact = "branch_list.php?format=json";
 
@@ -185,7 +188,6 @@ public class AppConstants {
 
     // http://demo.webmynehost.com/amgsales/services/aap_rej_status.php?format=json
     public static final String ApproveRejectActionLog = WEB_SERVICE_URL + "aap_rej_status.php?format=json";
-
 
 
     // FTP details Local

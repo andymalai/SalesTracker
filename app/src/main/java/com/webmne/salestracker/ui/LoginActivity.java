@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.APIListener;
@@ -21,6 +22,8 @@ import com.webmne.salestracker.helper.Functions;
 import com.webmne.salestracker.helper.MyApplication;
 import com.webmne.salestracker.helper.PrefUtils;
 import com.webmne.salestracker.helper.RetrofitErrorHelper;
+import com.webmne.salestracker.helper.volley.CallWebService;
+import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import com.webmne.salestracker.ui.dashboard.DashboardActivity;
 
 import java.net.UnknownHostException;
@@ -103,20 +106,64 @@ public class LoginActivity extends AppCompatActivity {
         loginApi.onDestroy();
     }
 
+//    private void doLogin() {
+//
+//       /*SimpleToast.ok(LoginActivity.this, getString(R.string.login_success));
+//        Functions.fireIntent(LoginActivity.this, DashboardActivity.class);*/
+//
+//        showProgress();
+//
+//        loginApi.login(Functions.toStr(loginBinding.edtPassword), Functions.toStr(loginBinding.edtEmpId), new APIListener<LoginResponse>() {
+//            @Override
+//            public void onResponse(Response<LoginResponse> response) {
+//                dismissProgress();
+//                if (response.isSuccessful()) {
+//
+//                    LoginResponse loginResponse = response.body();
+//
+//                    Log.e("profile_res", MyApplication.getGson().toJson(loginResponse));
+//
+//                    if (loginResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+//
+//                        PrefUtils.setUserProfile(LoginActivity.this, loginResponse.getData());
+//
+//                        SimpleToast.ok(LoginActivity.this, getString(R.string.login_success));
+//                        Functions.fireIntent(LoginActivity.this, DashboardActivity.class);
+//                        finish();
+//
+//                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//
+//                    } else {
+//                        SimpleToast.error(LoginActivity.this, loginResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+//                    }
+//
+//                } else {
+//                    SimpleToast.error(LoginActivity.this, "Something went wrong. Please try again", getString(R.string.fa_error));
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<LoginResponse> call, Throwable t) {
+//                dismissProgress();
+//                RetrofitErrorHelper.showErrorMsg(t, LoginActivity.this);
+//            }
+//        });
+//    }
+
     private void doLogin() {
 
-       /*SimpleToast.ok(LoginActivity.this, getString(R.string.login_success));
-        Functions.fireIntent(LoginActivity.this, DashboardActivity.class);*/
+        showProgress(getString(R.string.loading));
 
-        showProgress();
+        new CallWebService(this, AppConstants.Login + "&password=" + Functions.toStr(loginBinding.edtPassword) + "&username=" + Functions.toStr(loginBinding.edtEmpId), CallWebService.TYPE_GET) {
 
-        loginApi.login(Functions.toStr(loginBinding.edtPassword), Functions.toStr(loginBinding.edtEmpId), new APIListener<LoginResponse>() {
             @Override
-            public void onResponse(Response<LoginResponse> response) {
-                dismissProgress();
-                if (response.isSuccessful()) {
+            public void response(String response) {
 
-                    LoginResponse loginResponse = response.body();
+                dismissProgress();
+
+                LoginResponse loginResponse = MyApplication.getGson().fromJson(response, LoginResponse.class);
+
+                if (loginResponse != null) {
 
                     Log.e("profile_res", MyApplication.getGson().toJson(loginResponse));
 
@@ -133,23 +180,30 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         SimpleToast.error(LoginActivity.this, loginResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
-
                 } else {
-                    SimpleToast.error(LoginActivity.this, "Something went wrong. Please try again", getString(R.string.fa_error));
+                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
                 }
+
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void error(VolleyError error) {
                 dismissProgress();
-                RetrofitErrorHelper.showErrorMsg(t, LoginActivity.this);
+                VolleyErrorHelper.showErrorMsg(error, LoginActivity.this);
             }
-        });
+
+            @Override
+            public void noInternet() {
+                dismissProgress();
+                SimpleToast.error(LoginActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+            }
+        }.call();
+
     }
 
-    public void showProgress() {
+    public void showProgress(String string) {
         if (dialog == null) {
-            dialog = new LoadingIndicatorDialog(this, "Loading..", android.R.style.Theme_Translucent_NoTitleBar);
+            dialog = new LoadingIndicatorDialog(this, string, android.R.style.Theme_Translucent_NoTitleBar);
         }
         dialog.show();
     }
