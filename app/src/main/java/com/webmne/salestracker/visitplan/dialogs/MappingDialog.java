@@ -107,8 +107,8 @@ public class MappingDialog extends MaterialDialog {
                     TfEditText edtMapping = (TfEditText) (dialogMappingCalendarViewBinding.linearAddMappingItems.getChildAt(i)).findViewById(R.id.edtMapping);
                     TfEditText edtMappingVisit = (TfEditText) (dialogMappingCalendarViewBinding.linearAddMappingItems.getChildAt(i)).findViewById(R.id.edtMappingVisit);
 
-                    if (TextUtils.isEmpty(Functions.toStr(edtMapping)) || TextUtils.isEmpty(Functions.toStr(edtMappingVisit))) {
-                        SimpleToast.error(context, context.getString(R.string.enter_all));
+                    if (TextUtils.isEmpty(Functions.toStr(edtMapping))) {
+                        SimpleToast.error(context, context.getString(R.string.enter_mapping));
                         canSubmit = false;
 
                     } else {

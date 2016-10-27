@@ -79,7 +79,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
         } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.BM)) {
             positionList.add(new PositionModel(null, AppConstants.MARKETER));
             positionList.add(new PositionModel(null, AppConstants.HOS));
-        } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.HOS)) {
+        } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.RM)) {
             positionList.add(new PositionModel(null, AppConstants.MARKETER));
             positionList.add(new PositionModel(null, AppConstants.HOS));
             positionList.add(new PositionModel(null, AppConstants.BM));

@@ -106,6 +106,14 @@ public class AgentsListActivity extends AppCompatActivity {
         else
             SimpleToast.error(AgentsListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
 
+        viewBinding.txtDelete.setVisibility(View.GONE);
+        if (searchItem != null)
+            searchItem.setVisible(true);
+        viewBinding.searchView.setVisibility(View.VISIBLE);
+        viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimary));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimaryDark));
+        }
         actionListener();
     }
 

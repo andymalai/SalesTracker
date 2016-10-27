@@ -28,6 +28,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.model.UserProfile;
 import com.webmne.salestracker.ui.LoginActivity;
@@ -303,5 +305,17 @@ public class Functions {
         Display display = wm.getDefaultDisplay();
         display.getMetrics(metrics);
         return metrics;
+    }
+
+    public static void setPermission(final Context context, @NonNull String[] permissions, PermissionListener permissionListene) {
+
+        if (permissions != null && permissions.length == 0 && permissionListene != null) {
+            return;
+        }
+        new TedPermission(context)
+                .setPermissionListener(permissionListene)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                .setPermissions(permissions)
+                .check();
     }
 }

@@ -99,13 +99,10 @@ public class EventDetailActivity extends AppCompatActivity {
             viewBinding.edtRegion.setText("All");
         }
 
-        if(eventModel.getUserID().equals(PrefUtils.getUserId(this)))
-        {
+        if (eventModel.getUserID().equals(PrefUtils.getUserId(this))) {
             viewBinding.txtCancel.setVisibility(View.VISIBLE);
             viewBinding.btnAdd.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             viewBinding.txtCancel.setVisibility(View.GONE);
             viewBinding.btnAdd.setVisibility(View.GONE);
         }

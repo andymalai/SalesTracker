@@ -1,5 +1,7 @@
 package com.webmne.salestracker.widget;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -17,7 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.pierry.simpletoast.SimpleToast;
+import com.gun0912.tedpermission.PermissionListener;
 import com.webmne.salestracker.R;
+import com.webmne.salestracker.actionlog.AddActionLogActivity;
 import com.webmne.salestracker.actionlog.model.ActionLogModel;
 import com.webmne.salestracker.databinding.LayoutActionLogBinding;
 import com.webmne.salestracker.helper.AppConstants;
@@ -25,6 +30,7 @@ import com.webmne.salestracker.helper.DownloadHelper;
 import com.webmne.salestracker.helper.Functions;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by sagartahelyani on 23-08-2016.
@@ -125,9 +131,13 @@ public class ActionLogDetails extends LinearLayout {
         binding.txtSla.setText(String.format("%s Days", actionLog.getSla()));
         binding.txtLastUpdate.setText(String.format("%s", Functions.parseDate(actionLog.getUpdatedDatetime(), "dd MMM yyyy, hh:mm a")));
 
-        String[] approveDateSplit = actionLog.getApprovedDateAndBy().split(" By");
-        String approveDate = Functions.parseDate(approveDateSplit[0], "dd MMM yyyy, hh:mm a");
-        binding.txtApprovedDate.setText(String.format("%s By%s", approveDate, approveDateSplit[1]));
+        if (actionLog.getApprovedDateAndBy().equals("0")) {
+            binding.txtApprovedDate.setText("Yet not approved");
+        } else {
+            String[] approveDateSplit = actionLog.getApprovedDateAndBy().split(" By");
+            String approveDate = Functions.parseDate(approveDateSplit[0], "dd MMM yyyy, hh:mm a");
+            binding.txtApprovedDate.setText(String.format("%s By%s", approveDate, approveDateSplit[1]));
+        }
 
         if (TextUtils.isEmpty(actionLog.getAttachment())) {
             binding.txtAttachment.setText(String.format("%s", context.getString(R.string.no_attachment)));
@@ -143,7 +153,17 @@ public class ActionLogDetails extends LinearLayout {
             public void onClick(View v) {
 
                 if (!TextUtils.isEmpty(actionLog.getAttachment())) {
-                    createDir(actionLog);
+                    Functions.setPermission(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new PermissionListener() {
+                        @Override
+                        public void onPermissionGranted() {
+                            createDir(actionLog);
+                        }
+
+                        @Override
+                        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                            SimpleToast.error(context, context.getString(R.string.permission_denied), context.getString(R.string.fa_error));
+                        }
+                    });
                 }
 
             }

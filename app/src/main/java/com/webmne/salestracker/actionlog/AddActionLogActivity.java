@@ -1,5 +1,7 @@
 package com.webmne.salestracker.actionlog;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
+import com.gun0912.tedpermission.PermissionListener;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.adapter.AgentAdapter;
 import com.webmne.salestracker.actionlog.adapter.DepartmentAdapter;
@@ -117,43 +120,58 @@ public class AddActionLogActivity extends AppCompatActivity {
         binding.edtSelectFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("application/pdf");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                Functions.setPermission(AddActionLogActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.setType("application/pdf");
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
 
-                try {
-                    startActivityForResult(
-                            Intent.createChooser(intent, "Select a File to Upload"),
-                            FILE_SELECT_CODE);
-                } catch (android.content.ActivityNotFoundException ex) {
-                    // Potentially direct the user to the Market with a Dialog
-                    Toast.makeText(AddActionLogActivity.this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
-                }
+                        try {
+                            startActivityForResult(
+                                    Intent.createChooser(intent, "Select a File to Upload"),
+                                    FILE_SELECT_CODE);
+                        } catch (ActivityNotFoundException ex) {
+                            // Potentially direct the user to the Market with a Dialog
+                            Toast.makeText(AddActionLogActivity.this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                        SimpleToast.error(AddActionLogActivity.this, getString(R.string.permission_denied), getString(R.string.fa_error));
+                    }
+                });
             }
         });
 
         binding.edtDepartment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MaterialDialog.Builder(AddActionLogActivity.this)
-                        .title(R.string.select_dept)
-                        .typeface(Functions.getBoldFont(AddActionLogActivity.this), Functions.getRegularFont(AddActionLogActivity.this))
-                        .items(deptList)
-                        .itemsCallbackSingleChoice(deptWhich, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                deptWhich = which;
+                if (deptList.size() == 0) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.no_dept), getString(R.string.fa_error));
 
-                                Department department = deptList.get(which);
-                                binding.edtDepartment.setText(department.getDepartment());
-                                deptId = Integer.parseInt(department.getDepartmentID());
-                                setDepartmentInchargeAdapter();
+                } else {
+                    new MaterialDialog.Builder(AddActionLogActivity.this)
+                            .title(R.string.select_dept)
+                            .typeface(Functions.getBoldFont(AddActionLogActivity.this), Functions.getRegularFont(AddActionLogActivity.this))
+                            .items(deptList)
+                            .itemsCallbackSingleChoice(deptWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                                @Override
+                                public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                    deptWhich = which;
 
-                                return true;
-                            }
-                        })
-                        .positiveText(R.string.btn_ok)
-                        .show();
+                                    Department department = deptList.get(which);
+                                    binding.edtDepartment.setText(department.getDepartment());
+                                    deptId = Integer.parseInt(department.getDepartmentID());
+                                    setDepartmentInchargeAdapter();
+
+                                    return true;
+                                }
+                            })
+                            .positiveText(R.string.btn_ok)
+                            .show();
+                }
             }
         });
 
@@ -181,24 +199,29 @@ public class AddActionLogActivity extends AppCompatActivity {
         binding.edtAgent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MaterialDialog.Builder(AddActionLogActivity.this)
-                        .title(R.string.select_agent)
-                        .typeface(Functions.getBoldFont(AddActionLogActivity.this), Functions.getRegularFont(AddActionLogActivity.this))
-                        .items(agentList)
-                        .itemsCallbackSingleChoice(agentWhich, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                agentWhich = which;
+                if (agentList.size() == 0) {
+                    SimpleToast.error(AddActionLogActivity.this, getString(R.string.no_agents), getString(R.string.fa_error));
 
-                                AgentModel agentModel = agentList.get(which);
-                                binding.edtAgent.setText(agentModel.getName());
-                                agentId = agentModel.getAgentid();
+                } else {
+                    new MaterialDialog.Builder(AddActionLogActivity.this)
+                            .title(R.string.select_agent)
+                            .typeface(Functions.getBoldFont(AddActionLogActivity.this), Functions.getRegularFont(AddActionLogActivity.this))
+                            .items(agentList)
+                            .itemsCallbackSingleChoice(agentWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                                @Override
+                                public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                    agentWhich = which;
 
-                                return true;
-                            }
-                        })
-                        .positiveText(R.string.btn_ok)
-                        .show();
+                                    AgentModel agentModel = agentList.get(which);
+                                    binding.edtAgent.setText(agentModel.getName());
+                                    agentId = agentModel.getAgentid();
+
+                                    return true;
+                                }
+                            })
+                            .positiveText(R.string.btn_ok)
+                            .show();
+                }
             }
         });
 
@@ -386,6 +409,7 @@ public class AddActionLogActivity extends AppCompatActivity {
     }
 
     private void getAgents() {
+
         showProgress(getString(R.string.loading));
 
         agentList = new ArrayList<>();
@@ -415,8 +439,6 @@ public class AddActionLogActivity extends AppCompatActivity {
                             }
                         });*/
 
-                        setDepartmentAdapter();
-
                     } else {
                         SimpleToast.error(AddActionLogActivity.this, listResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
                     }
@@ -437,6 +459,7 @@ public class AddActionLogActivity extends AppCompatActivity {
                 }
             }
         });
+        setDepartmentAdapter();
     }
 
     private void setDepartmentAdapter() {

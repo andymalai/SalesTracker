@@ -22,6 +22,7 @@
     <string name="str_false">False</string>
     <string name="update_status">Plan Status Updated Successfully</string>
     <string name="plan_deleted">Plan Deleted Successfully</string>
+    <string name="permission_denied">Permission denied</string>
 
     <!--font_awesome icons string-->
     <string name="fa_error">{fa-exclamation-triangle}</string>
@@ -63,7 +64,7 @@
     <string name="add_name">Agent Name</string>
     <string name="select_tier">Select Tier</string>
     <string name="select_branch">Select Branch</string>
-    <string name="select_marketer">Select Marketer</string>
+    <string name="select_marketer">Select ME</string>
     <string name="select_hos">Select HOS</string>
     <string name="enter_number">Phone Number</string>
     <string name="enter_email">Email Address</string>
@@ -180,7 +181,7 @@
     <string name="completed">Completed</string>
     <string name="processing">Processing</string>
     <string name="reject">Rejected</string>
-    <string name="order_due">Order Due</string>
+    <string name="order_due">Overdue</string>
     <string name="due_today">Due Today</string>
     <string name="on_going">On Going</string>
     <string name="approve">Approve</string>
@@ -201,6 +202,9 @@
 
     <!--layout_empty_view.xml-->
     <string name="no_record">No Records</string>
+    <string name="no_mkt">No Marketers</string>
+    <string name="no_hos">No HOS</string>
+    <string name="no_branch">No Branches</string>
 
     <!--AgentProfileActivity.class-->
     <string name="agent_delete_dialog">Are you sure want to delete this agent?</string>
@@ -275,8 +279,8 @@
 
 
     <!-- Mapping Dialog -> SalesVisitPlanActivity.java -->
-    <string name="mapping_hint">Mapping</string>
-    <string name="mapping_visit_hint">Mapping Visit</string>
+    <string name="mapping_hint">Location</string>
+    <string name="mapping_visit_hint">No. of Prospect</string>
     <string name="close">Close</string>
     <string name="submit">Submit</string>
     <string name="add_more">Add More</string>
@@ -290,11 +294,14 @@
     <string name="delete_error">Error While Deleting Data. Please Try Again.</string>
     <string name="mapping_submit_success">Submit</string>
     <string name="enter_all">Enter All Details</string>
+    <string name="enter_mapping">Enter Mapping Location</string>
 
     <!--DayPlanAdapter.java-->
     <string name="delete_plan">Delete Plan</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="no_agents">No Agents</string>
+    <string name="no_dept">No Departments</string>
     <string name="ask_for_delete_plan">Are you sure want to delete this plan?</string>
 
     <!--ChartActivity.class-->
@@ -322,5 +329,6 @@
     <string name="event_delete_dialog">Are you sure want to delete this event?</string>
 
     <string name="update_plan">Update Plan</string>
+    <string name="btn_update">Update</string>
 
 </resources>

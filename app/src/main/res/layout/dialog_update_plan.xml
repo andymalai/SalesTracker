@@ -118,8 +118,17 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/BUTTON_HEIGHT"
-            android:text="@string/btn_ok"
+            android:text="@string/btn_update"
+            android:textColor="@color/half_black" />
+
+        <com.webmne.salestracker.widget.TfButton
+            android:id="@+id/btnDelete"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/BUTTON_HEIGHT"
+            android:text="@string/btn_delete"
             android:textColor="@color/half_black" />
 
     </LinearLayout>
+
 </LinearLayout>

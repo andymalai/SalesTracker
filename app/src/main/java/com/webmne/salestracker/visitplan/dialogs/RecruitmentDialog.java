@@ -132,8 +132,8 @@ public class RecruitmentDialog extends MaterialDialog {
                     TfEditText edtRemarks = (TfEditText) dialogRecruitmentCalendarViewBinding.linearAddRecruitmentItems.getChildAt(i).findViewById(R.id.edtRemarks);
                     AppCompatSpinner agentStatusSpinner = (AppCompatSpinner) dialogRecruitmentCalendarViewBinding.linearAddRecruitmentItems.getChildAt(i).findViewById(R.id.spinnerStatus);
 
-                    if (TextUtils.isEmpty(Functions.toStr(edtAgentName)) || TextUtils.isEmpty(Functions.toStr(edtRemarks))) {
-                        SimpleToast.error(context, context.getString(R.string.enter_all));
+                    if (TextUtils.isEmpty(Functions.toStr(edtAgentName))) {
+                        SimpleToast.error(context, context.getString(R.string.enter_agent_name));
                         canSubmit = false;
 
                     } else {

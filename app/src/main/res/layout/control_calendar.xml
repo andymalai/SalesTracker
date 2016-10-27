@@ -76,9 +76,9 @@
                 android:layout_marginRight="@dimen/dimen_1dp"
                 android:background="@color/un_selected"
                 android:text="W"
+                android:visibility="gone"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                android:textStyle="bold" />
 
             <com.webmne.salestracker.widget.TfButton
                 android:id="@+id/btnMonth"
@@ -111,35 +111,44 @@
             android:text="Time"
             android:textSize="@dimen/M_TEXT" />
 
-        <com.webmne.salestracker.widget.TfButton
-            android:id="@+id/btnMapping"
-            style="@style/MyButtonStyle"
+        <LinearLayout
+            android:id="@+id/mappingLayout"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimen_32dp"
-            android:layout_margin="@dimen/dimen_8dp"
-            android:padding="@dimen/dimen_4dp"
-            android:text="Mapping"
-            android:textSize="@dimen/VS_TEXT" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <com.webmne.salestracker.widget.TfButton
-            android:id="@+id/btnRecruitment"
-            style="@style/MyButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimen_32dp"
-            android:layout_margin="@dimen/dimen_8dp"
-            android:padding="@dimen/dimen_4dp"
-            android:text="Recruitment"
-            android:textSize="@dimen/VS_TEXT" />
+            <com.webmne.salestracker.widget.TfButton
+                android:id="@+id/btnMapping"
+                style="@style/MyButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_32dp"
+                android:layout_margin="@dimen/dimen_6dp"
+                android:padding="@dimen/dimen_2dp"
+                android:text="Mapping"
+                android:textSize="@dimen/VS_TEXT" />
 
-        <com.webmne.salestracker.widget.TfButton
-            android:id="@+id/btnDeleteAll"
-            style="@style/MyButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimen_32dp"
-            android:layout_margin="@dimen/dimen_8dp"
-            android:padding="@dimen/dimen_4dp"
-            android:text="Delete All"
-            android:textSize="@dimen/VS_TEXT" />
+            <com.webmne.salestracker.widget.TfButton
+                android:id="@+id/btnRecruitment"
+                style="@style/MyButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_32dp"
+                android:layout_margin="@dimen/dimen_6dp"
+                android:padding="@dimen/dimen_2dp"
+                android:text="Recruitment"
+                android:textSize="@dimen/VS_TEXT" />
+
+            <com.webmne.salestracker.widget.TfButton
+                android:id="@+id/btnDeleteAll"
+                style="@style/MyButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_32dp"
+                android:layout_margin="@dimen/dimen_6dp"
+                android:padding="@dimen/dimen_2dp"
+                android:text="Delete All"
+                android:textSize="@dimen/VS_TEXT" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <ScrollView

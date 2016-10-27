@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     Log.e("profile_res", MyApplication.getGson().toJson(loginResponse));
 
-                    if (loginResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+                    if (loginResponse.getResponse() != null && loginResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
 
                         PrefUtils.setUserProfile(LoginActivity.this, loginResponse.getData());
 

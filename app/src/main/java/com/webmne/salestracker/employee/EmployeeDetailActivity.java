@@ -99,7 +99,7 @@ public class EmployeeDetailActivity extends AppCompatActivity {
         } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.BM)) {
             positionList.add(AppConstants.MARKETER);
             positionList.add(AppConstants.HOS);
-        } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.HOS)) {
+        } else if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.RM)) {
             positionList.add(AppConstants.MARKETER);
             positionList.add(AppConstants.HOS);
             positionList.add(AppConstants.BM);
@@ -212,11 +212,13 @@ public class EmployeeDetailActivity extends AppCompatActivity {
         viewBinding.edtName.setFocusableInTouchMode(false);
         viewBinding.edtPhoneNumber.setFocusableInTouchMode(false);
         viewBinding.edtEmailId.setFocusableInTouchMode(false);
+        viewBinding.edtPosition.setFocusableInTouchMode(false);
 
         viewBinding.edtEmpId.setFocusable(false);
         viewBinding.edtName.setFocusable(false);
         viewBinding.edtPhoneNumber.setFocusable(false);
         viewBinding.edtEmailId.setFocusable(false);
+        viewBinding.edtPosition.setFocusable(false);
 
         viewBinding.edtPosition.setClickable(false);
     }
@@ -397,6 +399,7 @@ public class EmployeeDetailActivity extends AppCompatActivity {
                         for (int i = 0; i < positionArrayList.size(); i++) {
                             if (employeeModel.getPosition().equals(positionArrayList.get(i).getPositionId())) {
                                 viewBinding.edtPosition.setText(positionArrayList.get(i).getPositionName());
+                                viewBinding.edtPosition.setClickable(false);
 
                                 for (int j = 0; j < positionList.size(); j++) {
                                     if (positionArrayList.get(i).getPositionName().equals(positionList.get(j))) {

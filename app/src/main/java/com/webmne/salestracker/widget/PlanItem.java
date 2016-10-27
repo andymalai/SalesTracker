@@ -87,16 +87,6 @@ public class PlanItem extends LinearLayout {
             }
         });
 
-        binding.parentView.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (onPlanChangeListener != null) {
-                    onPlanChangeListener.onChange(AppConstants.DELETE_PLAN, plan, null);
-                }
-                return true;
-            }
-        });
-
         if (plan.getStatus().equals(AppConstants.B)) {
 
             binding.bView.setBackgroundColor(ContextCompat.getColor(context, R.color.tile1));

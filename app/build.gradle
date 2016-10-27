@@ -61,5 +61,7 @@ dependencies {
     compile 'com.victor:lib:1.0.4'
     // volley
     compile 'com.android.volley:volley:1.0.0'
+    // permission
+    compile 'gun0912.ted:tedpermission:1.0.0'
     compile files('libs/ftp4j-1.7.2.jar')
 }

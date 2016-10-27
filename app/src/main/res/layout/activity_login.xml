@@ -48,8 +48,7 @@
                     android:layout_marginLeft="@dimen/dimen_8dp"
                     android:layout_marginTop="@dimen/dimen_4dp"
                     android:hint="@string/edit_emp_id"
-                    android:inputType="text"
-                    android:text="MKT_guj_002" />
+                    android:inputType="text" />
 
             </LinearLayout>
 
@@ -74,8 +73,7 @@
                     android:layout_marginLeft="@dimen/dimen_8dp"
                     android:layout_marginTop="@dimen/dimen_4dp"
                     android:hint="@string/edit_pwd"
-                    android:inputType="textPassword"
-                    android:text="MKT_guj_002" />
+                    android:inputType="textPassword" />
             </LinearLayout>
 
             <com.webmne.salestracker.widget.TfButton

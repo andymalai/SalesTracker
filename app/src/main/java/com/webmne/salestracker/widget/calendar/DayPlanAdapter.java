@@ -144,10 +144,6 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
                 @Override
                 public void onChange(int type, Plan plan, String box) {
                     switch (type) {
-                        case AppConstants.DELETE_PLAN:
-                            doDelete(plan);
-                            break;
-
                         case AppConstants.OPEN_REMARK:
                             openRemarkDialog(plan);
                             break;
@@ -172,7 +168,7 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
         initDialog(dialog, plan);
     }
 
-    private void doDelete(final Plan plan) {
+    private void doDelete(final MaterialDialog remarkDialog, final Plan plan) {
 
         new MaterialDialog.Builder(context)
                 .title("Delete Plan")
@@ -181,7 +177,7 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        deletePlan(plan);
+                        deletePlan(remarkDialog, plan);
                     }
                 })
                 .negativeText("No")
@@ -195,7 +191,7 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
                 .show();
     }
 
-    private void deletePlan(final Plan plan) {
+    private void deletePlan(final MaterialDialog remarkDialog, final Plan plan) {
         showProgress(context.getString(R.string.loading));
 
         JSONObject json = new JSONObject();
@@ -220,6 +216,7 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
                         SimpleToast.ok(context, context.getString(R.string.update_status));
                         plans.remove(plan);
                         notifyDataSetChanged();
+                        remarkDialog.dismiss();
 
                     } else {
                         SimpleToast.error(context, wsResponse.getResponse().getResponseMsg(), context.getString(R.string.fa_error));
@@ -243,8 +240,8 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
         }.call();
     }
 
-    private void initDialog(final MaterialDialog dialog, final Plan plan) {
-        View view = dialog.getCustomView();
+    private void initDialog(final MaterialDialog remarkDialog, final Plan plan) {
+        View view = remarkDialog.getCustomView();
         if (view != null) {
             LinearLayout parentView = (LinearLayout) view.findViewById(R.id.parentView);
             parentView.setOnClickListener(new View.OnClickListener() {
@@ -299,6 +296,7 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
 
             TfButton btnCancel = (TfButton) view.findViewById(R.id.btnCancel);
             TfButton btnOk = (TfButton) view.findViewById(R.id.btnOk);
+            TfButton btnDelete = (TfButton) view.findViewById(R.id.btnDelete);
 
             btnOk.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -312,14 +310,21 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
                     notifyDataSetChanged();
                     plan.setRemark(Functions.toStr(editText));
                     doUpdatePlan(plan);
-                    dialog.dismiss();
+                    remarkDialog.dismiss();
+                }
+            });
+
+            btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doDelete(remarkDialog, plan);
                 }
             });
 
             btnCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    remarkDialog.dismiss();
                 }
             });
 

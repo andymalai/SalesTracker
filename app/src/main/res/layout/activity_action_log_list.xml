@@ -51,23 +51,36 @@
                     app:isBold="true" />
             </FrameLayout>
 
-            <include layout="@layout/layout_indicate"
+            <include
+                layout="@layout/layout_indicate"
                 android:visibility="gone" />
 
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/swipeRefresh"
+            <RelativeLayout
+                android:id="@+id/contentLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView
-                    android:id="@+id/agentRecyclerView"
+                <com.webmne.salestracker.widget.EmptyLayout
+                    android:id="@+id/emptyLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
+
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/swipeRefresh"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:frv_emptyView="@id/emptyTextView"
-                    app:frv_isEmptyViewKeepShowHeadOrFooter="false" />
+                    android:layout_height="match_parent">
 
-            </android.support.v4.widget.SwipeRefreshLayout>
+                    <com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView
+                        android:id="@+id/agentRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:frv_emptyView="@id/emptyTextView"
+                        app:frv_isEmptyViewKeepShowHeadOrFooter="false" />
 
+                </android.support.v4.widget.SwipeRefreshLayout>
+            </RelativeLayout>
         </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton

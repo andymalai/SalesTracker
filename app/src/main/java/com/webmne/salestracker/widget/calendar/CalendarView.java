@@ -483,6 +483,15 @@ public class CalendarView extends LinearLayout {
                 break;
             //endregion
 
+            //region WEEK_MODE
+            case WEEK:
+                timelineLayout.setVisibility(VISIBLE);
+                header.setVisibility(View.GONE);
+                grid.setVisibility(View.VISIBLE);
+                linearCalenderViewHeader.setVisibility(VISIBLE);
+                break;
+            //endregion
+
             //region MONTH_MODE
 
             case MONTH:

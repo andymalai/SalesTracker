@@ -180,117 +180,129 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
         binding.edtMarketer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MaterialDialog.Builder(SalesVisitPlanActivity.this)
-                        .title(getString(R.string.select_marketer))
-                        .items(mktList)
-                        .typeface(Functions.getBoldFont(SalesVisitPlanActivity.this), Functions.getRegularFont(SalesVisitPlanActivity.this))
-                        .itemsCallbackSingleChoice(mktWhich, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                if (mktList.size() == 0) {
+                    SimpleToast.error(SalesVisitPlanActivity.this, getString(R.string.no_mkt), getString(R.string.fa_error));
+                } else {
+                    new MaterialDialog.Builder(SalesVisitPlanActivity.this)
+                            .title(getString(R.string.select_marketer))
+                            .items(mktList)
+                            .typeface(Functions.getBoldFont(SalesVisitPlanActivity.this), Functions.getRegularFont(SalesVisitPlanActivity.this))
+                            .itemsCallbackSingleChoice(mktWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                                @Override
+                                public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
 
-                                mktWhich = which;
+                                    mktWhich = which;
 
-                                EmployeeModel model = mktList.get(which);
-                                Log.e("model", model.getId() + " @");
+                                    EmployeeModel model = mktList.get(which);
+                                    Log.e("model", model.getId() + " @");
 
-                                selectedUser.setUserId(model.getId());
-                                selectedUser.setUserName(model.getName());
-                                binding.cv.setUser(selectedUser);
+                                    selectedUser.setUserId(model.getId());
+                                    selectedUser.setUserName(model.getName());
+                                    binding.cv.setUser(selectedUser);
 
-                                fetchPlan();
+                                    fetchPlan();
 
-                                new GetAgentsForPlan(SalesVisitPlanActivity.this, model.getId(), new GetAgentsForPlan.OnGetAgentsListener() {
-                                    @Override
-                                    public void getAgents(ArrayList<AgentListModel> agentList) {
+                                    new GetAgentsForPlan(SalesVisitPlanActivity.this, model.getId(), new GetAgentsForPlan.OnGetAgentsListener() {
+                                        @Override
+                                        public void getAgents(ArrayList<AgentListModel> agentList) {
 
-                                    }
-                                });
+                                        }
+                                    });
 
-                                binding.edtMarketer.setText(text.toString().replace("[", "").replace("]", ""));
-                                binding.edtHos.setText("");
+                                    binding.edtMarketer.setText(text.toString().replace("[", "").replace("]", ""));
+                                    binding.edtHos.setText("");
 
-                                return false;
-                            }
-                        })
-                        .positiveText(getString(R.string.btn_ok))
-                        .show();
+                                    return false;
+                                }
+                            })
+                            .positiveText(getString(R.string.btn_ok))
+                            .show();
+                }
             }
         });
 
         binding.edtHos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MaterialDialog.Builder(SalesVisitPlanActivity.this)
-                        .title(getString(R.string.select_hos))
-                        .items(hosList)
-                        .typeface(Functions.getBoldFont(SalesVisitPlanActivity.this), Functions.getRegularFont(SalesVisitPlanActivity.this))
-                        .itemsCallbackSingleChoice(hosWhich, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                if (hosList.size() == 0) {
+                    SimpleToast.error(SalesVisitPlanActivity.this, getString(R.string.no_hos), getString(R.string.fa_error));
+                } else {
+                    new MaterialDialog.Builder(SalesVisitPlanActivity.this)
+                            .title(getString(R.string.select_hos))
+                            .items(hosList)
+                            .typeface(Functions.getBoldFont(SalesVisitPlanActivity.this), Functions.getRegularFont(SalesVisitPlanActivity.this))
+                            .itemsCallbackSingleChoice(hosWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                                @Override
+                                public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
 
-                                hosWhich = which;
+                                    hosWhich = which;
 
-                                EmployeeModel model = hosList.get(which);
-                                Log.e("model", model.getId() + " @");
+                                    EmployeeModel model = hosList.get(which);
+                                    Log.e("model", model.getId() + " @");
 
-                                selectedUser.setUserId(model.getId());
-                                selectedUser.setUserName(model.getName());
-                                binding.cv.setUser(selectedUser);
+                                    selectedUser.setUserId(model.getId());
+                                    selectedUser.setUserName(model.getName());
+                                    binding.cv.setUser(selectedUser);
 
-                                fetchPlan();
+                                    fetchPlan();
 
-                                new GetAgentsForPlan(SalesVisitPlanActivity.this, model.getId(), new GetAgentsForPlan.OnGetAgentsListener() {
-                                    @Override
-                                    public void getAgents(ArrayList<AgentListModel> agentList) {
+                                    new GetAgentsForPlan(SalesVisitPlanActivity.this, model.getId(), new GetAgentsForPlan.OnGetAgentsListener() {
+                                        @Override
+                                        public void getAgents(ArrayList<AgentListModel> agentList) {
 
-                                    }
-                                });
+                                        }
+                                    });
 
-                                binding.edtHos.setText(text.toString().replace("[", "").replace("]", ""));
-                                binding.edtMarketer.setText("");
+                                    binding.edtHos.setText(text.toString().replace("[", "").replace("]", ""));
+                                    binding.edtMarketer.setText("");
 
-                                return false;
-                            }
-                        })
-                        .positiveText(getString(R.string.btn_ok))
-                        .show();
+                                    return false;
+                                }
+                            })
+                            .positiveText(getString(R.string.btn_ok))
+                            .show();
+                }
             }
         });
 
         binding.edtBranch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MaterialDialog.Builder(SalesVisitPlanActivity.this)
-                        .title(getString(R.string.select_branch))
-                        .items(branchList)
-                        .typeface(Functions.getBoldFont(SalesVisitPlanActivity.this), Functions.getRegularFont(SalesVisitPlanActivity.this))
-                        .itemsCallbackSingleChoice(branchWhich, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                if (branchList.size() == 0) {
+                    SimpleToast.error(SalesVisitPlanActivity.this, getString(R.string.no_branch), getString(R.string.fa_error));
+                } else {
+                    new MaterialDialog.Builder(SalesVisitPlanActivity.this)
+                            .title(getString(R.string.select_branch))
+                            .items(branchList)
+                            .typeface(Functions.getBoldFont(SalesVisitPlanActivity.this), Functions.getRegularFont(SalesVisitPlanActivity.this))
+                            .itemsCallbackSingleChoice(branchWhich, new MaterialDialog.ListCallbackSingleChoice() {
+                                @Override
+                                public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
 
-                                branchWhich = which;
+                                    branchWhich = which;
 
-                                Branch branch = branchList.get(which);
-                                binding.edtBranch.setText(branch.getBranchName());
+                                    Branch branch = branchList.get(which);
+                                    binding.edtBranch.setText(branch.getBranchName());
 
-                                mktList = new ArrayList<EmployeeModel>();
-                                hosList = new ArrayList<EmployeeModel>();
+                                    mktList = new ArrayList<EmployeeModel>();
+                                    hosList = new ArrayList<EmployeeModel>();
 
-                                for (EmployeeModel model : emptList) {
-                                    if (model.getBranchId().equals(branch.getBranchId())) {
-                                        if (model.getPosition().equals(AppConstants.MKT_POS + "")) {
-                                            mktList.add(model);
-                                        } else if (model.getPosition().equals(AppConstants.HOS_POS + "")) {
-                                            hosList.add(model);
+                                    for (EmployeeModel model : emptList) {
+                                        if (model.getBranchId().equals(branch.getBranchId())) {
+                                            if (model.getPosition().equals(AppConstants.MKT_POS + "")) {
+                                                mktList.add(model);
+                                            } else if (model.getPosition().equals(AppConstants.HOS_POS + "")) {
+                                                hosList.add(model);
+                                            }
                                         }
                                     }
-                                }
 
-                                return false;
-                            }
-                        })
-                        .positiveText(getString(R.string.btn_ok))
-                        .show();
+                                    return false;
+                                }
+                            })
+                            .positiveText(getString(R.string.btn_ok))
+                            .show();
+                }
             }
         });
 
@@ -319,11 +331,12 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
                 dismissProgress();
 
                 planResponse = MyApplication.getGson().fromJson(response, SalesPlanResponse.class);
-                setPlanDetails(planResponse.getData());
 
                 if (planResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                     Log.e("plan_res", response);
                 }
+
+                setPlanDetails(planResponse.getData());
             }
 
             @Override
@@ -343,10 +356,13 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
     private void setPlanDetails(PlanDataResponse data) {
 
         if (data != null) {
-            binding.txtProgress.setText(String.format("Actual Progress: %s/%s", data.getProgress(), data.getTarget()));
 
-            float variance = (Float.parseFloat(data.getProgress()) * 100) / Float.parseFloat(data.getTarget());
-            binding.txtVariance.setText(Html.fromHtml("<u>" + String.format(Locale.US, "(%.2f%s)", variance, "%") + "</u>"));
+            if (data.getProgress() != null && data.getTarget() != null) {
+                binding.txtProgress.setText(String.format("Actual Progress: %s/%s", data.getProgress(), data.getTarget()));
+
+                float variance = (Float.parseFloat(data.getProgress()) * 100) / Float.parseFloat(data.getTarget());
+                binding.txtVariance.setText(Html.fromHtml("<u>" + String.format(Locale.US, "(%.2f%s)", variance, "%") + "</u>"));
+            }
 
             binding.cv.setMonthPlans(data.getPlans());
             binding.cv.notifyAdapter();
@@ -524,7 +540,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_plan:
-                new CustomDialogAddVisitPlan(selectedUser, binding.cv.getCurrentCalendar(), "00:00",
+                new CustomDialogAddVisitPlan(selectedUser, binding.cv.getCurrentCalendar(), "08:00",
                         new MaterialDialog.Builder(this), SalesVisitPlanActivity.this);
                 break;
         }

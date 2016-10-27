@@ -27,7 +27,12 @@ import com.webmne.salestracker.helper.volley.CallWebService;
 import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 public class ActionLogListActivity extends AppCompatActivity {
 
@@ -128,6 +133,7 @@ public class ActionLogListActivity extends AppCompatActivity {
 
     private void getActionLogList() {
 
+        binding.contentLayout.setVisibility(View.INVISIBLE);
         showProgress(getString(R.string.loading));
 
         actionLogList = new ArrayList<>();
@@ -137,6 +143,7 @@ public class ActionLogListActivity extends AppCompatActivity {
             @Override
             public void response(String response) {
 
+                binding.contentLayout.setVisibility(View.VISIBLE);
                 dismissProgress();
 
                 ActionLogListResponse getActionLogListResponse = MyApplication.getGson().fromJson(response, ActionLogListResponse.class);
@@ -145,10 +152,17 @@ public class ActionLogListActivity extends AppCompatActivity {
 
                     if (getActionLogListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                         actionLogList = getActionLogListResponse.getData().getAction();
+
+                        Collections.sort(actionLogList, new Comparator<ActionLogModel>() {
+                            @Override
+                            public int compare(ActionLogModel lhs, ActionLogModel rhs) {
+                                return rhs.getDate().compareTo(lhs.getDate());
+                            }
+                        });
                         adapter.setActionList(actionLogList);
 
                     } else {
-                        SimpleToast.error(ActionLogListActivity.this, getActionLogListResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
+                        SimpleToast.error(ActionLogListActivity.this, "No Records Found", getString(R.string.fa_error));
                     }
 
                 } else {
@@ -159,6 +173,7 @@ public class ActionLogListActivity extends AppCompatActivity {
             @Override
             public void error(VolleyError error) {
                 dismissProgress();
+                binding.contentLayout.setVisibility(View.VISIBLE);
                 VolleyErrorHelper.showErrorMsg(error, ActionLogListActivity.this);
             }
 
@@ -176,6 +191,10 @@ public class ActionLogListActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         binding.agentRecyclerView.setLayoutManager(layoutManager);
         binding.agentRecyclerView.addItemDecoration(new LineDividerItemDecoration(this));
+
+        binding.agentRecyclerView.setEmptyView(binding.emptyLayout);
+        binding.emptyLayout.setContent("No Action Log Found.", R.drawable.ic_action_log);
+
         adapter = new LogListAdapter(this, actionLogList);
         binding.agentRecyclerView.setAdapter(adapter);
         binding.agentRecyclerView.setHasFixedSize(true);

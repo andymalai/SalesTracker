@@ -1,9 +1,15 @@
 package com.webmne.salestracker.actionlog.model;
 
+import com.webmne.salestracker.helper.Functions;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by sagartahelyani on 22-08-2016.
  */
-public class ActionLogModel {
+public class ActionLogModel implements Comparable<ActionLogModel> {
 
     /**
      * Id : #AMG_130
@@ -34,6 +40,25 @@ public class ActionLogModel {
     private String Attachment;
     private String RemarkCount;
 
+    private Date date;
+
+    public Date getDate() {
+        try {
+            date = new SimpleDateFormat(Functions.ServerDateTimeFormat).parse(getCreatedDatetime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    @Override
+    public int compareTo(ActionLogModel o) {
+        return getDate().compareTo(o.getDate());
+    }
 
     public String getApprovedDateAndBy() {
         return ApprovedDateAndBy;

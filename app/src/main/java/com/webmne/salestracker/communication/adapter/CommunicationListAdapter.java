@@ -1,5 +1,6 @@
 package com.webmne.salestracker.communication.adapter;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -14,6 +15,8 @@ import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.pierry.simpletoast.SimpleToast;
+import com.gun0912.tedpermission.PermissionListener;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.communication.Communication;
 import com.webmne.salestracker.databinding.RowCommunicationListBinding;
@@ -79,7 +82,17 @@ public class CommunicationListAdapter extends RecyclerView.Adapter<Communication
             binding.imgDownload.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    createDir(model);
+                    Functions.setPermission(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new PermissionListener() {
+                        @Override
+                        public void onPermissionGranted() {
+                            createDir(model);
+                        }
+
+                        @Override
+                        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                            SimpleToast.error(context, context.getString(R.string.permission_denied), context.getString(R.string.fa_error));
+                        }
+                    });
                 }
             });
         }
