@@ -28,6 +28,8 @@ public class ActionLogModel implements Comparable<ActionLogModel> {
 
     private String Id;
     private String AgentName;
+    private String CreaterId;
+    private String Position;
     private String Description;
     private String CreatedDatetime;
     private String Status;
@@ -66,6 +68,22 @@ public class ActionLogModel implements Comparable<ActionLogModel> {
 
     public void setApprovedDateAndBy(String approvedDateAndBy) {
         ApprovedDateAndBy = approvedDateAndBy;
+    }
+
+    public String getCreaterId() {
+        return CreaterId;
+    }
+
+    public void setCreaterId(String createrId) {
+        CreaterId = createrId;
+    }
+
+    public String getPosition() {
+        return Position;
+    }
+
+    public void setPosition(String position) {
+        Position = position;
     }
 
     public String getId() {

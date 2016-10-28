@@ -12,7 +12,9 @@ import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.model.Plan;
 import com.webmne.salestracker.databinding.ItemPlanItemBinding;
 import com.webmne.salestracker.helper.AppConstants;
+import com.webmne.salestracker.helper.Functions;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -59,6 +61,7 @@ public class PlanItem extends LinearLayout {
     }
 
     private void setPlan(final Plan plan) {
+
         binding.name.setText(String.format(Locale.US, "%s", plan.getAgentName()));
         binding.remark.setText(String.format(Locale.US, "%s", plan.getRemark()));
 

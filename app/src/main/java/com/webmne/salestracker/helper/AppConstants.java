@@ -10,6 +10,7 @@ public class AppConstants {
     public static final String BASE_URL = "http://demo.webmynehost.com/amgsales/";
     //    public static final String ATTACHMENT_PREFIX = BASE_URL;
     public static final String ATTACHMENT_PREFIX = "http://demo.webmynehost.com/amgsales/";
+    public static final String ACTION_LOG_ATTACHMENT_PREFIX = "http://ws-srv-php/projects/drupal/amgsales2/";
     public static final String COMMUNICATION_FILE_PATH = "sites/default/files/communication/";
     public static final String WEB_SERVICE_URL = BASE_URL + "services/";
     public static final String ACTION_LOG_DIRECTORY = "/SalesTracker/ActionLog/";

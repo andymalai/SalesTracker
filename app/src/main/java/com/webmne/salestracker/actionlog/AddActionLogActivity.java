@@ -7,6 +7,7 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,6 +18,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.gun0912.tedpermission.PermissionListener;
+import com.mlsdev.rximagepicker.RxImageConverters;
+import com.mlsdev.rximagepicker.RxImagePicker;
+import com.mlsdev.rximagepicker.Sources;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.actionlog.adapter.AgentAdapter;
 import com.webmne.salestracker.actionlog.adapter.DepartmentAdapter;
@@ -49,6 +53,9 @@ import it.sauronsoftware.ftp4j.FTPClient;
 import it.sauronsoftware.ftp4j.FTPDataTransferListener;
 import retrofit2.Call;
 import retrofit2.Response;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class AddActionLogActivity extends AppCompatActivity {
 
@@ -78,6 +85,7 @@ public class AddActionLogActivity extends AppCompatActivity {
     private String priority;
     private File file;
     private boolean isFileUploaded = false;
+    private String[] imagePickChoice = new String[]{"Camera", "Choose File"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,21 +128,31 @@ public class AddActionLogActivity extends AppCompatActivity {
         binding.edtSelectFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Functions.setPermission(AddActionLogActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.setType("application/pdf");
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
 
-                        try {
-                            startActivityForResult(
-                                    Intent.createChooser(intent, "Select a File to Upload"),
-                                    FILE_SELECT_CODE);
-                        } catch (ActivityNotFoundException ex) {
-                            // Potentially direct the user to the Market with a Dialog
-                            Toast.makeText(AddActionLogActivity.this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
-                        }
+                        new MaterialDialog.Builder(AddActionLogActivity.this)
+                                .title(R.string.add_file)
+                                .typeface(Functions.getBoldFont(AddActionLogActivity.this), Functions.getRegularFont(AddActionLogActivity.this))
+                                .items(imagePickChoice)
+                                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                                    @Override
+                                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                                        if (which == 0) {
+                                            openCamera();
+                                        } else if (which == 1) {
+                                            openGallery();
+                                        }
+
+                                        return true;
+                                    }
+                                })
+                                .positiveText(R.string.btn_ok)
+                                .show();
+
                     }
 
                     @Override
@@ -142,6 +160,7 @@ public class AddActionLogActivity extends AppCompatActivity {
                         SimpleToast.error(AddActionLogActivity.this, getString(R.string.permission_denied), getString(R.string.fa_error));
                     }
                 });
+
             }
         });
 
@@ -297,6 +316,47 @@ public class AddActionLogActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void openCamera() {
+
+        RxImagePicker.with(this).requestImage(Sources.CAMERA)
+                .flatMap(new Func1<Uri, Observable<File>>() {
+                    @Override
+                    public Observable<File> call(Uri uri) {
+                        return RxImageConverters.uriToFile(AddActionLogActivity.this, uri, createTempFile());
+                    }
+                })
+                .subscribe(new Action1<File>() {
+                    @Override
+                    public void call(File file1) {
+//                        personalProfileView.setRxImage(file);
+                        file = file1;
+                        binding.edtSelectFile.setText(file.getName());
+                    }
+                });
+
+    }
+
+    private File createTempFile() {
+        return new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), System.currentTimeMillis() + "_image.jpeg");
+    }
+
+    private void openGallery() {
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("application/pdf");
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(
+                    Intent.createChooser(intent, "Select a File to Upload"),
+                    FILE_SELECT_CODE);
+        } catch (ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(AddActionLogActivity.this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void doUploadFile() {

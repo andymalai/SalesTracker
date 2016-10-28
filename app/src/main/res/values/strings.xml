@@ -132,6 +132,7 @@
     <string name="serial">Serial #</string>
     <string name="select_agent">Select Agent</string>
     <string name="select_dept">Select Department</string>
+    <string name="add_file">Add File</string>
     <string name="no_pic">No Incharge found. Please change department.</string>
     <string name="select_pic">Select In-charge</string>
     <string name="select_priority">Select Priority</string>

@@ -76,9 +76,9 @@
                 android:layout_marginRight="@dimen/dimen_1dp"
                 android:background="@color/un_selected"
                 android:text="W"
-                android:visibility="gone"
                 android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <com.webmne.salestracker.widget.TfButton
                 android:id="@+id/btnMonth"
@@ -198,5 +198,18 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <com.webmne.salestracker.widget.TfTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dummy" />
+
+    </LinearLayout>
 
 </LinearLayout>

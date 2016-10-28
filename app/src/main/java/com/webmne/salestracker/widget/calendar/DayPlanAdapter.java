@@ -91,7 +91,7 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
         holder.newBinding.parentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 18-10-2016
+
                 if (selectedUser == null) {
                     Log.e("selectedUser", "NULL");
                 } else {

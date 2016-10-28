@@ -180,22 +180,12 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
             binding.btnReopen.setVisibility(View.GONE);
         }
 
-        if (PrefUtils.getUserProfile(this).getPos_name().equals(AppConstants.MARKETER)) {
+        if (actionLog.getPosition().equals(AppConstants.MARKETER) && !actionLog.getCreaterId().equals(PrefUtils.getUserId(this))) {
+            binding.btnApprove.setVisibility(View.VISIBLE);
+            binding.btnReject.setVisibility(View.VISIBLE);
+        } else {
             binding.btnApprove.setVisibility(View.GONE);
             binding.btnReject.setVisibility(View.GONE);
-
-        } else {
-            if (actionLog.getStatus().equals(AppConstants.APPROVE) ||
-                    actionLog.getStatus().equals(AppConstants.REJECTED) ||
-                    actionLog.getStatus().equals(AppConstants.COMPLETE)) {
-
-                binding.btnApprove.setVisibility(View.GONE);
-                binding.btnReject.setVisibility(View.GONE);
-
-            } else {
-                binding.btnApprove.setVisibility(View.VISIBLE);
-                binding.btnReject.setVisibility(View.VISIBLE);
-            }
         }
 
         fetchRemark();
