@@ -377,7 +377,7 @@ public class AddActionLogActivity extends AppCompatActivity {
                     client.connect(AppConstants.FTP_HOST, 21);
                     client.login(AppConstants.FTP_USER, AppConstants.FTP_PASSWORD);
                     client.setType(FTPClient.TYPE_BINARY);
-                    client.changeDirectory("/drupal/amgsales2/sites/default/files/userfile/");
+                    client.changeDirectory("/public_html/salestracker/userfile/");
 
                     client.upload(file, new MyTransferListener());
 

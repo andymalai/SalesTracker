@@ -11,13 +11,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
+import com.android.volley.VolleyError;
+import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.model.DatePlan;
 import com.webmne.salestracker.api.model.Plan;
+import com.webmne.salestracker.custom.LoadingIndicatorDialog;
+import com.webmne.salestracker.helper.AppConstants;
 import com.webmne.salestracker.helper.ConstantFormats;
-import com.webmne.salestracker.visitplan.model.AgentListModel;
+import com.webmne.salestracker.helper.Functions;
+import com.webmne.salestracker.helper.MyApplication;
+import com.webmne.salestracker.helper.PrefUtils;
+import com.webmne.salestracker.helper.volley.CallWebService;
+import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
+import com.webmne.salestracker.visitplan.model.FetchRemarkResponse;
 import com.webmne.salestracker.visitplan.model.SelectedUser;
+import com.webmne.salestracker.widget.CalendarScrollView;
 import com.webmne.salestracker.widget.TfButton;
 import com.webmne.salestracker.widget.TfTextView;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
@@ -40,6 +51,8 @@ public class CalendarView extends LinearLayout {
 
     // how many days to show, defaults to 1 week, 7 days
     private static final int DAYS_COUNT_WEEK = 7;
+
+    private LoadingIndicatorDialog dialog;
 
     private onGridSelectListener onGridSelectListener;
 
@@ -71,10 +84,11 @@ public class CalendarView extends LinearLayout {
     private LinearLayout header, linearCalenderViewHeader;
     private ImageView btnPrev;
     private ImageView btnNext;
-    private TfTextView txtDate;
+    private TfTextView txtDate, tv_remark;
     private FamiliarRecyclerView grid;
     private RecyclerView timelineRecyclerView;
-    private LinearLayout timelineLayout;
+    private LinearLayout timelineLayout, ll_bottom_layout;
+    private CalendarScrollView calendarScrollView;
 
     //private View blankView;
     private TfButton btnDay, btnMonth, btnDeleteAll, btnRecruitment, btnMapping, btnWeek;
@@ -88,6 +102,8 @@ public class CalendarView extends LinearLayout {
     private onMonthChangeListener onCalendarChangeListener;
 
     private boolean isMonthChange = false;
+
+    private String strRemark;
 
     private onViewChangeListener onViewChangeListener;
 
@@ -132,6 +148,7 @@ public class CalendarView extends LinearLayout {
 
     public void setDayPlan(ArrayList<Plan> datePlan) {
         //  dayPlans.addAll(datePlan);
+
         dayAdapter.setDayPlan(datePlan, currentDate);
     }
 
@@ -177,12 +194,85 @@ public class CalendarView extends LinearLayout {
             OnModeChangeListener.onModeChange(mode);
         }
         updateCalendar();
+        if (mode == MODE.DAY) {
+            fetchRemarkForBottomLayout();
+            ll_bottom_layout.setVisibility(VISIBLE);
+        } else if (mode == MODE.MONTH) {
+            ll_bottom_layout.setVisibility(GONE);
+        }
+
+    }
+
+    private void fetchRemarkForBottomLayout() {
+
+        showProgress(_ctx.getString(R.string.loading));
+
+        String selectedDate = ConstantFormats.ymdFormat.format(currentDate.getTime());
+
+//        Log.e("tag", "url1=" + AppConstants.FetchRemarks + PrefUtils.getUserId(_ctx) + "&Date=" + selectedDate);
+
+        new CallWebService(_ctx, AppConstants.FetchRemarks + PrefUtils.getUserId(_ctx) + "&Date=" + selectedDate, CallWebService.TYPE_GET) {
+
+            @Override
+            public void response(String response) {
+
+                ll_bottom_layout.setVisibility(View.VISIBLE);
+                dismissProgress();
+
+                FetchRemarkResponse getActionLogListResponse = MyApplication.getGson().fromJson(response, FetchRemarkResponse.class);
+
+                if (getActionLogListResponse != null) {
+
+                    if (getActionLogListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
+
+                        strRemark = getActionLogListResponse.getData().getRemark();
+
+                        tv_remark.setText(String.format("Remark : %s", strRemark));
+
+                    }
+//                    else
+//                    {
+//                        SimpleToast.error(_ctx, "No Records Found", _ctx.getString(R.string.fa_error));
+//                    }
+
+                } else {
+                    SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                dismissProgress();
+                ll_bottom_layout.setVisibility(View.GONE);
+                VolleyErrorHelper.showErrorMsg(error, _ctx);
+            }
+
+            @Override
+            public void noInternet() {
+                ll_bottom_layout.setVisibility(View.GONE);
+                dismissProgress();
+                SimpleToast.error(_ctx, _ctx.getString(R.string.no_internet_connection), _ctx.getString(R.string.fa_error));
+            }
+        }.call();
+
+    }
+
+    public void showProgress(String string) {
+        if (dialog == null) {
+            dialog = new LoadingIndicatorDialog(_ctx, string, android.R.style.Theme_Translucent_NoTitleBar);
+        }
+        dialog.show();
+    }
+
+    public void dismissProgress() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
     }
 
     /**
      * Load control xml layout
      */
-    private void initControl(Context context, AttributeSet attrs) {
+    private void initControl(final Context context, AttributeSet attrs) {
 
         _ctx = context;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -195,6 +285,27 @@ public class CalendarView extends LinearLayout {
 
         dayPlans = new ArrayList<>();
         dayAdapter = new DayPlanAdapter(selectedUser, _ctx, dayPlans, getTimeLineHoursSimple(), currentDate);
+
+        calendarScrollView.setOnScrollChangedListener(new CalendarScrollView.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
+                if (t > oldt) {
+                    ll_bottom_layout.setVisibility(GONE);
+                } else {
+                    ll_bottom_layout.setVisibility(VISIBLE);
+                }
+            }
+        });
+
+        tv_remark.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Functions.showSimplePrompt(context, "Remark", strRemark);
+
+            }
+        });
+
 
     }
 
@@ -230,12 +341,17 @@ public class CalendarView extends LinearLayout {
         btnPrev = (ImageView) findViewById(R.id.calendar_prev_button);
         btnNext = (ImageView) findViewById(R.id.calendar_next_button);
         txtDate = (TfTextView) findViewById(R.id.calendar_date_display);
+        tv_remark = (TfTextView) findViewById(R.id.tv_remark);
         grid = (FamiliarRecyclerView) findViewById(R.id.calendar_grid);
 
         timelineRecyclerView = (RecyclerView) findViewById(R.id.timelineRecyclerView);
         timelineLayout = (LinearLayout) findViewById(R.id.timelineLayout);
         linearCalenderViewHeader = (LinearLayout) findViewById(R.id.linearCalenderViewHeader);
+        ll_bottom_layout = (LinearLayout) findViewById(R.id.ll_bottom_layout);
+        calendarScrollView = (CalendarScrollView) findViewById(R.id.scrollView);
+
         //blankView = findViewById(R.id.blankView);
+
         btnDay = (TfButton) findViewById(R.id.btnDay);
         btnWeek = (TfButton) findViewById(R.id.btnWeek);
         btnMonth = (TfButton) findViewById(R.id.btnMonth);
@@ -257,6 +373,7 @@ public class CalendarView extends LinearLayout {
                     //region DAY_MODE
 
                     case DAY:
+
                         Calendar tempCal = currentDate;
                         int curMonth = tempCal.get(Calendar.MONTH) + 1;
 
@@ -279,17 +396,22 @@ public class CalendarView extends LinearLayout {
                             try {
                                 for (int i = 0; i < monthPlans.size(); i++) {
                                     DatePlan datePlan = monthPlans.get(i);
-
                                     if (datePlan != null && datePlan.getDate().equals(d)) {
                                         Log.e("select", datePlan.getDate() + " -- " + datePlan.getPlan().size());
                                         setDayPlan(datePlan.getPlan());
                                         break;
+                                    }else{
+                                        setDayPlan(new ArrayList<Plan>());
                                     }
                                 }
+
+                              notifyAdapter();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
+
+                        dayAdapter.notifyDataSetChanged();
                         break;
                     //endregion
 
@@ -350,6 +472,8 @@ public class CalendarView extends LinearLayout {
                                         Log.e("select", datePlan.getDate() + " -- " + datePlan.getPlan().size());
                                         setDayPlan(datePlan.getPlan());
                                         break;
+                                    }else{
+                                        setDayPlan(new ArrayList<Plan>());
                                     }
                                 }
                             } catch (Exception e) {
@@ -449,7 +573,7 @@ public class CalendarView extends LinearLayout {
 
                 String d = ConstantFormats.ymdFormat.format(currentDate.getTime());
 
-                if (monthPlans != null && monthPlans.size() > 0)
+                if (monthPlans != null && monthPlans.size() > 0){
                     for (int i = 0; i < monthPlans.size(); i++) {
                         DatePlan datePlan = monthPlans.get(i);
                         if (datePlan.getDate().equals(d)) {
@@ -459,6 +583,10 @@ public class CalendarView extends LinearLayout {
                             break;
                         }
                     }
+                }else{
+
+                }
+
 
                 header.setVisibility(View.GONE);
                 linearCalenderViewHeader.setVisibility(VISIBLE);

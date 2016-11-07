@@ -7,9 +7,10 @@ public class AppConstants {
 
     // Common
     // public static final String BASE_URL = "http://ws-srv-php/projects/drupal/amgsales2/";
+//    public static final String BASE_URL = "http://insurance4all.com.my/salestracker/";
     public static final String BASE_URL = "http://demo.webmynehost.com/amgsales/";
     //    public static final String ATTACHMENT_PREFIX = BASE_URL;
-    public static final String ATTACHMENT_PREFIX = "http://demo.webmynehost.com/amgsales/";
+    public static final String ATTACHMENT_PREFIX = "http://insurance4all.com.my/salestracker/";
     public static final String ACTION_LOG_ATTACHMENT_PREFIX = "http://ws-srv-php/projects/drupal/amgsales2/";
     public static final String COMMUNICATION_FILE_PATH = "sites/default/files/communication/";
     public static final String WEB_SERVICE_URL = BASE_URL + "services/";
@@ -190,10 +191,14 @@ public class AppConstants {
     // http://demo.webmynehost.com/amgsales/services/aap_rej_status.php?format=json
     public static final String ApproveRejectActionLog = WEB_SERVICE_URL + "aap_rej_status.php?format=json";
 
+    // http://demo.webmynehost.com/amgsales/services/fetch_if_no.php?format=json&user_id=700&Date=2016-10-21
+    public static final String FetchRemarks = WEB_SERVICE_URL + "fetch_if_no.php?format=json&user_id=";
+
 
     // FTP details Local
-    public static final String FTP_HOST = "ws-srv-php";
-    public static final String FTP_USER = "projects";
-    public static final String FTP_PASSWORD = "projects";
+    public static final String FTP_HOST = "insurance4all.com.my";
+    //public static final String FTP_HOST = "http://demo.webmynehost.com/";
+    public static final String FTP_USER = "insura11";
+    public static final String FTP_PASSWORD = "yIfv50Kx78";
 
 }

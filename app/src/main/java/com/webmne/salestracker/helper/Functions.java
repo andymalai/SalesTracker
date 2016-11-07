@@ -190,6 +190,14 @@ public class Functions {
                 }).show();
     }
 
+    public static void showSimplePrompt(Context context, String title, String content) {
+        new MaterialDialog.Builder(context)
+                .title(title)
+                .content(content)
+                .typeface(getBoldFont(context), getRegularFont(context))
+                .show();
+    }
+
     public static String parseDate(String inputDate, String outputPattern) {
 
         SimpleDateFormat inputFormat = new SimpleDateFormat(ServerDateTimeFormat);

@@ -83,9 +83,9 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
     @Override
     public void onBindViewHolder(final EventHolder holder, int pos) {
 
+        Log.e("Total Subview Counts", "" + holder.newBinding.subView.getChildCount());
         holder.newBinding.subView.removeAllViews();
         holder.newBinding.subView.invalidate();
-
         holder.newBinding.contentView.setVisibility(View.GONE);
 
         holder.newBinding.parentView.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +117,7 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
     }
 
     void setDayPlan(ArrayList<Plan> newPlans, Calendar currentDate) {
+        Log.e("New Plan Size", "" + newPlans.size());
         this.plans = newPlans;
         this.currentDate = currentDate;
         notifyDataSetChanged();
@@ -138,6 +139,8 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
         void setEvent(final Plan plan) {
 
             newBinding.contentView.setVisibility(View.VISIBLE);
+            newBinding.subView.removeAllViews();
+
 
             PlanItem planItem = new PlanItem(context, plan, currentDate);
             planItem.setOnPlanChangeListener(new PlanItem.onPlanChangeListener() {

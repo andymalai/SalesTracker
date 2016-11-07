@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -65,6 +66,23 @@ public class PlanItem extends LinearLayout {
         binding.name.setText(String.format(Locale.US, "%s", plan.getAgentName()));
         binding.remark.setText(String.format(Locale.US, "%s", plan.getRemark()));
 
+        Log.e("Start Time ",plan.getStartTime());
+        Log.e("End Time ",plan.getEndTime());
+
+        try{
+            binding.txtStartDate.setText(String.format(Locale.US, "%s:%s", plan.getStartTime().split(":")[0], plan.getStartTime().split(":")[1]));
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try{
+            binding.txtEndDate.setText(String.format(Locale.US, "%s:%s", plan.getEndTime().split(":")[0], plan.getEndTime().split(":")[1]));
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         Date curDate = new Date();
         Date actualDate = new Date();
 
@@ -81,14 +99,8 @@ public class PlanItem extends LinearLayout {
             binding.actionLayout.setVisibility(View.VISIBLE);
         }
 
-        binding.parentView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onPlanChangeListener != null) {
-                    onPlanChangeListener.onChange(AppConstants.OPEN_REMARK, plan, null);
-                }
-            }
-        });
+        binding.parentView.setOnClickListener(onParentClick);
+//        binding.startEndHolder.setOnClickListener(onParentClick);
 
         if (plan.getStatus().equals(AppConstants.B)) {
 
@@ -144,6 +156,17 @@ public class PlanItem extends LinearLayout {
         });
 
     }
+
+    View.OnClickListener onParentClick=new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (onPlanChangeListener != null) {
+                onPlanChangeListener.onChange(AppConstants.OPEN_REMARK, plan, null);
+            }
+        }
+    };
+
+
 
     public interface onPlanChangeListener {
         void onChange(int type, Plan plan, String box);

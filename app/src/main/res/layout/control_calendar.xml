@@ -151,64 +151,81 @@
 
     </LinearLayout>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.webmne.salestracker.widget.CalendarScrollView
+            android:id="@+id/scrollView"
+
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/timelineLayout"
-                android:layout_width="@dimen/dimen_64dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/timelineRecyclerView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-            </LinearLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
-                <!-- <View
-                     android:id="@+id/blankView"
-                     android:layout_width="match_parent"
-                     android:layout_height="@dimen/dimen_32dp" />-->
+                <LinearLayout
+                    android:id="@+id/timelineLayout"
+                    android:layout_width="@dimen/dimen_64dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
-                <com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView
-                    android:id="@+id/calendar_grid"
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/timelineRecyclerView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginLeft="@dimen/dimen_4dp"
-                    android:layout_weight="1" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <!-- <View
+                         android:id="@+id/blankView"
+                         android:layout_width="match_parent"
+                         android:layout_height="@dimen/dimen_32dp" />-->
+
+                    <com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView
+                        android:id="@+id/calendar_grid"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </com.webmne.salestracker.widget.CalendarScrollView>
 
-    </ScrollView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <com.webmne.salestracker.widget.TfTextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ll_bottom_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/dummy" />
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_8dp"
+            android:visibility="gone">
+
+            <com.webmne.salestracker.widget.TfTextView
+                android:id="@+id/tv_remark"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:maxLines="2"
+                android:text="Remarks if No Plan" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
