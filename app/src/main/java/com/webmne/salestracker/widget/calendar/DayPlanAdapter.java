@@ -83,7 +83,7 @@ class DayPlanAdapter extends RecyclerView.Adapter<DayPlanAdapter.EventHolder> {
     @Override
     public void onBindViewHolder(final EventHolder holder, int pos) {
 
-        Log.e("Total Subview Counts", "" + holder.newBinding.subView.getChildCount());
+        //Log.e("Total Subview Counts", "" + holder.newBinding.subView.getChildCount());
         holder.newBinding.subView.removeAllViews();
         holder.newBinding.subView.invalidate();
         holder.newBinding.contentView.setVisibility(View.GONE);

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
 import com.webmne.salestracker.R;
@@ -30,6 +31,7 @@ import com.webmne.salestracker.visitplan.model.FetchRemarkResponse;
 import com.webmne.salestracker.visitplan.model.SelectedUser;
 import com.webmne.salestracker.widget.CalendarScrollView;
 import com.webmne.salestracker.widget.TfButton;
+import com.webmne.salestracker.widget.TfEditText;
 import com.webmne.salestracker.widget.TfTextView;
 import com.webmne.salestracker.widget.familiarrecyclerview.FamiliarRecyclerView;
 
@@ -209,7 +211,7 @@ public class CalendarView extends LinearLayout {
 
         String selectedDate = ConstantFormats.ymdFormat.format(currentDate.getTime());
 
-//        Log.e("tag", "url1=" + AppConstants.FetchRemarks + PrefUtils.getUserId(_ctx) + "&Date=" + selectedDate);
+        Log.e("tag", "url1=" + AppConstants.FetchRemarks + PrefUtils.getUserId(_ctx) + "&Date=" + selectedDate);
 
         new CallWebService(_ctx, AppConstants.FetchRemarks + PrefUtils.getUserId(_ctx) + "&Date=" + selectedDate, CallWebService.TYPE_GET) {
 
@@ -217,6 +219,7 @@ public class CalendarView extends LinearLayout {
             public void response(String response) {
 
                 ll_bottom_layout.setVisibility(View.VISIBLE);
+
                 dismissProgress();
 
                 FetchRemarkResponse getActionLogListResponse = MyApplication.getGson().fromJson(response, FetchRemarkResponse.class);
@@ -226,14 +229,12 @@ public class CalendarView extends LinearLayout {
                     if (getActionLogListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
 
                         strRemark = getActionLogListResponse.getData().getRemark();
-
                         tv_remark.setText(String.format("Remark : %s", strRemark));
 
+                    } else {
+                        strRemark = "";
+                        tv_remark.setText("Remark : No Remark");
                     }
-//                    else
-//                    {
-//                        SimpleToast.error(_ctx, "No Records Found", _ctx.getString(R.string.fa_error));
-//                    }
 
                 } else {
                     SimpleToast.error(context, context.getString(R.string.try_again), context.getString(R.string.fa_error));
@@ -297,16 +298,55 @@ public class CalendarView extends LinearLayout {
             }
         });
 
-        tv_remark.setOnClickListener(new OnClickListener() {
+        ll_bottom_layout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Functions.showSimplePrompt(context, "Remark", strRemark);
-
+                initDialog();
             }
         });
 
 
+    }
+
+    private void initDialog() {
+        final MaterialDialog dialog = new MaterialDialog.Builder(_ctx)
+                .title("Remark if No Plan")
+                .customView(R.layout.dialog_remark_if_no_plan, true)
+                .typeface(Functions.getBoldFont(_ctx), Functions.getRegularFont(_ctx))
+                .cancelable(true)
+                .build();
+        dialog.show();
+
+        final TfEditText edtRemark = (TfEditText) dialog.getCustomView().findViewById(R.id.edtRemark);
+        final TfButton btnCancel = (TfButton) dialog.getCustomView().findViewById(R.id.btnCancel);
+        final TfButton btnSubmit = (TfButton) dialog.getCustomView().findViewById(R.id.btnSubmit);
+
+        edtRemark.setText(strRemark);
+        btnCancel.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnSubmit.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitRemark();
+            }
+        });
+
+    }
+
+    private void submitRemark() {
+        // todo call ws
+
+        // submit
+
+       /* if success then
+                fetchRemarkForBottomLayout();
+        else
+            */
     }
 
     private void assignTimelineAdapter() {
@@ -367,19 +407,20 @@ public class CalendarView extends LinearLayout {
         btnNext.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 dayPlans = new ArrayList<Plan>();
                 switch (mode) {
 
                     //region DAY_MODE
 
                     case DAY:
-
                         Calendar tempCal = currentDate;
                         int curMonth = tempCal.get(Calendar.MONTH) + 1;
 
                         Log.e("current_month", curMonth + "#!");
 
                         currentDate.add(Calendar.DAY_OF_MONTH, 1);
+                        fetchRemarkForBottomLayout();
                         int nextMonth = currentDate.get(Calendar.MONTH) + 1;
 
                         Log.e("next_month", nextMonth + "#!");
@@ -400,12 +441,12 @@ public class CalendarView extends LinearLayout {
                                         Log.e("select", datePlan.getDate() + " -- " + datePlan.getPlan().size());
                                         setDayPlan(datePlan.getPlan());
                                         break;
-                                    }else{
+                                    } else {
                                         setDayPlan(new ArrayList<Plan>());
                                     }
                                 }
 
-                              notifyAdapter();
+                                notifyAdapter();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -442,12 +483,14 @@ public class CalendarView extends LinearLayout {
                     //region DAY_MODE
 
                     case DAY:
+
                         Calendar tempCal = currentDate;
                         int curMonth = tempCal.get(Calendar.MONTH) + 1;
 
                         Log.e("current_month", curMonth + "#!");
 
                         currentDate.add(Calendar.DAY_OF_MONTH, -1);
+                        fetchRemarkForBottomLayout();
                         int nextMonth = currentDate.get(Calendar.MONTH) + 1;
 
                         Log.e("next_month", nextMonth + "#!");
@@ -472,7 +515,7 @@ public class CalendarView extends LinearLayout {
                                         Log.e("select", datePlan.getDate() + " -- " + datePlan.getPlan().size());
                                         setDayPlan(datePlan.getPlan());
                                         break;
-                                    }else{
+                                    } else {
                                         setDayPlan(new ArrayList<Plan>());
                                     }
                                 }
@@ -573,7 +616,7 @@ public class CalendarView extends LinearLayout {
 
                 String d = ConstantFormats.ymdFormat.format(currentDate.getTime());
 
-                if (monthPlans != null && monthPlans.size() > 0){
+                if (monthPlans != null && monthPlans.size() > 0) {
                     for (int i = 0; i < monthPlans.size(); i++) {
                         DatePlan datePlan = monthPlans.get(i);
                         if (datePlan.getDate().equals(d)) {
@@ -583,7 +626,7 @@ public class CalendarView extends LinearLayout {
                             break;
                         }
                     }
-                }else{
+                } else {
 
                 }
 

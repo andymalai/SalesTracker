@@ -7,11 +7,11 @@
     android:padding="@dimen/dimen_10dp">
 
     <com.webmne.salestracker.widget.TfEditText
-        android:id="@+id/edtDesc"
+        android:id="@+id/edtRemark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start|top"
-        android:hint="@string/enter_desc"
+        android:hint="@string/your_remark"
         android:inputType="textMultiLine"
         android:minLines="3" />
 
@@ -32,11 +32,11 @@
             android:textColor="@color/half_black" />
 
         <com.webmne.salestracker.widget.TfButton
-            android:id="@+id/btnOk"
+            android:id="@+id/btnSubmit"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/BUTTON_HEIGHT"
-            android:text="@string/btn_ok"
+            android:text="@string/submit"
             android:textColor="@color/half_black" />
 
     </LinearLayout>
