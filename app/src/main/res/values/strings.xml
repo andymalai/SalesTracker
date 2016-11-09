@@ -308,6 +308,15 @@
     <!--ChartActivity.class-->
     <string name="chart_title">Chart</string>
 
+    <!--ChartContentActivity.class-->
+    <string name="branch_chart_title">Branch Chart</string>
+    <string name="dept_chart_title">Department Chart</string>
+    <string name="sla_chart_title">Department SLA Chart</string>
+    <string name="visit_plan_chart_title">Sales Visit Plan Chart</string>
+
+    <string name="select_year">Select Year</string>
+    <string name="select_month">Select Month</string>
+
     <!--CommunicationListActivity.class-->
     <string name="communication_list_title">Communication</string>
 
@@ -331,5 +340,4 @@
 
     <string name="update_plan">Update Plan</string>
     <string name="btn_update">Update</string>
-
 </resources>

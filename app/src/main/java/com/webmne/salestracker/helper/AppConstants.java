@@ -53,6 +53,13 @@ public class AppConstants {
     public static String O = "O";
     public static String X = "X";
 
+    // Chart Tyes
+    public static final String CHART_TYPE = "type";
+    public static final int BRANCH_CHART = 1;
+    public static final int DEPARTMENT_CHART = 2;
+    public static final int DEPARTMENT_SLA_CHART = 3;
+    public static final int VISIT_PLAN_CHART = 4;
+
     // Response Code
     public static final String SUCCESS = "1";
 
@@ -194,6 +201,17 @@ public class AppConstants {
     // http://demo.webmynehost.com/amgsales/services/fetch_if_no.php?format=json&user_id=700&Date=2016-10-21
     public static final String FetchRemarks = WEB_SERVICE_URL + "fetch_if_no.php?format=json&user_id=";
 
+    // http://demo.webmynehost.com/amgsales/services/branch_chart.php?format=json
+    public static final String BranchChart = WEB_SERVICE_URL + "branch_chart.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/dept_chart.php?format=json
+    public static final String DeptChart = WEB_SERVICE_URL + "dept_chart.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/dept_sla.php?format=json
+    public static final String DeptSlaChart = WEB_SERVICE_URL + "dept_sla.php?format=json";
+
+    // http://demo.webmynehost.com/amgsales/services/graph_attain.php?format=json
+    public static final String PlanChart = WEB_SERVICE_URL + "graph_attain.php?format=json";
 
     // FTP details Local
     public static final String FTP_HOST = "insurance4all.com.my";

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
+import com.webmne.salestracker.R;
 import com.webmne.salestracker.helper.Functions;
 
 /**

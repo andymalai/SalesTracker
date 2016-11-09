@@ -105,8 +105,7 @@
             android:name=".communication.CommunicationListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-
-
+        <activity android:name=".chart.ChartContentActivity"></activity>
     </application>
 
 </manifest>

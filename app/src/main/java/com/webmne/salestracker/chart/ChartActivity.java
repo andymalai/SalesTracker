@@ -41,7 +41,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ChartActivity extends AppCompatActivity {
+public class ChartActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ActivityChartBinding viewBinding;
 
@@ -70,6 +70,45 @@ public class ChartActivity extends AppCompatActivity {
 
         viewBinding.toolbarLayout.txtCustomTitle.setText(getString(R.string.chart_title));
 
+        actionListener();
+
     }
 
+    private void actionListener() {
+        viewBinding.txtBranch.setOnClickListener(this);
+        viewBinding.txtDept.setOnClickListener(this);
+        viewBinding.txtDeptSla.setOnClickListener(this);
+        viewBinding.txtVisitPlan.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(this, ChartContentActivity.class);
+        switch (v.getId()) {
+            case R.id.txtBranch:
+                intent.putExtra(AppConstants.CHART_TYPE, AppConstants.BRANCH_CHART);
+                break;
+
+            case R.id.txtDept:
+                intent.putExtra(AppConstants.CHART_TYPE, AppConstants.DEPARTMENT_CHART);
+                break;
+
+            case R.id.txtDeptSla:
+                intent.putExtra(AppConstants.CHART_TYPE, AppConstants.DEPARTMENT_SLA_CHART);
+                break;
+
+            case R.id.txtVisitPlan:
+                intent.putExtra(AppConstants.CHART_TYPE, AppConstants.VISIT_PLAN_CHART);
+                break;
+        }
+
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
 }
