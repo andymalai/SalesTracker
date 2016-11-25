@@ -1,8 +1,14 @@
 package com.webmne.salestracker.chart;
 
+import android.Manifest;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +17,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.github.pierry.simpletoast.SimpleToast;
+import com.gun0912.tedpermission.PermissionListener;
 import com.webmne.salestracker.R;
 import com.webmne.salestracker.api.call.GetBranchChart;
 import com.webmne.salestracker.api.call.GetDepartmentChart;
@@ -24,7 +31,6 @@ import com.webmne.salestracker.api.model.PlanChart;
 import com.webmne.salestracker.api.model.SlaChart;
 import com.webmne.salestracker.custom.LoadingIndicatorDialog;
 import com.webmne.salestracker.databinding.ActivityChartContentBinding;
-import com.webmne.salestracker.event.AddEventActivity;
 import com.webmne.salestracker.event.model.Region;
 import com.webmne.salestracker.event.model.RegionListResponse;
 import com.webmne.salestracker.helper.AppConstants;
@@ -38,9 +44,29 @@ import com.webmne.salestracker.helper.volley.VolleyErrorHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+
+import lecho.lib.hellocharts.formatter.SimpleAxisValueFormatter;
+import lecho.lib.hellocharts.formatter.SimpleLineChartValueFormatter;
+import lecho.lib.hellocharts.gesture.ContainerScrollType;
+import lecho.lib.hellocharts.gesture.ZoomType;
+import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
+import lecho.lib.hellocharts.model.Column;
+import lecho.lib.hellocharts.model.ColumnChartData;
+import lecho.lib.hellocharts.model.ComboLineColumnChartData;
+import lecho.lib.hellocharts.model.Line;
+import lecho.lib.hellocharts.model.LineChartData;
+import lecho.lib.hellocharts.model.PointValue;
+import lecho.lib.hellocharts.model.SubcolumnValue;
+import lecho.lib.hellocharts.view.ColumnChartView;
+import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 
 public class ChartContentActivity extends AppCompatActivity {
 
@@ -169,12 +195,115 @@ public class ChartContentActivity extends AppCompatActivity {
                 @Override
                 public void setPlanChart(ArrayList<PlanChart> planChartData) {
                     Log.e("size", planChartData.size() + " ####");
+
+                    createPlanChart(planChartData);
                 }
             });
         } catch (JSONException e) {
             e.printStackTrace();
         }
         fetchRegion();
+    }
+
+    private void createPlanChart(ArrayList<PlanChart> planChartData) {
+
+        viewBinding.chartLayout.removeAllViews();
+
+        final ComboLineColumnChartView chartView = new ComboLineColumnChartView(ChartContentActivity.this);
+        viewBinding.chartLayout.addView(chartView);
+
+        viewBinding.plannedVisitsLayout.setVisibility(View.VISIBLE);
+        viewBinding.completedLayout.setVisibility(View.VISIBLE);
+        viewBinding.tftCompleted.setText(getString(R.string.actual_visited));
+        viewBinding.ongoingLayout.setVisibility(View.GONE);
+        viewBinding.overdueLayout.setVisibility(View.GONE);
+        viewBinding.noOfIssueLayout.setVisibility(View.VISIBLE);
+        viewBinding.tftNoOfIssue.setText(getString(R.string.plan_attainment));
+
+        ArrayList<Column> columns = new ArrayList<Column>();
+        ArrayList<SubcolumnValue> values;
+        ArrayList<AxisValue> xAxisValues = new ArrayList<>();
+
+        for (int i = 0; i < planChartData.size(); ++i) {
+
+            values = new ArrayList<SubcolumnValue>();
+
+            float average_sla = Float.parseFloat(planChartData.get(i).getPlannedVisits());
+            values.add(new SubcolumnValue(average_sla, ContextCompat.getColor(this, R.color.planned_visited_color)));
+
+            float no_of_issue = Float.parseFloat(planChartData.get(i).getActualVisited());
+            values.add(new SubcolumnValue(no_of_issue, ContextCompat.getColor(this, R.color.completed_color)));
+
+            xAxisValues.add(new AxisValue(i).setLabel(planChartData.get(i).getDate()));
+
+            Column column = new Column(values);
+            column.setHasLabels(true);
+            column.setHasLabelsOnlyForSelected(false);
+            columns.add(column);
+        }
+
+        ColumnChartData columnChartData = new ColumnChartData(columns);
+
+        // Set stacked flag.
+        columnChartData.setStacked(false);
+
+
+        ArrayList<Line> lines = new ArrayList<Line>();
+        ArrayList<PointValue> pointValues = new ArrayList<PointValue>();
+
+        for (int j = 0; j < planChartData.size(); ++j) {
+//                float point_y = Float.parseFloat(slaChartData.get(j).getAverageSLA()) + Float.parseFloat(slaChartData.get(j).getNoOfIssues());
+            pointValues.add(new PointValue(j, Float.parseFloat(planChartData.get(j).getPlanAttainment().replace("%", ""))));
+        }
+
+        Line line = new Line(pointValues);
+        line.setColor(Color.BLACK);
+        line.setCubic(true);
+        line.setHasLabels(true);
+        line.setHasLines(true);
+        line.setHasPoints(true);
+//        line.setFormatter(new );
+        lines.add(line);
+
+        LineChartData lineChartData = new LineChartData(lines);
+
+
+        ComboLineColumnChartData data = new ComboLineColumnChartData(columnChartData, lineChartData);
+
+
+        /*------------------set xAxis data--------------------*/
+        Axis axisX = new Axis(xAxisValues);
+        axisX.setTextSize(10);
+        axisX.setTextColor(Color.BLACK);
+//        axisX.setName("Name of department");
+        axisX.setMaxLabelChars(10);
+        axisX.setFormatter(new SimpleAxisValueFormatter());
+        axisX.setHasTiltedLabels(true);
+
+        data.setAxisXBottom(axisX);
+        /*------------------------------------------------------*/
+
+        /*------------------set yAxis data--------------------*/
+        Axis axisY = new Axis();
+        axisY.setHasLines(false);
+        axisY.setTextSize(12);
+        axisY.setTextColor(Color.BLACK);
+        axisY.setName("Plan Attainment (%)");
+
+        data.setAxisYLeft(axisY);
+        /*------------------------------------------------------*/
+
+        chartView.setComboLineColumnChartData(data);
+        chartView.setInteractive(true);
+        chartView.setZoomEnabled(true);
+        chartView.setClickable(true);
+        chartView.setValueTouchEnabled(false);
+        chartView.setZoomType(ZoomType.HORIZONTAL_AND_VERTICAL);
+
+        if (xAxisValues.size() > 6) {
+            chartView.setZoomLevel(0, 0, 3.42f);
+        }
+
     }
 
     private void getDepartmentSlaChart() {
@@ -188,10 +317,114 @@ public class ChartContentActivity extends AppCompatActivity {
                 @Override
                 public void setSlaChart(ArrayList<SlaChart> slaChartData) {
                     Log.e("size", slaChartData.size() + " ####");
+
+                    createDepartmentSlaChart(slaChartData);
                 }
             });
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    private void createDepartmentSlaChart(ArrayList<SlaChart> slaChartData) {
+
+        viewBinding.chartLayout.removeAllViews();
+
+        ComboLineColumnChartView chartView = new ComboLineColumnChartView(ChartContentActivity.this);
+        viewBinding.chartLayout.addView(chartView);
+
+        viewBinding.plannedVisitsLayout.setVisibility(View.GONE);
+        viewBinding.completedLayout.setVisibility(View.VISIBLE);
+        viewBinding.tftCompleted.setText(getString(R.string.average_sla));
+        viewBinding.ongoingLayout.setVisibility(View.GONE);
+        viewBinding.overdueLayout.setVisibility(View.GONE);
+        viewBinding.noOfIssueLayout.setVisibility(View.VISIBLE);
+        viewBinding.tftNoOfIssue.setText(getString(R.string.no_of_issue));
+
+        ArrayList<Column> columns = new ArrayList<Column>();
+        ArrayList<SubcolumnValue> values;
+        ArrayList<AxisValue> xAxisValues = new ArrayList<>();
+
+        for (int i = 0; i < slaChartData.size(); ++i) {
+
+            values = new ArrayList<SubcolumnValue>();
+
+            float average_sla = Float.parseFloat(slaChartData.get(i).getAverageSLA());
+            values.add(new SubcolumnValue(average_sla, ContextCompat.getColor(this, R.color.completed_color)));
+
+            float no_of_issue = Float.parseFloat(slaChartData.get(i).getNoOfIssues());
+            values.add(new SubcolumnValue(no_of_issue, ContextCompat.getColor(this, R.color.white)));
+
+            xAxisValues.add(new AxisValue(i).setLabel(slaChartData.get(i).getDepartment()));
+
+            Column column = new Column(values);
+            column.setHasLabels(true);
+            column.setHasLabelsOnlyForSelected(false);
+            columns.add(column);
+        }
+
+        ColumnChartData columnChartData = new ColumnChartData(columns);
+
+        // Set stacked flag.
+        columnChartData.setStacked(true);
+
+
+        ArrayList<Line> lines = new ArrayList<Line>();
+//        for (int i = 0; i < 1; ++i) {
+
+        ArrayList<PointValue> pointValues = new ArrayList<PointValue>();
+
+        for (int j = 0; j < slaChartData.size(); ++j) {
+//                float point_y = Float.parseFloat(slaChartData.get(j).getAverageSLA()) + Float.parseFloat(slaChartData.get(j).getNoOfIssues());
+            pointValues.add(new PointValue(j, Float.parseFloat(slaChartData.get(j).getNoOfIssues())));
+        }
+
+        Line line = new Line(pointValues);
+        line.setColor(Color.BLACK);
+        line.setCubic(true);
+        line.setHasLabels(true);
+        line.setHasLines(true);
+        line.setHasPoints(true);
+        lines.add(line);
+//        }
+
+        LineChartData lineChartData = new LineChartData(lines);
+
+
+        ComboLineColumnChartData data = new ComboLineColumnChartData(columnChartData, lineChartData);
+
+
+        /*------------------set xAxis data--------------------*/
+        Axis axisX = new Axis(xAxisValues);
+        axisX.setTextSize(10);
+        axisX.setTextColor(Color.BLACK);
+        axisX.setName("Name of department");
+        axisX.setMaxLabelChars(10);
+        axisX.setFormatter(new SimpleAxisValueFormatter());
+        axisX.setHasTiltedLabels(true);
+
+        data.setAxisXBottom(axisX);
+        /*------------------------------------------------------*/
+
+        /*------------------set yAxis data--------------------*/
+        Axis axisY = new Axis();
+        axisY.setHasLines(false);
+        axisY.setTextSize(12);
+        axisY.setTextColor(Color.BLACK);
+//        axisY.setName("No of issue");
+
+        data.setAxisYLeft(axisY);
+        /*------------------------------------------------------*/
+
+        chartView.setComboLineColumnChartData(data);
+        chartView.setInteractive(true);
+        chartView.setZoomEnabled(true);
+        chartView.setClickable(true);
+        chartView.setValueTouchEnabled(false);
+        chartView.setZoomType(ZoomType.HORIZONTAL_AND_VERTICAL);
+        if (xAxisValues.size() > 6) {
+            chartView.setZoomLevel(0, 0, 2.0f);
         }
 
     }
@@ -207,11 +440,91 @@ public class ChartContentActivity extends AppCompatActivity {
                 @Override
                 public void setDeptChart(ArrayList<DepartmentChart> deptChartData) {
                     Log.e("size", deptChartData.size() + " ####");
+
+                    createDepartmentChart(deptChartData);
                 }
             });
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void createDepartmentChart(ArrayList<DepartmentChart> deptChartData) {
+
+        viewBinding.chartLayout.removeAllViews();
+
+        ColumnChartView chartView = new ColumnChartView(ChartContentActivity.this);
+        viewBinding.chartLayout.addView(chartView);
+
+        viewBinding.plannedVisitsLayout.setVisibility(View.GONE);
+        viewBinding.completedLayout.setVisibility(View.VISIBLE);
+        viewBinding.tftCompleted.setText(getString(R.string.completed));
+        viewBinding.ongoingLayout.setVisibility(View.VISIBLE);
+        viewBinding.overdueLayout.setVisibility(View.VISIBLE);
+        viewBinding.noOfIssueLayout.setVisibility(View.GONE);
+
+        ArrayList<Column> columns = new ArrayList<Column>();
+        ArrayList<SubcolumnValue> values;
+        ArrayList<AxisValue> xAxisValues = new ArrayList<>();
+
+        for (int i = 0; i < deptChartData.size(); ++i) {
+
+            values = new ArrayList<SubcolumnValue>();
+
+            float completed = Float.parseFloat(deptChartData.get(i).getCompleted());
+            values.add(new SubcolumnValue(completed, ContextCompat.getColor(this, R.color.completed_color)));
+
+            float ongoing = Float.parseFloat(deptChartData.get(i).getOnGoing());
+            values.add(new SubcolumnValue(ongoing, ContextCompat.getColor(this, R.color.on_going_color)));
+
+            float overdue = Float.parseFloat(deptChartData.get(i).getOverdue());
+            values.add(new SubcolumnValue(overdue, ContextCompat.getColor(this, R.color.overdue_color)));
+
+            xAxisValues.add(new AxisValue(i).setLabel(deptChartData.get(i).getDepartment()));
+
+            Column column = new Column(values);
+            column.setHasLabels(true);
+            column.setHasLabelsOnlyForSelected(false);
+            columns.add(column);
+        }
+
+        ColumnChartData data = new ColumnChartData(columns);
+
+        // Set stacked flag.
+        data.setStacked(true);
+
+        /*------------------set xAxis data--------------------*/
+        Axis axisX = new Axis(xAxisValues);
+        axisX.setTextSize(10);
+        axisX.setTextColor(Color.BLACK);
+        axisX.setName("Name of department");
+        axisX.setMaxLabelChars(10);
+        axisX.setFormatter(new SimpleAxisValueFormatter());
+        axisX.setHasTiltedLabels(true);
+
+        data.setAxisXBottom(axisX);
+        /*------------------------------------------------------*/
+
+        /*------------------set yAxis data--------------------*/
+        Axis axisY = new Axis();
+        axisY.setHasLines(false);
+        axisY.setTextSize(12);
+        axisY.setTextColor(Color.BLACK);
+        axisY.setName("No of issue");
+
+        data.setAxisYLeft(axisY);
+        /*------------------------------------------------------*/
+
+        chartView.setColumnChartData(data);
+        chartView.setInteractive(true);
+        chartView.setZoomEnabled(true);
+        chartView.setClickable(true);
+        chartView.setValueTouchEnabled(false);
+        chartView.setZoomType(ZoomType.HORIZONTAL_AND_VERTICAL);
+        if (xAxisValues.size() > 6) {
+            chartView.setZoomLevel(0, 0, 2.0f);
+        }
+
     }
 
     private void getBranchChart() {
@@ -225,12 +538,89 @@ public class ChartContentActivity extends AppCompatActivity {
             new GetBranchChart(this, json, new GetBranchChart.OnGetChartListener() {
                 @Override
                 public void setBranchChart(ArrayList<BranchChart> branchChartData) {
-                    Log.e("size", branchChartData.size() + " ####");
+                    Log.e("tag", "Gson branchChartData:-" + MyApplication.getGson().toJson(branchChartData));
+
+                    createBranchChart(branchChartData);
                 }
             });
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void createBranchChart(ArrayList<BranchChart> branchChartData) {
+
+        viewBinding.chartLayout.removeAllViews();
+
+        ColumnChartView chartView = new ColumnChartView(ChartContentActivity.this);
+        viewBinding.chartLayout.addView(chartView);
+
+        viewBinding.plannedVisitsLayout.setVisibility(View.GONE);
+        viewBinding.completedLayout.setVisibility(View.VISIBLE);
+        viewBinding.tftCompleted.setText(getString(R.string.completed));
+        viewBinding.ongoingLayout.setVisibility(View.VISIBLE);
+        viewBinding.overdueLayout.setVisibility(View.VISIBLE);
+        viewBinding.noOfIssueLayout.setVisibility(View.GONE);
+
+        ArrayList<Column> columns = new ArrayList<Column>();
+        ArrayList<SubcolumnValue> values;
+        ArrayList<AxisValue> xAxisValues = new ArrayList<>();
+
+        for (int i = 0; i < branchChartData.size(); ++i) {
+
+            values = new ArrayList<SubcolumnValue>();
+
+            float completed = Float.parseFloat(branchChartData.get(i).getCompleted());
+            values.add(new SubcolumnValue(completed, ContextCompat.getColor(this, R.color.completed_color)));
+
+            float ongoing = Float.parseFloat(branchChartData.get(i).getOnGoing());
+            values.add(new SubcolumnValue(ongoing, ContextCompat.getColor(this, R.color.on_going_color)));
+
+            float overdue = Float.parseFloat(branchChartData.get(i).getOverdue());
+            values.add(new SubcolumnValue(overdue, ContextCompat.getColor(this, R.color.overdue_color)));
+
+            xAxisValues.add(new AxisValue(i).setLabel(branchChartData.get(i).getBranch()));
+
+            Column column = new Column(values);
+            column.setHasLabels(true);
+            column.setHasLabelsOnlyForSelected(false);
+            columns.add(column);
+        }
+
+        ColumnChartData data = new ColumnChartData(columns);
+
+        // Set stacked flag.
+        data.setStacked(true);
+
+        /*------------------set xAxis data--------------------*/
+        Axis axisX = new Axis(xAxisValues);
+        axisX.setTextSize(12);
+        axisX.setTextColor(Color.BLACK);
+        axisX.setName("Name of department");
+
+        data.setAxisXBottom(axisX);
+        /*------------------------------------------------------*/
+
+        /*------------------set yAxis data--------------------*/
+        Axis axisY = new Axis();
+        axisY.setHasLines(false);
+        axisY.setTextSize(12);
+        axisY.setTextColor(Color.BLACK);
+        axisY.setName("No of issue");
+
+        data.setAxisYLeft(axisY);
+        /*------------------------------------------------------*/
+
+        chartView.setColumnChartData(data);
+        chartView.setInteractive(true);
+        chartView.setZoomEnabled(true);
+        chartView.setClickable(true);
+        chartView.setValueTouchEnabled(false);
+        chartView.setZoomType(ZoomType.HORIZONTAL_AND_VERTICAL);
+        if (xAxisValues.size() > 6) {
+            chartView.setZoomLevel(0, 0, 2.0f);
+        }
+
     }
 
     private void actionListener() {
@@ -350,6 +740,88 @@ public class ChartContentActivity extends AppCompatActivity {
                         .show();
             }
         });
+
+        viewBinding.ivDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Functions.setPermission(ChartContentActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+
+                        Functions.showPrompt(ChartContentActivity.this, getString(R.string.yes), getString(R.string.no), getString(R.string.ask_chart_download), new Functions.onPromptListener() {
+                            @Override
+                            public void onClickYes(MaterialDialog dialog) {
+
+                                saveChartSnapShot();
+
+                            }
+
+                            @Override
+                            public void onClickNo(MaterialDialog dialog) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                        SimpleToast.error(ChartContentActivity.this, getString(R.string.permission_denied), getString(R.string.fa_error));
+                    }
+                });
+
+            }
+        });
+
+    }
+
+    private void saveChartSnapShot() {
+
+        String strGenerateName = new SimpleDateFormat("ddMMyyyyhhmmss").format(new Date());
+        String strChartTypeFolder;
+
+        if (chartType == AppConstants.BRANCH_CHART) {
+            strChartTypeFolder = "BranchChart";
+        } else if (chartType == AppConstants.DEPARTMENT_CHART) {
+            strChartTypeFolder = "DepartmentChart";
+        } else if (chartType == AppConstants.DEPARTMENT_SLA_CHART) {
+            strChartTypeFolder = "DepartmentSLAChart";
+        } else {
+            strChartTypeFolder = "VisitPlanChart";
+        }
+
+        File mainDerectoryFile = new File(Environment.getExternalStorageDirectory() + AppConstants.CHART_DIRECTORY + strChartTypeFolder + "/");
+
+        if (mainDerectoryFile.exists()) {
+
+            try {
+                // create bitmap screen capture
+                View v1 = viewBinding.fullChartLayout;
+                v1.setBackgroundColor(Color.WHITE);
+                v1.setDrawingCacheEnabled(true);
+                Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+                v1.setDrawingCacheEnabled(false);
+
+                File imageFile = new File(mainDerectoryFile.getAbsoluteFile(), strGenerateName + ".jpg");
+
+                FileOutputStream outputStream = new FileOutputStream(imageFile);
+                int quality = 100;
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+                outputStream.flush();
+                outputStream.close();
+
+                SimpleToast.ok(ChartContentActivity.this, getString(R.string.chart_download_successfully));
+
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            mainDerectoryFile.mkdirs();
+            saveChartSnapShot();
+        }
+
     }
 
     private void fetchBranches() {

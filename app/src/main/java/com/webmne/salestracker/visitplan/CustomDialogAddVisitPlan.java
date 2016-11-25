@@ -97,8 +97,17 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
         String[] newTime = time.split(":");
         edtStartTime.setText(String.format("%s:%s", newTime[0], newTime[1]));
         strSelectedStartTime = newTime[0] + ":" + newTime[1];
-        strSelectedEndTime = "08:00";
+//        strSelectedEndTime = "08:00";
         setFullDateTime("s", newTime[0], newTime[1]);
+
+        String[] newEndTime = time.split(":");
+        String strEndHour = String.format("%02d", (Integer.parseInt(newEndTime[0]) + 1));
+        String strEndMinute = newEndTime[1];
+        edtEndTime.setText(String.format("%s:%s", strEndHour, strEndMinute));
+//        strSelectedStartTime = newTime[0] + ":" + newTime[1];
+//        strSelectedEndTime = "08:00";
+        strSelectedEndTime = strEndHour + ":" + strEndMinute;
+        setFullDateTime("e", strEndHour, strEndMinute);
 
         agentModelList = new ArrayList<>();
 

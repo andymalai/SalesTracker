@@ -81,14 +81,14 @@ public class AddEventActivity extends AppCompatActivity {
 
         viewBinding.toolbarLayout.txtCustomTitle.setText(getString(R.string.add_event_title));
 
-        if (Functions.isConnected(this)) {
-
-            // call all ws one by one
-            fetchRegion();
-
-        } else {
-            SimpleToast.error(AddEventActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-        }
+//        if (Functions.isConnected(this)) {
+//
+//            // call all ws one by one
+//            fetchRegion();
+//
+//        } else {
+//            SimpleToast.error(AddEventActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+//        }
 
         actionListener();
     }
@@ -231,20 +231,20 @@ public class AddEventActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtRegion))) {
-                    SimpleToast.error(AddEventActivity.this, getString(R.string.select_region), getString(R.string.fa_error));
-                    return;
-                }
-
-                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtBranch))) {
-                    SimpleToast.error(AddEventActivity.this, getString(R.string.select_branch), getString(R.string.fa_error));
-                    return;
-                }
-
-                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtPosition))) {
-                    SimpleToast.error(AddEventActivity.this, getString(R.string.select_position), getString(R.string.fa_error));
-                    return;
-                }
+//                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtRegion))) {
+//                    SimpleToast.error(AddEventActivity.this, getString(R.string.select_region), getString(R.string.fa_error));
+//                    return;
+//                }
+//
+//                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtBranch))) {
+//                    SimpleToast.error(AddEventActivity.this, getString(R.string.select_branch), getString(R.string.fa_error));
+//                    return;
+//                }
+//
+//                if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtPosition))) {
+//                    SimpleToast.error(AddEventActivity.this, getString(R.string.select_position), getString(R.string.fa_error));
+//                    return;
+//                }
 
                 if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtDescription))) {
                     SimpleToast.error(AddEventActivity.this, getString(R.string.enter_description), getString(R.string.fa_error));

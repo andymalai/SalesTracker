@@ -107,16 +107,19 @@ public class EventDetailActivity extends AppCompatActivity {
             viewBinding.btnAdd.setVisibility(View.GONE);
         }
 
-        if (Functions.isConnected(this)) {
+//        if (Functions.isConnected(this)) {
+//
+//            // call all ws one by one
+//            fetchRegion();
+//
+//        } else {
+//            SimpleToast.error(EventDetailActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+//        }
 
-            // call all ws one by one
-            fetchRegion();
-
-        } else {
-            SimpleToast.error(EventDetailActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
-        }
 
         actionListener();
+
+        disableFields();
     }
 
 
@@ -136,7 +139,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
                                 regionWhich = which;
 
-                                viewBinding.edtRegion.setText(text.toString().replace("[", "").replace("]", ""));
+//                                viewBinding.edtRegion.setText(text.toString().replace("[", "").replace("]", ""));
 
                                 strRegion = regionArrayList.get(which).getRegion();
 
@@ -178,7 +181,7 @@ public class EventDetailActivity extends AppCompatActivity {
                                     stringBuilderBranch.append(",");
                                 }
 
-                                viewBinding.edtBranch.setText(Arrays.toString(text).replace("[", "").replace("]", ""));
+//                                viewBinding.edtBranch.setText(Arrays.toString(text).replace("[", "").replace("]", ""));
 
                                 return true;
                             }
@@ -211,7 +214,7 @@ public class EventDetailActivity extends AppCompatActivity {
                                     stringBuilderPosition.append(",");
                                 }
 
-                                viewBinding.edtPosition.setText(Arrays.toString(text).replace("[", "").replace("]", ""));
+//                                viewBinding.edtPosition.setText(Arrays.toString(text).replace("[", "").replace("]", ""));
 
                                 return true;
                             }
@@ -302,20 +305,20 @@ public class EventDetailActivity extends AppCompatActivity {
             return;
         }
 
-        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtRegion))) {
-            SimpleToast.error(EventDetailActivity.this, getString(R.string.select_region), getString(R.string.fa_error));
-            return;
-        }
-
-        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtBranch))) {
-            SimpleToast.error(EventDetailActivity.this, getString(R.string.select_branch), getString(R.string.fa_error));
-            return;
-        }
-
-        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtPosition))) {
-            SimpleToast.error(EventDetailActivity.this, getString(R.string.select_position), getString(R.string.fa_error));
-            return;
-        }
+//        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtRegion))) {
+//            SimpleToast.error(EventDetailActivity.this, getString(R.string.select_region), getString(R.string.fa_error));
+//            return;
+//        }
+//
+//        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtBranch))) {
+//            SimpleToast.error(EventDetailActivity.this, getString(R.string.select_branch), getString(R.string.fa_error));
+//            return;
+//        }
+//
+//        if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtPosition))) {
+//            SimpleToast.error(EventDetailActivity.this, getString(R.string.select_position), getString(R.string.fa_error));
+//            return;
+//        }
 
         if (TextUtils.isEmpty(Functions.toStr(viewBinding.edtDescription))) {
             SimpleToast.error(EventDetailActivity.this, getString(R.string.enter_description), getString(R.string.fa_error));
@@ -455,7 +458,7 @@ public class EventDetailActivity extends AppCompatActivity {
                             if (regionArrayList.get(i).getRegion().equals(eventModel.getRegionId())) {
                                 regionWhich = i;
 
-                                viewBinding.edtRegion.setText(regionArrayList.get(i).getRegionId());
+//                                viewBinding.edtRegion.setText(regionArrayList.get(i).getRegionId());
 
                                 strRegion = regionArrayList.get(i).getRegion();
                             }
@@ -529,7 +532,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
                         }
 
-                        viewBinding.edtBranch.setText(tmpStringBuilder.toString().substring(0, tmpStringBuilder.toString().length() - 2));
+//                        viewBinding.edtBranch.setText(tmpStringBuilder.toString().substring(0, tmpStringBuilder.toString().length() - 2));
 
                         branchWhich = tmpArray.toArray(new Integer[tmpArray.size()]);
 
@@ -601,7 +604,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
                         }
 
-                        viewBinding.edtPosition.setText(tmpStringBuilder.toString().substring(0, tmpStringBuilder.toString().length() - 2));
+//                        viewBinding.edtPosition.setText(tmpStringBuilder.toString().substring(0, tmpStringBuilder.toString().length() - 2));
 
                         positionWhich = tmpArray.toArray(new Integer[tmpArray.size()]);
 

@@ -340,4 +340,16 @@
 
     <string name="update_plan">Update Plan</string>
     <string name="btn_update">Update</string>
+
+    <!--activity_chart_content.xml-->
+    <string name="planned_visits">Planned Visits</string>
+    <string name="average_sla">Average SLA</string>
+    <string name="actual_visited">Actual Visited</string>
+    <string name="no_of_issue">No Of Issue</string>
+    <string name="plan_attainment">Plan Attainment (%)</string>
+    <string name="download">Download</string>
+    <string name="ask_chart_download">Are you sure want to download this chart?</string>
+    <string name="chart_download_successfully">Chart downloaded successfully.</string>
+
+
 </resources>

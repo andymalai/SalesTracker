@@ -290,11 +290,21 @@ public class CalendarView extends LinearLayout {
         calendarScrollView.setOnScrollChangedListener(new CalendarScrollView.OnScrollChangedListener() {
             @Override
             public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
+
                 if (t > oldt) {
                     ll_bottom_layout.setVisibility(GONE);
+                    if (t <= 0) {
+                        ll_bottom_layout.setVisibility(VISIBLE);
+                    }
+                } else if (t <= 0) {
+                    ll_bottom_layout.setVisibility(VISIBLE);
                 } else {
                     ll_bottom_layout.setVisibility(VISIBLE);
+                    if ((t + calendarScrollView.getHeight() + ll_bottom_layout.getHeight()) == who.getChildAt(0).getHeight()) {
+                        ll_bottom_layout.setVisibility(GONE);
+                    }
                 }
+
             }
         });
 
@@ -304,7 +314,6 @@ public class CalendarView extends LinearLayout {
                 initDialog();
             }
         });
-
 
     }
 

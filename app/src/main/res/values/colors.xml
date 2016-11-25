@@ -38,4 +38,11 @@
     <color name="spring">#448da64b</color>
     <color name="today">#4b82ff</color>
     <color name="greyed_out">#c7c7c7</color>
+
+
+    <color name="overdue_color">#FF0000</color>
+    <color name="on_going_color">#FFA500</color>
+    <color name="completed_color">#00B300</color>
+    <color name="planned_visited_color">#6596ed</color>
+
 </resources>

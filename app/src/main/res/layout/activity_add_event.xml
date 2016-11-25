@@ -63,7 +63,8 @@
                     android:clickable="true"
                     android:focusable="false"
                     android:hint="@string/select_region"
-                    android:longClickable="false" />
+                    android:longClickable="false"
+                    android:visibility="gone" />
 
                 <com.webmne.salestracker.widget.TfEditText
                     android:id="@+id/edtBranch"
@@ -73,7 +74,8 @@
                     android:clickable="true"
                     android:focusable="false"
                     android:hint="@string/select_branch"
-                    android:longClickable="false" />
+                    android:longClickable="false"
+                    android:visibility="gone" />
 
                 <com.webmne.salestracker.widget.TfEditText
                     android:id="@+id/edtPosition"
@@ -83,7 +85,8 @@
                     android:clickable="true"
                     android:focusable="false"
                     android:hint="@string/select_position"
-                    android:longClickable="false" />
+                    android:longClickable="false"
+                    android:visibility="gone" />
 
                 <com.webmne.salestracker.widget.TfEditText
                     android:id="@+id/edtDescription"
