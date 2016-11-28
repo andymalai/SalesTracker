@@ -20,7 +20,8 @@
             android:layout_marginRight="@dimen/dimen_12dp"
             android:gravity="center"
             android:src="@drawable/ic_download"
-            android:tint="@color/white" />
+            android:tint="@color/white"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"

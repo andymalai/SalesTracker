@@ -296,6 +296,12 @@ public class CustomDialogAddVisitPlan extends MaterialDialog {
             strStartTime = d + "T" + hour + ":" + minute + ":00" + newTimeZone;
             edtStartTime.setText(hour + ":" + minute);
 
+            String addHour = String.valueOf(Integer.parseInt(hour) + 1);
+            endHour = Integer.parseInt(addHour);
+            endminute = Integer.parseInt(addHour);
+            strSelectedEndTime = addHour + ":" + minute;
+            strEndTime = d + "T" + addHour + ":" + minute + ":00" + newTimeZone;
+            edtEndTime.setText(addHour + ":" + minute);
         } else if (str_flag.equals("e")) {
             endHour = Integer.parseInt(hour);
             endminute = Integer.parseInt(minute);

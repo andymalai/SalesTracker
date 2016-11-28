@@ -196,7 +196,13 @@ public class ChartContentActivity extends AppCompatActivity {
                 public void setPlanChart(ArrayList<PlanChart> planChartData) {
                     Log.e("size", planChartData.size() + " ####");
 
-                    createPlanChart(planChartData);
+                    if (planChartData.size() > 0) {
+                        viewBinding.ivDownload.setVisibility(View.VISIBLE);
+                        createPlanChart(planChartData);
+                    } else {
+                        viewBinding.ivDownload.setVisibility(View.GONE);
+                    }
+
                 }
             });
         } catch (JSONException e) {
@@ -279,6 +285,7 @@ public class ChartContentActivity extends AppCompatActivity {
         axisX.setMaxLabelChars(10);
         axisX.setFormatter(new SimpleAxisValueFormatter());
         axisX.setHasTiltedLabels(true);
+        axisX.setTypeface(Functions.getRegularFont(this));
 
         data.setAxisXBottom(axisX);
         /*------------------------------------------------------*/
@@ -289,6 +296,7 @@ public class ChartContentActivity extends AppCompatActivity {
         axisY.setTextSize(12);
         axisY.setTextColor(Color.BLACK);
         axisY.setName("Plan Attainment (%)");
+        axisY.setTypeface(Functions.getRegularFont(this));
 
         data.setAxisYLeft(axisY);
         /*------------------------------------------------------*/
@@ -318,7 +326,13 @@ public class ChartContentActivity extends AppCompatActivity {
                 public void setSlaChart(ArrayList<SlaChart> slaChartData) {
                     Log.e("size", slaChartData.size() + " ####");
 
-                    createDepartmentSlaChart(slaChartData);
+                    if (slaChartData.size() > 0) {
+                        viewBinding.ivDownload.setVisibility(View.VISIBLE);
+                        createDepartmentSlaChart(slaChartData);
+                    } else {
+                        viewBinding.ivDownload.setVisibility(View.GONE);
+                    }
+
                 }
             });
         } catch (JSONException e) {
@@ -403,6 +417,7 @@ public class ChartContentActivity extends AppCompatActivity {
         axisX.setMaxLabelChars(10);
         axisX.setFormatter(new SimpleAxisValueFormatter());
         axisX.setHasTiltedLabels(true);
+        axisX.setTypeface(Functions.getRegularFont(this));
 
         data.setAxisXBottom(axisX);
         /*------------------------------------------------------*/
@@ -413,6 +428,7 @@ public class ChartContentActivity extends AppCompatActivity {
         axisY.setTextSize(12);
         axisY.setTextColor(Color.BLACK);
 //        axisY.setName("No of issue");
+        axisY.setTypeface(Functions.getRegularFont(this));
 
         data.setAxisYLeft(axisY);
         /*------------------------------------------------------*/
@@ -441,7 +457,13 @@ public class ChartContentActivity extends AppCompatActivity {
                 public void setDeptChart(ArrayList<DepartmentChart> deptChartData) {
                     Log.e("size", deptChartData.size() + " ####");
 
-                    createDepartmentChart(deptChartData);
+                    if (deptChartData.size() > 0) {
+                        viewBinding.ivDownload.setVisibility(View.VISIBLE);
+                        createDepartmentChart(deptChartData);
+                    } else {
+                        viewBinding.ivDownload.setVisibility(View.GONE);
+                    }
+
                 }
             });
         } catch (JSONException e) {
@@ -501,6 +523,7 @@ public class ChartContentActivity extends AppCompatActivity {
         axisX.setMaxLabelChars(10);
         axisX.setFormatter(new SimpleAxisValueFormatter());
         axisX.setHasTiltedLabels(true);
+        axisX.setTypeface(Functions.getRegularFont(this));
 
         data.setAxisXBottom(axisX);
         /*------------------------------------------------------*/
@@ -511,6 +534,7 @@ public class ChartContentActivity extends AppCompatActivity {
         axisY.setTextSize(12);
         axisY.setTextColor(Color.BLACK);
         axisY.setName("No of issue");
+        axisY.setTypeface(Functions.getRegularFont(this));
 
         data.setAxisYLeft(axisY);
         /*------------------------------------------------------*/
@@ -540,7 +564,13 @@ public class ChartContentActivity extends AppCompatActivity {
                 public void setBranchChart(ArrayList<BranchChart> branchChartData) {
                     Log.e("tag", "Gson branchChartData:-" + MyApplication.getGson().toJson(branchChartData));
 
-                    createBranchChart(branchChartData);
+                    if (branchChartData.size() > 0) {
+                        viewBinding.ivDownload.setVisibility(View.VISIBLE);
+                        createBranchChart(branchChartData);
+                    } else {
+                        viewBinding.ivDownload.setVisibility(View.GONE);
+                    }
+
                 }
             });
         } catch (JSONException e) {
@@ -596,7 +626,8 @@ public class ChartContentActivity extends AppCompatActivity {
         Axis axisX = new Axis(xAxisValues);
         axisX.setTextSize(12);
         axisX.setTextColor(Color.BLACK);
-        axisX.setName("Name of department");
+        axisX.setTypeface(Functions.getRegularFont(this));
+        axisX.setName("Name of branch");
 
         data.setAxisXBottom(axisX);
         /*------------------------------------------------------*/
@@ -606,6 +637,7 @@ public class ChartContentActivity extends AppCompatActivity {
         axisY.setHasLines(false);
         axisY.setTextSize(12);
         axisY.setTextColor(Color.BLACK);
+        axisY.setTypeface(Functions.getRegularFont(this));
         axisY.setName("No of issue");
 
         data.setAxisYLeft(axisY);
