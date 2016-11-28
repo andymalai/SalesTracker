@@ -101,7 +101,7 @@ public class ActionLogDetails extends LinearLayout {
                 Functions.showPrompt(context, context.getString(R.string.yes), context.getString(R.string.no), context.getString(R.string.ask_download), new Functions.onPromptListener() {
                     @Override
                     public void onClickYes(MaterialDialog dialog) {
-                        String url = AppConstants.ACTION_LOG_ATTACHMENT_PREFIX + actionLog.getAttachmentPath() + "/" + actionLog.getAttachment();
+                        String url = AppConstants.ACTION_LOG_PATH + "/" + actionLog.getAttachment();
                         Log.e("url", url);
                         String str_file_path = AppConstants.ACTION_LOG_DIRECTORY + actionLog.getId() + "/";
 

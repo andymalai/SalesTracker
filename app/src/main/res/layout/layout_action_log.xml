@@ -16,6 +16,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/agent_name"
                 android:textSize="@dimen/M_TEXT" />
 
@@ -24,6 +25,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/agent_name"
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
@@ -39,6 +41,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/description"
                 android:textSize="@dimen/M_TEXT" />
 
@@ -47,6 +50,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/dummy"
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
@@ -62,6 +66,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/date_raised"
                 android:textSize="@dimen/M_TEXT" />
 
@@ -70,6 +75,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/date_raised"
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
@@ -85,6 +91,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/status"
                 android:textSize="@dimen/M_TEXT" />
 
@@ -93,6 +100,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/status"
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
@@ -108,6 +116,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/dept"
                 android:textSize="@dimen/M_TEXT" />
 
@@ -116,6 +125,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/dept"
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
@@ -131,6 +141,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/sla"
                 android:textSize="@dimen/M_TEXT" />
 
@@ -139,6 +150,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/sla"
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
@@ -154,6 +166,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/last_update"
                 android:textSize="@dimen/M_TEXT" />
 
@@ -162,6 +175,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/last_update"
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
@@ -177,6 +191,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/approved_date"
                 android:textSize="@dimen/M_TEXT" />
 
@@ -185,6 +200,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/approved_date"
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>
@@ -200,6 +216,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/attachment"
                 android:textSize="@dimen/M_TEXT" />
 
@@ -208,6 +225,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:padding="@dimen/dimen_1dp"
                 android:text="@string/attachment"
                 android:textSize="@dimen/N_TEXT" />
         </LinearLayout>

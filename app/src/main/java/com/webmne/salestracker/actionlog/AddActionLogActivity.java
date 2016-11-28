@@ -11,7 +11,9 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -124,6 +126,15 @@ public class AddActionLogActivity extends AppCompatActivity {
     }
 
     private void actionListener() {
+
+        binding.imgClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.edtSelectFile.setText(getString(R.string.select_file));
+                binding.imgClear.setVisibility(View.GONE);
+                file = null;
+            }
+        });
 
         binding.edtSelectFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -345,9 +356,7 @@ public class AddActionLogActivity extends AppCompatActivity {
     private void openGallery() {
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("application/pdf");
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-
+        intent.setType("image/*|application/pdf");
         try {
             startActivityForResult(
                     Intent.createChooser(intent, "Select a File to Upload"),
@@ -639,10 +648,11 @@ public class AddActionLogActivity extends AppCompatActivity {
         if (requestCode == FILE_SELECT_CODE && resultCode == RESULT_OK) {
             Uri uri = data.getData();
             // Get the path
-            file = new File(uri.getPath());
-            binding.edtSelectFile.setText(file.getName());
             String path = Functions.getPath(this, uri);
+            file = new File(path);
+            binding.edtSelectFile.setText(file.getName());
             Log.e("path", path);
+            binding.imgClear.setVisibility(View.VISIBLE);
         }
     }
 

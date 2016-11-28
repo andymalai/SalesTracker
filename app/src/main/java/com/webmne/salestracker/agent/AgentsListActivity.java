@@ -66,6 +66,18 @@ public class AgentsListActivity extends AppCompatActivity {
 
     }
 
+    private void removeSelection() {
+        viewBinding.txtDelete.setVisibility(View.GONE);
+        viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimary));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(AgentsListActivity.this, R.color.colorPrimaryDark));
+        }
+        for (AgentModel model : agentList) {
+            model.setChecked(false);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
     private void init() {
 
         if (viewBinding.toolbarLayout.toolbar != null)
@@ -76,8 +88,12 @@ public class AgentsListActivity extends AppCompatActivity {
         viewBinding.toolbarLayout.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                if (getSelectedItems() > 0) {
+                    removeSelection();
+                } else {
+                    finish();
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                }
             }
         });
 
@@ -150,18 +166,6 @@ public class AgentsListActivity extends AppCompatActivity {
             }
         });
 
-        viewBinding.agentRecyclerView.setOnScrollListener(new FamiliarRecyclerViewOnScrollListener(viewBinding.agentRecyclerView.getLayoutManager()) {
-            @Override
-            public void onScrolledToTop() {
-
-            }
-
-            @Override
-            public void onScrolledToBottom() {
-                Toast.makeText(AgentsListActivity.this, "Load more..", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         viewBinding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -204,7 +208,7 @@ public class AgentsListActivity extends AppCompatActivity {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("EmpId", new JSONArray(selectedAgentIds));
+            jsonObject.put("AgentID", new JSONArray(selectedAgentIds));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -217,7 +221,7 @@ public class AgentsListActivity extends AppCompatActivity {
                 dismissProgress();
 
                 com.webmne.salestracker.api.model.Response deleteResponse = MyApplication.getGson().fromJson(response, com.webmne.salestracker.api.model.Response.class);
-                Log.e("delete_res", deleteResponse.toString());
+                Log.e("delete_res", MyApplication.getGson().toJson(deleteResponse));
 
                 if (deleteResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                     SimpleToast.ok(AgentsListActivity.this, getString(R.string.delete_success));
@@ -253,8 +257,12 @@ public class AgentsListActivity extends AppCompatActivity {
         if (viewBinding.searchView.isSearchOpen()) {
             viewBinding.searchView.closeSearch();
         } else {
-            super.onBackPressed();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            if (getSelectedItems() > 0) {
+                removeSelection();
+            } else {
+                super.onBackPressed();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            }
         }
     }
 

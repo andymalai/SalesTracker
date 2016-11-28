@@ -52,7 +52,6 @@ public class EmployeeListActivity extends AppCompatActivity {
     }
 
     private void init() {
-
         if (viewBinding.toolbarLayout.toolbar != null)
             viewBinding.toolbarLayout.toolbar.setTitle("");
         setSupportActionBar(viewBinding.toolbarLayout.toolbar);
@@ -61,8 +60,12 @@ public class EmployeeListActivity extends AppCompatActivity {
         viewBinding.toolbarLayout.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                if (getSelectedItems() > 0) {
+                    removeSelection();
+                } else {
+                    finish();
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                }
             }
         });
 
@@ -81,9 +84,15 @@ public class EmployeeListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (Functions.isConnected(this))
-            getEmplyoees();
+            getEmployees();
         else
             SimpleToast.error(EmployeeListActivity.this, getString(R.string.no_internet_connection), getString(R.string.fa_error));
+
+        viewBinding.txtDelete.setVisibility(View.GONE);
+        viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimary));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimaryDark));
+        }
 
         actionListener();
     }
@@ -111,7 +120,7 @@ public class EmployeeListActivity extends AppCompatActivity {
 
                     @Override
                     public void onFinish() {
-                        getEmplyoees();
+                        getEmployees();
                         viewBinding.swipeRefresh.setRefreshing(false);
                     }
                 }.start();
@@ -168,7 +177,7 @@ public class EmployeeListActivity extends AppCompatActivity {
                         getWindow().setStatusBarColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimaryDark));
                     }
 
-                    getEmplyoees();
+                    getEmployees();
 
                 } else {
                     SimpleToast.error(EmployeeListActivity.this, deleteResponse.getResponse().getResponseMsg(), getString(R.string.fa_error));
@@ -192,11 +201,27 @@ public class EmployeeListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        if (getSelectedItems() > 0) {
+            removeSelection();
+        } else {
+            super.onBackPressed();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
     }
 
-    private void getEmplyoees() {
+    private void removeSelection() {
+        viewBinding.txtDelete.setVisibility(View.GONE);
+        viewBinding.toolbarLayout.toolbar.setBackgroundColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimary));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(EmployeeListActivity.this, R.color.colorPrimaryDark));
+        }
+        for (EmployeeModel model : employeeList) {
+            model.setChecked(false);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void getEmployees() {
 
         showProgress(getString(R.string.loading));
 

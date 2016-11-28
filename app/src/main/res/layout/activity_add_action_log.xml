@@ -12,8 +12,8 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:overScrollMode="never"
-            android:layout_below="@+id/toolbarLayout">
+            android:layout_below="@+id/toolbarLayout"
+            android:overScrollMode="never">
 
             <LinearLayout
                 android:id="@+id/relativeLayout"
@@ -62,17 +62,32 @@
                     android:hint="@string/select_priority"
                     android:longClickable="false" />
 
-                <com.webmne.salestracker.widget.TfEditText
-                    android:id="@+id/edtSelectFile"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_8dp"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:hint="@string/select_file"
-                    android:inputType="number"
-                    android:longClickable="false"
-                    android:text="@string/select_file" />
+                    android:orientation="horizontal">
+
+                    <com.webmne.salestracker.widget.TfEditText
+                        android:id="@+id/edtSelectFile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_8dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:hint="@string/select_file"
+                        android:inputType="number"
+                        android:longClickable="false"
+                        android:text="@string/select_file" />
+
+                    <ImageView
+                        android:id="@+id/imgClear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_content_clear" />
+                </LinearLayout>
 
                 <com.webmne.salestracker.widget.TfEditText
                     android:id="@+id/edtDescription"

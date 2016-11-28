@@ -679,7 +679,10 @@ public class CalendarView extends LinearLayout {
                 // In month mode we need header for displaying Weekday Names
                 // Also we need to diaply grid for displaying days.
 
+                // for set blank initially
                 dayPlans = new ArrayList<>();
+                setDayPlan(dayPlans);
+
                 header.setVisibility(View.VISIBLE);
                 linearCalenderViewHeader.setVisibility(View.GONE);
                 timelineLayout.setVisibility(View.GONE);

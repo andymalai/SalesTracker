@@ -211,7 +211,14 @@ public class ActionLogDetailsActivity extends AppCompatActivity {
 
                     if (remarksListResponse.getResponse().getResponseCode().equals(AppConstants.SUCCESS)) {
                         remarkListAdapter.setRemarkList(remarksListResponse.getData().getRemarks());
-                        binding.txtRemarkCount.setText(String.format(Locale.US, "%d Remarks", remarksListResponse.getData().getRemarks().size()));
+
+                        if (remarksListResponse.getData().getRemarks().size() > 0) {
+                            binding.txtRemarkCount.setText(String.format(Locale.US, "%d Remarks", remarksListResponse.getData().getRemarks().size()));
+                        } else {
+                            binding.txtRemarkCount.setText(getString(R.string.no_remark));
+                        }
+                    }else{
+                        binding.txtRemarkCount.setText(getString(R.string.no_remark));
                     }
                 }
             }

@@ -89,20 +89,20 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
     }
 
     private void init() {
-        if (binding.toolbarLayout.toolbar != null) {
-            binding.toolbarLayout.toolbar.setTitle("");
+        if (binding.toolbar != null) {
+            binding.toolbar.setTitle("");
         }
-        setSupportActionBar(binding.toolbarLayout.toolbar);
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        binding.toolbarLayout.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
-        binding.toolbarLayout.txtCustomTitle.setText(getString(R.string.sales_title));
+        binding.txtCustomTitle.setText(getString(R.string.sales_title));
 
         setDefaultUser();
 
@@ -124,6 +124,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
         if (binding.cv != null) {
             binding.cv.setUser(selectedUser);
         }
+        binding.txtUser.setText("(" + PrefUtils.getUserProfile(this).getFirstName() + ")");
     }
 
     private void callWs() {
@@ -198,6 +199,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
 
                                     selectedUser.setUserId(model.getId());
                                     selectedUser.setUserName(model.getName());
+                                    binding.txtUser.setText("(" + model.getName() + ")");
                                     binding.cv.setUser(selectedUser);
 
                                     fetchPlan();
@@ -242,6 +244,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
 
                                     selectedUser.setUserId(model.getId());
                                     selectedUser.setUserName(model.getName());
+                                    binding.txtUser.setText("(" + model.getName() + ")");
                                     binding.cv.setUser(selectedUser);
 
                                     fetchPlan();
@@ -897,6 +900,7 @@ public class SalesVisitPlanActivity extends AppCompatActivity implements View.On
 
                 if (editText.getId() == R.id.edtMarketer) {
                     mktWhich = 0;
+
 
                 } else if (editText.getId() == R.id.edtHos) {
                     hosWhich = 0;
